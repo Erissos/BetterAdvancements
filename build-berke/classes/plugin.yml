@@ -1,0 +1,8 @@
+name: BetterAdvancemenets
+author: Despical
+version: 1.0.0
+
+main: com.desperis.advancements.BetterAdvancements
+api-version: 1.13
+softdepend:
+  - UltimateAdvancementAPI
