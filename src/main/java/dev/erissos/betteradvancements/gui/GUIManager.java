@@ -11,7 +11,9 @@ import dev.erissos.betteradvancements.model.ChallengeDefinition;
 import dev.erissos.betteradvancements.model.LeaderboardEntry;
 import dev.erissos.betteradvancements.model.PlayerAchievementProgress;
 import dev.erissos.betteradvancements.model.PlayerProfile;
+import dev.erissos.betteradvancements.model.RewardDefinition;
 import dev.erissos.betteradvancements.model.Tier;
+import dev.erissos.betteradvancements.model.TriggerType;
 import dev.erissos.betteradvancements.util.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,6 +42,8 @@ import java.util.UUID;
 public final class GUIManager implements Listener {
 
     private static final int MENU_SIZE = 54;
+    private static final List<Integer> DEFAULT_MAIN_TIER_SLOTS = List.of(19, 20, 22, 24, 25);
+    private static final List<Integer> DEFAULT_STATS_TIER_SLOTS = List.of(19, 20, 21, 22, 23);
 
     private final ConfigManager configManager;
     private final AchievementManager achievementManager;
@@ -64,6 +68,7 @@ public final class GUIManager implements Listener {
 
         paintFrame(inventory, "main.frame");
         applyFillerGroups(inventory, "main.fillers");
+        fillEmptySlots(inventory, "main.background");
 
         inventory.setItem(intValue("main.profile.slot"), createPlayerHeadCard(
                 player.getUniqueId(),
@@ -80,8 +85,12 @@ public final class GUIManager implements Listener {
         BetterAdvancement nextTarget = findNextTarget(profile);
         boolean hasTarget = nextTarget != null;
         String nextPath = hasTarget ? "main.next-target.active" : "main.next-target.empty";
+        String configuredNextMaterial = text(nextPath + ".material");
+        String nextTargetMaterial = hasTarget
+            ? configuredNextMaterial.isBlank() ? nextTarget.icon() : configuredNextMaterial
+            : configuredNextMaterial;
         inventory.setItem(intValue("main.next-target.slot"), ItemUtils.create(
-                hasTarget ? nextTarget.icon() : text(nextPath + ".material"),
+            nextTargetMaterial,
                 text(nextPath + ".title"),
                 hasTarget
                         ? lines(nextPath + ".lore", placeholders(
@@ -101,37 +110,25 @@ public final class GUIManager implements Listener {
                 boolValue("main.challenge.glow")
         ));
 
-        List<Integer> connectorSlots = intList("main.tiers.connector-slots");
         for (Tier tier : Tier.values()) {
             int completion = achievementManager.getTierCompletion(profile, tier);
-            int slot = intValue("main.tiers." + tier.name() + ".slot");
+            int slot = mainTierSlot(tier);
+            if (slot < 0) {
+                continue;
+            }
+            List<String> lore = new ArrayList<>(lines("main.tiers." + tier.name() + ".lore", placeholders(
+                "completion", completion,
+                "unlocked", getUnlockedCount(profile, tier),
+                "total", achievementManager.getByTier(tier).size(),
+                "rare", getRareTierCount(profile, tier),
+                "tier_name", formatTierName(tier)
+            )));
+            lore.addAll(buildMainTierStateLore(profile, tier, completion));
             inventory.setItem(slot, ItemUtils.create(
                     text("main.tiers." + tier.name() + ".icon"),
                     text("main.tiers." + tier.name() + ".name"),
-                    lines("main.tiers." + tier.name() + ".lore", placeholders(
-                            "completion", completion,
-                            "unlocked", getUnlockedCount(profile, tier),
-                            "total", achievementManager.getByTier(tier).size(),
-                            "rare", getRareTierCount(profile, tier),
-                            "tier_name", formatTierName(tier)
-                    )),
+                lore,
                     completion >= 100
-            ));
-        }
-
-        for (int index = 0; index < connectorSlots.size() && index < Tier.values().length - 1; index++) {
-            Tier tier = Tier.values()[index];
-            Tier nextTier = Tier.values()[index + 1];
-            boolean completed = achievementManager.getTierCompletion(profile, tier) >= 100;
-            String path = completed ? "main.tiers.connector-open" : "main.tiers.connector-locked";
-            inventory.setItem(connectorSlots.get(index), ItemUtils.create(
-                    text(path + ".material"),
-                    text(path + ".title"),
-                    lines(path + ".lore", placeholders(
-                            "tier", formatTierName(tier),
-                            "next_tier", formatTierName(nextTier)
-                    )),
-                    boolValue(path + ".glow")
             ));
         }
 
@@ -172,6 +169,7 @@ public final class GUIManager implements Listener {
         Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.TIER, tier, false), MENU_SIZE, ItemUtils.component(text("tier.title", placeholders("tier_name", formatTierName(tier)))));
 
         paintFrame(inventory, "tier.frame");
+        fillEmptySlots(inventory, "tier.background");
         inventory.setItem(intValue("tier.overview.slot"), ItemUtils.create(
                 text("main.tiers." + tier.name() + ".icon"),
                 text("tier.overview.title", placeholders("tier_name", formatTierName(tier))),
@@ -194,6 +192,7 @@ public final class GUIManager implements Listener {
             PlayerAchievementProgress progress = profile.getAdvancementProgress().get(advancement.id());
             boolean completed = progress != null && progress.isCompleted();
             boolean unlocked = achievementManager.isUnlocked(profile, advancement);
+            boolean hidden = advancement.hidden() && !completed;
             String title = advancement.hidden() && !completed ? text("tier.node.hidden-title") : advancement.title();
             String description = advancement.hidden() && !completed ? text("tier.node.hidden-description") : advancement.description();
 
@@ -201,12 +200,14 @@ public final class GUIManager implements Listener {
                     "description", description,
                     "category", capitalize(advancement.category()),
                     "rarity", capitalize(advancement.rarity()),
+                    "objective", formatObjective(advancement),
+                    "rewards", formatRewards(advancement),
                     "points", advancement.points(),
                     "progress", progress == null ? 0 : progress.getProgress(),
                     "target", advancement.trigger().target()
             )));
             if (!advancement.dependencies().isEmpty()) {
-                lore.add(text("tier.node.requires-format", placeholders("requirements", joinTitles(advancement.dependencies(), tierAdvancements))));
+                lore.add(text("tier.node.requires-format", placeholders("requirements", joinTitles(advancement.dependencies()))));
             }
             List<String> unlocks = tierAdvancements.stream()
                     .filter(candidate -> candidate.dependencies().contains(advancement.id()))
@@ -217,11 +218,7 @@ public final class GUIManager implements Listener {
             }
             lore.add(text(completed ? "tier.node.state.completed" : unlocked ? "tier.node.state.unlocked" : "tier.node.state.locked"));
 
-            String material = completed
-                    ? text("tier.node.materials.completed")
-                    : unlocked
-                    ? advancement.icon()
-                    : text("tier.node.materials.locked");
+                String material = hidden ? text("tier.node.materials.hidden") : advancement.icon();
             inventory.setItem(slot, ItemUtils.create(material, title, lore, completed));
         }
 
@@ -236,6 +233,7 @@ public final class GUIManager implements Listener {
         Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.STATS, null, false), MENU_SIZE, ItemUtils.component(text("stats.title")));
 
         paintFrame(inventory, "stats.frame");
+        fillEmptySlots(inventory, "stats.background");
         inventory.setItem(intValue("stats.profile.slot"), createPlayerHeadCard(
                 player.getUniqueId(),
                 text("stats.profile.title"),
@@ -251,7 +249,11 @@ public final class GUIManager implements Listener {
 
         for (Tier tier : Tier.values()) {
             String tierPath = "stats.tiers." + tier.name();
-            inventory.setItem(intValue(tierPath + ".slot"), ItemUtils.create(
+            int slot = statsTierSlot(tier);
+            if (slot < 0) {
+                continue;
+            }
+            inventory.setItem(slot, ItemUtils.create(
                     text("main.tiers." + tier.name() + ".icon"),
                     text("main.tiers." + tier.name() + ".name"),
                     lines(tierPath + ".lore", placeholders(
@@ -311,6 +313,7 @@ public final class GUIManager implements Listener {
         Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.LEADERBOARD, null, session), MENU_SIZE, ItemUtils.component(text(session ? "leaderboard.title.session" : "leaderboard.title.global")));
 
         paintFrame(inventory, "leaderboard.frame");
+        fillEmptySlots(inventory, "leaderboard.background");
         String headerPath = session ? "leaderboard.header.session" : "leaderboard.header.global";
         inventory.setItem(intValue("leaderboard.header.slot"), ItemUtils.create(
                 text(headerPath + ".material"),
@@ -395,7 +398,7 @@ public final class GUIManager implements Listener {
 
     private void handleMainClick(Player player, int slot) {
         for (Tier tier : Tier.values()) {
-            if (slot == intValue("main.tiers." + tier.name() + ".slot")) {
+            if (slot == mainTierSlot(tier) && mainTierSlot(tier) >= 0) {
                 openTierMenu(player, tier);
                 return;
             }
@@ -474,6 +477,19 @@ public final class GUIManager implements Listener {
                 if (slot >= 0 && slot < inventory.getSize()) {
                     inventory.setItem(slot, item);
                 }
+            }
+        }
+    }
+
+    private void fillEmptySlots(Inventory inventory, String path) {
+        ConfigurationSection background = section(path);
+        if (background == null) {
+            return;
+        }
+        ItemStack item = ItemUtils.create(text(path + ".material"), text(path + ".name"), List.of(), boolValue(path + ".glow"));
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            if (inventory.getItem(slot) == null) {
+                inventory.setItem(slot, item);
             }
         }
     }
@@ -708,33 +724,111 @@ public final class GUIManager implements Listener {
                 .count();
     }
 
+    private List<String> buildMainTierStateLore(PlayerProfile profile, Tier tier, int completion) {
+        if (completion >= 100) {
+            return lines("main.tiers.state.completed", placeholders("tier_name", formatTierName(tier)));
+        }
+        Tier previous = previousTier(tier);
+        if (previous != null && achievementManager.getTierCompletion(profile, previous) < 100) {
+            return lines("main.tiers.state.locked", placeholders(
+                    "tier_name", formatTierName(tier),
+                    "previous_tier", formatTierName(previous)
+            ));
+        }
+        return lines("main.tiers.state.available", placeholders("tier_name", formatTierName(tier)));
+    }
+
     private Tier getHighestCompletedTier(PlayerProfile profile) {
         return achievementManager.getAdvancements().stream()
                 .filter(advancement -> isCompleted(profile, advancement))
                 .map(BetterAdvancement::tier)
                 .max(Comparator.comparingInt(Tier::getWeight))
-                .orElse(Tier.TIER_1);
+                .orElse(Tier.first());
     }
 
-    private String joinTitles(List<String> dependencyIds, List<BetterAdvancement> tierAdvancements) {
+    private String joinTitles(List<String> dependencyIds) {
         return dependencyIds.stream()
-                .map(id -> tierAdvancements.stream()
-                        .filter(advancement -> advancement.id().equalsIgnoreCase(id))
+                .map(id -> achievementManager.getAdvancement(id)
                         .map(BetterAdvancement::title)
-                        .findFirst()
-                        .orElse(id))
+                        .orElse(capitalize(id)))
                 .reduce((left, right) -> left + ", " + right)
                 .orElse("-");
     }
 
+    private String formatObjective(BetterAdvancement advancement) {
+        Map<String, String> conditions = advancement.trigger().conditions();
+        String subject = switch (advancement.trigger().type()) {
+            case BLOCK_BREAK -> capitalize(conditions.getOrDefault("material", "Blocks"));
+            case ITEM_CRAFT, ITEM_CONSUME, SMELT -> capitalize(conditions.getOrDefault("item", "Items"));
+            case MOB_KILL, PLAYER_KILL, BREED, TAME -> capitalize(conditions.getOrDefault("entity", "Targets"));
+            case EXPLORE_BIOME -> capitalize(conditions.getOrDefault("biome", "Biomes"));
+            case COMMAND -> "/" + conditions.getOrDefault("command", "command");
+            case JOIN -> "server joins";
+            case DISTANCE_WALK -> "blocks travelled";
+            case FISH -> "fish caught";
+            case ENCHANT -> "enchantments made";
+            case PLAYTIME -> "minutes played";
+            case CUSTOM -> "custom objective";
+        };
+
+        return switch (advancement.trigger().type()) {
+            case JOIN -> "Join the server";
+            case BLOCK_BREAK -> "Break " + advancement.trigger().target() + " " + subject;
+            case ITEM_CRAFT -> "Craft " + advancement.trigger().target() + " " + subject;
+            case MOB_KILL -> "Defeat " + advancement.trigger().target() + " " + subject;
+            case PLAYER_KILL -> "Defeat " + advancement.trigger().target() + " player" + (advancement.trigger().target() == 1 ? "" : "s");
+            case EXPLORE_BIOME -> "Discover " + subject;
+            case DISTANCE_WALK -> "Travel " + advancement.trigger().target() + " blocks";
+            case FISH -> "Catch " + advancement.trigger().target() + " fish";
+            case ENCHANT -> "Enchant " + advancement.trigger().target() + " item" + (advancement.trigger().target() == 1 ? "" : "s");
+            case SMELT -> "Smelt " + advancement.trigger().target() + " " + subject;
+            case BREED -> "Breed " + advancement.trigger().target() + " " + subject;
+            case TAME -> "Tame " + advancement.trigger().target() + " " + subject;
+            case PLAYTIME -> "Play for " + advancement.trigger().target() + " minutes";
+            case ITEM_CONSUME -> "Consume " + advancement.trigger().target() + " " + subject;
+            case COMMAND -> "Use " + subject;
+            case CUSTOM -> "Reach target: " + advancement.trigger().target();
+        };
+    }
+
+    private String formatRewards(BetterAdvancement advancement) {
+        if (advancement.rewards().isEmpty()) {
+            return "No extra reward";
+        }
+        return advancement.rewards().stream()
+                .map(this::formatReward)
+                .reduce((left, right) -> left + ", " + right)
+                .orElse("No extra reward");
+    }
+
+    private String formatReward(RewardDefinition reward) {
+        return switch (reward.type()) {
+            case POINTS -> reward.amount() + " points";
+            case XP -> reward.amount() + " XP";
+            case MONEY -> "$" + reward.amount();
+            case ITEM -> reward.amount() + "x " + capitalize(reward.value());
+            case COMMAND -> reward.value().isBlank() ? "Command reward" : "Command: /" + reward.value();
+        };
+    }
+
     private Tier previousTier(Tier tier) {
-        int index = tier.ordinal() - 1;
-        return index >= 0 ? Tier.values()[index] : null;
+        Tier[] tiers = Tier.values();
+        for (int index = 0; index < tiers.length; index++) {
+            if (tiers[index].equals(tier)) {
+                return index > 0 ? tiers[index - 1] : null;
+            }
+        }
+        return null;
     }
 
     private Tier nextTier(Tier tier) {
-        int index = tier.ordinal() + 1;
-        return index < Tier.values().length ? Tier.values()[index] : null;
+        Tier[] tiers = Tier.values();
+        for (int index = 0; index < tiers.length; index++) {
+            if (tiers[index].equals(tier)) {
+                return index + 1 < tiers.length ? tiers[index + 1] : null;
+            }
+        }
+        return null;
     }
 
     private Tier weightToTier(int weight) {
@@ -743,11 +837,45 @@ public final class GUIManager implements Listener {
                 return tier;
             }
         }
-        return Tier.TIER_1;
+        return Tier.first();
     }
 
     private String formatTierName(Tier tier) {
         return tier == null ? "Unknown" : tier.getDisplayKey();
+    }
+
+    private int mainTierSlot(Tier tier) {
+        int index = tierIndex(tier);
+        List<Integer> configuredSlots = intList("main.tiers.auto-slots");
+        if (index < configuredSlots.size()) {
+            return configuredSlots.get(index);
+        }
+        if (configuredSlots.isEmpty() && index >= 0 && index < DEFAULT_MAIN_TIER_SLOTS.size()) {
+            return DEFAULT_MAIN_TIER_SLOTS.get(index);
+        }
+        return -1;
+    }
+
+    private int statsTierSlot(Tier tier) {
+        int index = tierIndex(tier);
+        List<Integer> configuredSlots = intList("stats.tiers.auto-slots");
+        if (index < configuredSlots.size()) {
+            return configuredSlots.get(index);
+        }
+        if (configuredSlots.isEmpty() && index >= 0 && index < DEFAULT_STATS_TIER_SLOTS.size()) {
+            return DEFAULT_STATS_TIER_SLOTS.get(index);
+        }
+        return -1;
+    }
+
+    private int tierIndex(Tier target) {
+        Tier[] tiers = Tier.values();
+        for (int index = 0; index < tiers.length; index++) {
+            if (tiers[index].equals(target)) {
+                return index;
+            }
+        }
+        return -1;
     }
 
     private String connectorMaterial(int deltaCol, int deltaRow, boolean completed) {
@@ -784,8 +912,18 @@ public final class GUIManager implements Listener {
         if (value == null || value.isEmpty()) {
             return "Unknown";
         }
-        String normalized = value.replace('_', ' ').toLowerCase(Locale.ROOT);
-        return Character.toUpperCase(normalized.charAt(0)) + normalized.substring(1);
+        String[] parts = value.replace('_', ' ').toLowerCase(Locale.ROOT).trim().split("\\s+");
+        StringBuilder builder = new StringBuilder();
+        for (String part : parts) {
+            if (part.isEmpty()) {
+                continue;
+            }
+            if (!builder.isEmpty()) {
+                builder.append(' ');
+            }
+            builder.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
+        }
+        return builder.isEmpty() ? "Unknown" : builder.toString();
     }
 
     private String text(String path) {

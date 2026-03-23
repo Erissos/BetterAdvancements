@@ -13,7 +13,6 @@ import java.util.List;
 public final class ItemUtils {
 
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
-    private static final String LIST_ITEM_PREFIX = "<gray>▶ </gray>";
 
     private ItemUtils() {
     }
@@ -48,8 +47,8 @@ public final class ItemUtils {
         if (value == null || value.isEmpty()) {
             return "";
         }
-        return value
-                .replace("<li>", LIST_ITEM_PREFIX)
+        return "<!italic>" + value
+                .replace("<li>", "")
                 .replace("</li>", "");
     }
 }

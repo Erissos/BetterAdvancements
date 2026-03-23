@@ -13,6 +13,7 @@ import dev.erissos.betteradvancements.manager.AchievementManager;
 import dev.erissos.betteradvancements.manager.ChallengeManager;
 import dev.erissos.betteradvancements.manager.LeaderboardManager;
 import dev.erissos.betteradvancements.manager.NotificationManager;
+import dev.erissos.betteradvancements.model.Tier;
 import dev.erissos.betteradvancements.service.BetterAdvancementsService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -37,6 +38,7 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
         this.configManager.bootstrap();
+        Tier.loadFromConfig(configManager.getGuiConfig());
 
         this.placeholderHook = new PlaceholderHook();
         this.vaultHook = new VaultHook(this);
@@ -81,6 +83,7 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
     public void reloadPlugin() {
         configManager.reloadAll();
+        Tier.loadFromConfig(configManager.getGuiConfig());
         languageManager.load();
         achievementManager.load();
         challengeManager.load();

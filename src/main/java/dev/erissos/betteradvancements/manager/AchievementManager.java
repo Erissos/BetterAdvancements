@@ -122,7 +122,7 @@ public final class AchievementManager {
 
     public List<BetterAdvancement> getByTier(Tier tier) {
         return advancements.values().stream()
-                .filter(advancement -> advancement.tier() == tier)
+                .filter(advancement -> advancement.tier().equals(tier))
                 .sorted(Comparator.comparingInt(advancement -> advancement.guiPosition().getOrDefault("slot", 0)))
                 .toList();
     }

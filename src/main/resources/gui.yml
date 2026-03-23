@@ -1,37 +1,27 @@
-theme:
-  list-prefix: "<gray>▶ </gray>"
-
 main:
-  title: "<gradient:#ffd44d:#ffaa00><bold>Better Advancements</bold></gradient> <gray>⟡</gray> <yellow>Quest Menu</yellow>"
+  title: "<gray><bold>Better Advancements</bold></gray>"
   frame:
     material: BLACK_STAINED_GLASS_PANE
     name: "<dark_gray> "
-  fillers:
-    top-rail:
-      material: ORANGE_STAINED_GLASS_PANE
-      name: "<gold>SkyBlock Rail</gold>"
-      slots: [1, 2, 3, 5, 6, 7]
-    lower-rail:
-      material: YELLOW_STAINED_GLASS_PANE
-      name: "<yellow>Quest Rail</yellow>"
-      slots: [37, 39, 41, 43]
-    anchors:
-      material: BLUE_STAINED_GLASS_PANE
-      name: "<aqua>Navigator</aqua>"
-      slots: [10, 16]
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<dark_gray> "
+    glow: false
+  fillers: []
   profile:
     slot: 4
-    glow: true
-    title: "<gold><bold>Your Player Profile</bold></gold>"
+    glow: false
+    title: "<gold><bold>Player Profile</bold></gold>"
     lore:
       - "<li><gray>Name: <white>{player}</white>"
       - "<li><gray>Total Completion: <yellow>{completion}%</yellow>"
       - "<li><gray>Points: <green>{points}</green>"
       - "<li><gray>Top Tier: <aqua>{highest_tier}</aqua>"
-      - "<li><dark_gray>Track your advancement route like a Hypixel quest log."
+      - "<li><dark_gray>Overview of your progression."
   next-target:
-    slot: 13
+    slot: 3
     active:
+      material: EMERALD
       glow: true
       title: "<yellow><bold>Next Quest Target</bold></yellow>"
       lore:
@@ -49,10 +39,10 @@ main:
         - "<li><gray>Your quest book is fully completed."
         - "<li><dark_gray>Browse tiers below to admire the route map."
   challenge:
-    slot: 15
-    material: CLOCK
+    slot: 5
+    material: CRAFTING_TABLE
     glow: false
-    title: "<gold><bold>Daily Challenge Board</bold></gold>"
+    title: "<gold><bold>Challenge Board</bold></gold>"
     empty-lore:
       - "<li><gray>No live daily or weekly challenges loaded."
       - "<li><dark_gray>The board will populate automatically on rotation."
@@ -62,23 +52,23 @@ main:
     footer-lore:
       - "<li><dark_gray>Challenges refresh automatically and mimic event boards."
   tiers:
-    connector-slots: [19, 21, 23, 25]
-    connector-open:
-      material: LIME_STAINED_GLASS_PANE
-      glow: false
-      title: "<green><bold>Quest Chain Open</bold></green>"
-      lore:
-        - "<li><gray>{tier} is fully cleared."
-        - "<li><gray>The lane toward <white>{next_tier}</white> is now wide open."
-    connector-locked:
-      material: LIGHT_BLUE_STAINED_GLASS_PANE
-      glow: false
-      title: "<aqua><bold>Quest Chain Ahead</bold></aqua>"
-      lore:
-        - "<li><gray>Advance through <white>{tier}</white> first."
-        - "<li><gray>{next_tier} becomes easier as this lane fills up."
-    TIER_1:
-      slot: 18
+    order: [novice, starter, skilled, expert, master, mythic]
+    auto-slots: [20, 21, 22, 23, 24]
+    state:
+      completed:
+        - ""
+        - "<green><bold>Status: Completed</bold></green>"
+      locked:
+        - ""
+        - "<red><bold>Status: Locked</bold></red>"
+        - "<gray>Complete <white>{previous_tier}</white><gray> first.</gray>"
+      available:
+        - ""
+        - "<yellow><bold>Status: Available</bold></yellow>"
+    novice:
+      aliases: [TIER_1, novice, starter]
+      weight: 1
+      display-name: "Novice"
       icon: GRASS_BLOCK
       name: "<green><bold>Novice Quests</bold></green>"
       lore:
@@ -86,8 +76,10 @@ main:
         - "<li><gray>Unlocked: <white>{unlocked}/{total}</white>"
         - "<li><gray>Rare Clears: <light_purple>{rare}</light_purple>"
         - "<li><dark_gray>Perfect for early game progression."
-    TIER_2:
-      slot: 20
+    skilled:
+      aliases: [TIER_2, skilled]
+      weight: 2
+      display-name: "Skilled"
       icon: IRON_PICKAXE
       name: "<yellow><bold>Skilled Quests</bold></yellow>"
       lore:
@@ -95,8 +87,10 @@ main:
         - "<li><gray>Unlocked: <white>{unlocked}/{total}</white>"
         - "<li><gray>Rare Clears: <light_purple>{rare}</light_purple>"
         - "<li><dark_gray>More demanding routes and stronger rewards."
-    TIER_3:
-      slot: 22
+    expert:
+      aliases: [TIER_3, expert]
+      weight: 3
+      display-name: "Expert"
       icon: DIAMOND
       name: "<aqua><bold>Expert Quests</bold></aqua>"
       lore:
@@ -104,8 +98,10 @@ main:
         - "<li><gray>Unlocked: <white>{unlocked}/{total}</white>"
         - "<li><gray>Rare Clears: <light_purple>{rare}</light_purple>"
         - "<li><dark_gray>Mid-game prestige and exploration routes."
-    TIER_4:
-      slot: 24
+    master:
+      aliases: [TIER_4, master]
+      weight: 4
+      display-name: "Master"
       icon: NETHERITE_INGOT
       name: "<light_purple><bold>Master Quests</bold></light_purple>"
       lore:
@@ -113,8 +109,10 @@ main:
         - "<li><gray>Unlocked: <white>{unlocked}/{total}</white>"
         - "<li><gray>Rare Clears: <light_purple>{rare}</light_purple>"
         - "<li><dark_gray>Elite tasks with premium progression."
-    TIER_5:
-      slot: 26
+    mythic:
+      aliases: [TIER_5, mythic]
+      weight: 5
+      display-name: "Mythic"
       icon: DRAGON_HEAD
       name: "<red><bold>Mythic Quests</bold></red>"
       lore:
@@ -123,7 +121,7 @@ main:
         - "<li><gray>Rare Clears: <light_purple>{rare}</light_purple>"
         - "<li><dark_gray>Endgame showpiece quests and signature rewards."
   stats:
-    slot: 38
+    slot: 30
     material: NETHER_STAR
     glow: false
     title: "<aqua><bold>Statistics</bold></aqua>"
@@ -132,7 +130,7 @@ main:
       - "<li><gray>See category spread, tier progress and totals."
       - "<li><dark_gray>Styled after Hypixel profile menus."
   leaderboard:
-    slot: 40
+    slot: 31
     material: PLAYER_HEAD
     glow: false
     title: "<green><bold>Leaderboards</bold></green>"
@@ -141,7 +139,7 @@ main:
       - "<li><gray>See the top advancement grinders instantly."
       - "<li><dark_gray>Opens the podium board."
   locale:
-    slot: 42
+    slot: 32
     material: BOOK
     glow: false
     title: "<light_purple><bold>Language Settings</bold></light_purple>"
@@ -150,7 +148,7 @@ main:
       - "<li><gray>All GUI and notifications use this language."
       - "<li><dark_gray>Use /ba language code to switch."
   overview:
-    slot: 44
+    slot: 49
     material: SPYGLASS
     glow: false
     title: "<gold><bold>Quest Overview</bold></gold>"
@@ -165,6 +163,10 @@ tier:
   frame:
     material: BLACK_STAINED_GLASS_PANE
     name: "<dark_gray> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<dark_gray> "
+    glow: false
   blocked-slots: [4, 45, 46, 47, 48, 49, 50, 51, 52, 53]
   overview:
     slot: 4
@@ -183,17 +185,21 @@ tier:
       completed: LIME_STAINED_GLASS_PANE
       locked: GRAY_STAINED_GLASS_PANE
     lore:
-      - "<li><gray>{description}"
-      - "<li><gray>Category: <white>{category}</white>"
-      - "<li><gray>Rarity: <white>{rarity}</white>"
-      - "<li><gray>Points: <green>{points}</green>"
-      - "<li><gray>Progress: <yellow>{progress}/{target}</yellow>"
-    requires-format: "<li><gray>Requires: <white>{requirements}</white>"
-    unlocks-format: "<li><gray>Unlocks: <white>{unlocks}</white>"
+      - ""
+      - "<gray>{description}"
+      - ""
+      - "<gold>Objective</gold><dark_gray>: <yellow>{objective}</yellow>"
+      - "<green>Progress</green><dark_gray>: <white>{progress}</white><dark_gray>/</dark_gray><yellow>{target}</yellow>"
+      - "<aqua>Category</aqua><dark_gray>: <white>{category}</white>"
+      - "<light_purple>Rarity</light_purple><dark_gray>: <white>{rarity}</white>"
+      - "<green>Rewards</green><dark_gray>: <white>{rewards}</white>"
+      - "<gold>Points</gold><dark_gray>: <green>{points}</green>"
+    requires-format: "<red>Requires</red><dark_gray>: <white>{requirements}</white>"
+    unlocks-format: "<aqua>Unlocks</aqua><dark_gray>: <white>{unlocks}</white>"
     state:
-      completed: "<li><green><bold>Completed quest node</bold></green>"
-      unlocked: "<li><yellow><bold>Unlocked and ready</bold></yellow>"
-      locked: "<li><gray><bold>Locked behind earlier quests</bold></gray>"
+      completed: "<green><bold>Completed quest node</bold></green>"
+      unlocked: "<yellow><bold>Unlocked and ready</bold></yellow>"
+      locked: "<gray><bold>Locked behind earlier quests</bold></gray>"
   connectors:
     title-completed: "<green><bold>{direction} Completed Route</bold></green>"
     title-locked: "<aqua><bold>{direction} Dependency Route</bold></aqua>"
@@ -295,6 +301,10 @@ stats:
   frame:
     material: BLUE_STAINED_GLASS_PANE
     name: "<dark_gray> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<dark_gray> "
+    glow: false
   profile:
     slot: 4
     glow: true
@@ -305,28 +315,24 @@ stats:
       - "<li><gray>Points: <green>{points}</green>"
       - "<li><gray>Rare Unlocks: <light_purple>{rare}</light_purple>"
   tiers:
-    TIER_1:
-      slot: 19
+    auto-slots: [19, 20, 21, 22, 23]
+    novice:
       lore:
         - "<li><gray>Completion: <yellow>{completion}%</yellow>"
         - "<li><gray>Unlocked Nodes: <white>{unlocked}</white>"
-    TIER_2:
-      slot: 20
+    skilled:
       lore:
         - "<li><gray>Completion: <yellow>{completion}%</yellow>"
         - "<li><gray>Unlocked Nodes: <white>{unlocked}</white>"
-    TIER_3:
-      slot: 21
+    expert:
       lore:
         - "<li><gray>Completion: <yellow>{completion}%</yellow>"
         - "<li><gray>Unlocked Nodes: <white>{unlocked}</white>"
-    TIER_4:
-      slot: 22
+    master:
       lore:
         - "<li><gray>Completion: <yellow>{completion}%</yellow>"
         - "<li><gray>Unlocked Nodes: <white>{unlocked}</white>"
-    TIER_5:
-      slot: 23
+    mythic:
       lore:
         - "<li><gray>Completion: <yellow>{completion}%</yellow>"
         - "<li><gray>Unlocked Nodes: <white>{unlocked}</white>"
@@ -413,6 +419,10 @@ leaderboard:
   frame:
     material: GREEN_STAINED_GLASS_PANE
     name: "<dark_gray> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<dark_gray> "
+    glow: false
   header:
     slot: 4
     global:
