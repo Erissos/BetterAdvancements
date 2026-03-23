@@ -13,6 +13,7 @@ import java.util.List;
 public final class ItemUtils {
 
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private static final String LIST_ITEM_PREFIX = "<gray>▶ </gray>";
 
     private ItemUtils() {
     }
@@ -40,6 +41,15 @@ public final class ItemUtils {
     }
 
     public static Component component(String value) {
-        return MINI_MESSAGE.deserialize(value == null ? "" : value);
+        return MINI_MESSAGE.deserialize(normalize(value));
+    }
+
+    private static String normalize(String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+        return value
+                .replace("<li>", LIST_ITEM_PREFIX)
+                .replace("</li>", "");
     }
 }
