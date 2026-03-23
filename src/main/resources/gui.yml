@@ -1,26 +1,26 @@
 main:
-  title: "&6Better Advancements"
+  title: "<gradient:#f59e0b:#fb7185>Better Advancements</gradient>"
   tiers:
     TIER_1:
       slot: 10
       icon: GRASS_BLOCK
-      name: "&aTier 1 - Novice"
+      name: "<#50fa7b>Tier 1 - Novice</#50fa7b>"
     TIER_2:
       slot: 12
       icon: IRON_PICKAXE
-      name: "&eTier 2 - Skilled"
+      name: "<#facc15>Tier 2 - Skilled</#facc15>"
     TIER_3:
       slot: 14
       icon: DIAMOND
-      name: "&bTier 3 - Expert"
+      name: "<#7dd3fc>Tier 3 - Expert</#7dd3fc>"
     TIER_4:
       slot: 16
       icon: NETHERITE_INGOT
-      name: "&5Tier 4 - Master"
+      name: "<#c084fc>Tier 4 - Master</#c084fc>"
     TIER_5:
       slot: 28
       icon: DRAGON_HEAD
-      name: "&6Tier 5 - Mythic"
+      name: "<gradient:#f59e0b:#ef4444>Tier 5 - Mythic</gradient>"
 
 layout:
   filler-material: BLACK_STAINED_GLASS_PANE

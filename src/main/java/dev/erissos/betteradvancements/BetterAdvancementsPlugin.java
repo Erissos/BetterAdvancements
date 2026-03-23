@@ -5,6 +5,7 @@ import dev.erissos.betteradvancements.command.BetterAdvancementsCommand;
 import dev.erissos.betteradvancements.config.ConfigManager;
 import dev.erissos.betteradvancements.data.PlayerDataManager;
 import dev.erissos.betteradvancements.gui.GUIManager;
+import dev.erissos.betteradvancements.integration.PlaceholderHook;
 import dev.erissos.betteradvancements.integration.VaultHook;
 import dev.erissos.betteradvancements.lang.LanguageManager;
 import dev.erissos.betteradvancements.listener.AdvancementListener;
@@ -22,6 +23,7 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
     private ConfigManager configManager;
     private LanguageManager languageManager;
     private PlayerDataManager playerDataManager;
+    private PlaceholderHook placeholderHook;
     private VaultHook vaultHook;
     private AchievementManager achievementManager;
     private ChallengeManager challengeManager;
@@ -36,12 +38,12 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
         this.configManager = new ConfigManager(this);
         this.configManager.bootstrap();
 
-        this.languageManager = new LanguageManager(this, configManager);
-        this.languageManager.load();
-
+        this.placeholderHook = new PlaceholderHook();
         this.vaultHook = new VaultHook(this);
         this.playerDataManager = new PlayerDataManager(this, configManager);
         this.playerDataManager.start();
+        this.languageManager = new LanguageManager(this, configManager, placeholderHook);
+        this.languageManager.load();
 
         this.achievementManager = new AchievementManager(this, configManager, playerDataManager, languageManager, vaultHook);
         this.challengeManager = new ChallengeManager(this, configManager, playerDataManager);
@@ -95,5 +97,9 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
     public PlayerDataManager getPlayerDataManager() {
         return playerDataManager;
+    }
+
+    public PlaceholderHook getPlaceholderHook() {
+        return placeholderHook;
     }
 }

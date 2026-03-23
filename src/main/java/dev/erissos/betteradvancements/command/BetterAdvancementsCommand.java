@@ -39,13 +39,11 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        String locale = sender instanceof Player player
-                ? playerDataManager.getOrCreate(player.getUniqueId()).getLanguage()
-                : languageManager.getDefaultLanguage();
+        String locale = languageManager.getLocale(sender);
 
         if (args.length == 0 || args[0].equalsIgnoreCase("menu")) {
             if (!(sender instanceof Player player)) {
-                sender.sendMessage("This command is player-only.");
+                sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
                 return true;
             }
             guiManager.openMainMenu(player);
@@ -71,22 +69,22 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                 }
                 String requested = args[1].toLowerCase(Locale.ROOT);
                 if (!languageManager.hasLanguage(requested)) {
-                    sender.sendMessage(languageManager.format(locale, "command.invalid-language", Map.of("language", requested)));
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.invalid-language", Map.of("language", requested)));
                     return true;
                 }
                 playerDataManager.getOrCreate(player.getUniqueId()).setLanguage(requested);
                 playerDataManager.saveProfile(player.getUniqueId());
-                sender.sendMessage(languageManager.format(requested, "command.language-set", Map.of("language", requested)));
+                sender.sendMessage(languageManager.getComponent(sender, requested, "command.language-set", Map.of("language", requested)));
                 return true;
             }
             case "reload" -> {
                 if (!sender.hasPermission("ba.admin")) {
-                    sender.sendMessage(languageManager.format(locale, "command.no-permission", Map.of()));
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.no-permission", Map.of()));
                     return true;
                 }
                 plugin.reloadPlugin();
                 leaderboardManager.refresh();
-                sender.sendMessage(languageManager.format(locale, "command.reload", Map.of()));
+                sender.sendMessage(languageManager.getComponent(sender, locale, "command.reload", Map.of()));
                 return true;
             }
             case "give" -> {
@@ -95,11 +93,11 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                 }
                 Player target = Bukkit.getPlayerExact(args[1]);
                 if (target == null) {
-                    sender.sendMessage(languageManager.format(locale, "command.player-not-found", Map.of("player", args[1])));
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-not-found", Map.of("player", args[1])));
                     return true;
                 }
                 boolean result = achievementManager.forceGrant(target.getUniqueId(), args[2]);
-                sender.sendMessage(languageManager.format(locale, result ? "command.give-success" : "command.give-failed", Map.of("player", target.getName(), "achievement", args[2])));
+                sender.sendMessage(languageManager.getComponent(sender, locale, result ? "command.give-success" : "command.give-failed", Map.of("player", target.getName(), "achievement", args[2])));
                 return true;
             }
             case "reset" -> {
@@ -108,16 +106,16 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                 }
                 Player target = Bukkit.getPlayerExact(args[1]);
                 if (target == null) {
-                    sender.sendMessage(languageManager.format(locale, "command.player-not-found", Map.of("player", args[1])));
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-not-found", Map.of("player", args[1])));
                     return true;
                 }
                 playerDataManager.resetProfile(target.getUniqueId());
                 playerDataManager.loadProfile(target);
-                sender.sendMessage(languageManager.format(locale, "command.reset", Map.of("player", target.getName())));
+                sender.sendMessage(languageManager.getComponent(sender, locale, "command.reset", Map.of("player", target.getName())));
                 return true;
             }
             default -> {
-                sender.sendMessage(languageManager.format(locale, "command.usage", Map.of()));
+                sender.sendMessage(languageManager.getComponent(sender, locale, "command.usage", Map.of()));
                 return true;
             }
         }

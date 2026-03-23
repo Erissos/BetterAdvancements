@@ -256,7 +256,7 @@ public final class AchievementManager {
         profile.incrementSessionCompletions();
         profile.addPoints(advancement.points());
         applyRewards(player, profile, advancement);
-        plugin.getNotificationManager().notifyCompletion(player, advancement, languageManager, profile.getLanguage());
+        plugin.getNotificationManager().notifyCompletion(player, advancement, profile.getLanguage());
     }
 
     private void applyRewards(Player player, PlayerProfile profile, BetterAdvancement advancement) {

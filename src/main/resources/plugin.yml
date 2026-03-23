@@ -1,10 +1,10 @@
 name: BetterAdvancements
-version: ${project.version}
+version: ${version}
 main: dev.erissos.betteradvancements.BetterAdvancementsPlugin
 api-version: '1.20'
 authors: [Erissos]
 description: Premium configurable advancement framework with GUI, rewards, challenges and leaderboards.
-softdepend: [Vault]
+softdepend: [Vault, PlaceholderAPI]
 commands:
   ba:
     description: Better Advancements main command

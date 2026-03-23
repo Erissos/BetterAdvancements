@@ -11,8 +11,9 @@ Better Advancements is a configurable Paper and Spigot progression plugin for Mi
 - Vault-compatible economy rewards
 - Daily and weekly challenges
 - Hidden achievements and advancement point currency
-- Multi-language message packs: EN, TR, RU, DE, ES, IT, FR, SK, CS, ZH, RO
+- Multi-language MiniMessage packs: EN, TR, RU, DE, ES, IT, FR, SK, CS, ZH, RO
 - Public service API registered through Bukkit ServicesManager
+- PlaceholderAPI-aware message rendering for player-facing texts
 
 ## Commands
 
@@ -37,17 +38,18 @@ All bundled defaults live under src/main/resources and are copied into the plugi
 
 ## Build
 
-This is a Maven project targeting Java 17.
+This is a Gradle project targeting Java 17.
 
 Typical build command:
 
 ```powershell
-mvn -DskipTests package
+gradle build
 ```
 
-If Maven is not installed on the host machine, install Maven first or build inside an IDE with Maven support enabled.
+If Gradle is not installed on the host machine, install Gradle first or build inside an IDE with Gradle support enabled.
 
 ## Notes
 
 - The default GUI and advancement graph are intentionally data-driven so server owners can replace titles, rewards, icons and dependency chains without touching Java code.
 - Vault integration is optional and activates automatically when Vault and an economy provider are present.
+- PlaceholderAPI integration is optional and automatically resolves placeholders in player-facing MiniMessage strings when the plugin is installed.

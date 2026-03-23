@@ -6,11 +6,13 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.List;
 
 public final class ItemUtils {
+
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     private ItemUtils() {
     }
@@ -25,7 +27,7 @@ public final class ItemUtils {
                 meta.lore(lore.stream().map(ItemUtils::component).toList());
             }
             if (glow) {
-                meta.addEnchant(Enchantment.UNBREAKING, 1, true);
+                meta.addEnchant(Enchantment.DURABILITY, 1, true);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
             itemStack.setItemMeta(meta);
@@ -34,10 +36,10 @@ public final class ItemUtils {
     }
 
     public static String colorize(String value) {
-        return value == null ? "" : value.replace('&', '§');
+        return value == null ? "" : value;
     }
 
     public static Component component(String value) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(value == null ? "" : value);
+        return MINI_MESSAGE.deserialize(value == null ? "" : value);
     }
 }

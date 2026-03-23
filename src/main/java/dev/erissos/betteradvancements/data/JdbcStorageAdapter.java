@@ -37,10 +37,12 @@ public final class JdbcStorageAdapter implements StorageAdapter {
         HikariConfig hikariConfig = new HikariConfig();
         String type = config.getString("storage.type", "sqlite");
         if ("mysql".equalsIgnoreCase(type)) {
+            loadDriver("com.mysql.cj.jdbc.Driver");
             hikariConfig.setJdbcUrl("jdbc:mysql://" + config.getString("storage.mysql.host") + ":" + config.getInt("storage.mysql.port") + "/" + config.getString("storage.mysql.database") + "?useSSL=false&characterEncoding=utf8");
             hikariConfig.setUsername(config.getString("storage.mysql.username"));
             hikariConfig.setPassword(config.getString("storage.mysql.password"));
         } else {
+            loadDriver("org.sqlite.JDBC");
             File databaseFile = new File(dataFolder, config.getString("storage.sqlite.file", "data.db"));
             hikariConfig.setJdbcUrl("jdbc:sqlite:" + databaseFile.getAbsolutePath());
         }
@@ -200,6 +202,14 @@ public final class JdbcStorageAdapter implements StorageAdapter {
     public void close() {
         if (dataSource != null) {
             dataSource.close();
+        }
+    }
+
+    private void loadDriver(String driverClassName) {
+        try {
+            Class.forName(driverClassName);
+        } catch (ClassNotFoundException exception) {
+            throw new IllegalStateException("Missing JDBC driver: " + driverClassName, exception);
         }
     }
 }

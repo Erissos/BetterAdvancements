@@ -4,13 +4,10 @@ import dev.erissos.betteradvancements.BetterAdvancementsPlugin;
 import dev.erissos.betteradvancements.config.ConfigManager;
 import dev.erissos.betteradvancements.lang.LanguageManager;
 import dev.erissos.betteradvancements.model.BetterAdvancement;
-import dev.erissos.betteradvancements.util.ItemUtils;
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
@@ -28,7 +25,7 @@ public final class NotificationManager {
         this.languageManager = languageManager;
     }
 
-    public void notifyCompletion(Player player, BetterAdvancement advancement, LanguageManager languageManager, String locale) {
+    public void notifyCompletion(Player player, BetterAdvancement advancement, String locale) {
         Map<String, String> placeholders = Map.of(
                 "title", advancement.title(),
                 "description", advancement.description(),
@@ -37,23 +34,23 @@ public final class NotificationManager {
         );
 
         if (configManager.getMainConfig().getBoolean("notifications.chat", true)) {
-            player.sendMessage(this.languageManager.format(locale, "notifications.chat", placeholders));
+            player.sendMessage(this.languageManager.getComponent(player, locale, "notifications.chat", placeholders));
         }
         if (configManager.getMainConfig().getBoolean("notifications.title", true)) {
             player.showTitle(Title.title(
-                    ItemUtils.component(this.languageManager.format(locale, "notifications.title-main", placeholders)),
-                    ItemUtils.component(this.languageManager.format(locale, "notifications.title-sub", placeholders)),
+                    this.languageManager.getComponent(player, locale, "notifications.title-main", placeholders),
+                    this.languageManager.getComponent(player, locale, "notifications.title-sub", placeholders),
                     Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(3), Duration.ofSeconds(1))
             ));
         }
         if (configManager.getMainConfig().getBoolean("notifications.action-bar", true)) {
-            player.sendActionBar(ItemUtils.component(this.languageManager.format(locale, "notifications.action-bar-message", placeholders)));
+            player.sendActionBar(this.languageManager.getComponent(player, locale, "notifications.action-bar-message", placeholders));
         }
         if (configManager.getMainConfig().getBoolean("notifications.boss-bar", true)) {
-            BossBar bossBar = Bukkit.createBossBar(this.languageManager.format(locale, "notifications.boss-bar-message", placeholders), BarColor.GREEN, BarStyle.SOLID);
-            bossBar.addPlayer(player);
-            bossBar.setProgress(1.0D);
-            Bukkit.getScheduler().runTaskLater(plugin, bossBar::removeAll, 80L);
+            Component bossBarTitle = this.languageManager.getComponent(player, locale, "notifications.boss-bar-message", placeholders);
+            BossBar bossBar = BossBar.bossBar(bossBarTitle, 1.0F, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
+            player.showBossBar(bossBar);
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> player.hideBossBar(bossBar), 80L);
         }
         String soundName = configManager.getMainConfig().getString("notifications.sound", "UI_TOAST_CHALLENGE_COMPLETE");
         try {
