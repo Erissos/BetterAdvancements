@@ -1,0 +1,16 @@
+command:
+  no-permission: "&cNemáš oprávnění použít tento příkaz."
+  reload: "&aBetter Advancements byl úspěšně znovu načten."
+  invalid-language: "&cJazyk {language} není dostupný."
+  language-set: "&aTvůj jazyk byl nastaven na {language}."
+  player-not-found: "&cHráč {player} není online."
+  give-success: "&a{achievement} byl udělen hráči {player}."
+  give-failed: "&cNepodařilo se udělit {achievement} hráči {player}."
+  reset: "&eData Better Advancements pro {player} byla resetována."
+  usage: "&7Použití: /ba <menu|stats|leaderboard|language|reload|give|reset>"
+notifications:
+  chat: "&6[Postup] &f{title} &8- &7{description}"
+  title-main: "&6{title}"
+  title-sub: "&fTier {tier} odemčen"
+  action-bar-message: "&a+{points} bodů úspěchů"
+  boss-bar-message: "&eDokončeno: {title}"

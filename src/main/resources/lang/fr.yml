@@ -1,0 +1,16 @@
+command:
+  no-permission: "&cVous n'avez pas la permission d'utiliser cette commande."
+  reload: "&aBetter Advancements a été rechargé avec succès."
+  invalid-language: "&cLa langue {language} n'est pas disponible."
+  language-set: "&aVotre langue est maintenant {language}."
+  player-not-found: "&cLe joueur {player} n'est pas en ligne."
+  give-success: "&a{achievement} a été donné à {player}."
+  give-failed: "&cImpossible de donner {achievement} à {player}."
+  reset: "&eLes données Better Advancements de {player} ont été réinitialisées."
+  usage: "&7Utilisation: /ba <menu|stats|leaderboard|language|reload|give|reset>"
+notifications:
+  chat: "&6[Succès] &f{title} &8- &7{description}"
+  title-main: "&6{title}"
+  title-sub: "&fPalier {tier} débloqué"
+  action-bar-message: "&a+{points} points de succès"
+  boss-bar-message: "&eTerminé: {title}"

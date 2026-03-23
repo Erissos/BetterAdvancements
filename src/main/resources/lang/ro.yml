@@ -1,0 +1,16 @@
+command:
+  no-permission: "&cNu ai permisiunea să folosești această comandă."
+  reload: "&aBetter Advancements a fost reîncărcat cu succes."
+  invalid-language: "&cLimba {language} nu este disponibilă."
+  language-set: "&aLimba ta a fost setată la {language}."
+  player-not-found: "&cJucătorul {player} nu este online."
+  give-success: "&a{achievement} a fost acordat lui {player}."
+  give-failed: "&c{achievement} nu a putut fi acordat lui {player}."
+  reset: "&eDatele Better Advancements pentru {player} au fost resetate."
+  usage: "&7Utilizare: /ba <menu|stats|leaderboard|language|reload|give|reset>"
+notifications:
+  chat: "&6[Realizare] &f{title} &8- &7{description}"
+  title-main: "&6{title}"
+  title-sub: "&fTier {tier} deblocat"
+  action-bar-message: "&a+{points} puncte de realizare"
+  boss-bar-message: "&eCompletat: {title}"

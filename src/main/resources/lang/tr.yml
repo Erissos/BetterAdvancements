@@ -1,0 +1,16 @@
+command:
+  no-permission: "&cBu komutu kullanma iznin yok."
+  reload: "&aBetter Advancements yeniden yüklendi."
+  invalid-language: "&c{language} dili kullanılamıyor."
+  language-set: "&aDil seçimin {language} olarak ayarlandı."
+  player-not-found: "&c{player} çevrimiçi değil."
+  give-success: "&a{achievement}, {player} oyuncusuna verildi."
+  give-failed: "&c{achievement}, {player} oyuncusuna verilemedi."
+  reset: "&e{player} için Better Advancements verileri sıfırlandı."
+  usage: "&7Kullanım: /ba <menu|stats|leaderboard|language|reload|give|reset>"
+notifications:
+  chat: "&6[Başarım] &f{title} &8- &7{description}"
+  title-main: "&6{title}"
+  title-sub: "&fKademe {tier} tamamlandı"
+  action-bar-message: "&a+{points} başarım puanı"
+  boss-bar-message: "&eTamamlandı: {title}"

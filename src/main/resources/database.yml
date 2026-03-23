@@ -1,0 +1,14 @@
+storage:
+  type: sqlite
+  sqlite:
+    file: better-advancements.db
+  mysql:
+    host: localhost
+    port: 3306
+    database: better_advancements
+    username: root
+    password: password
+
+pool:
+  maximum-size: 8
+  minimum-idle: 2

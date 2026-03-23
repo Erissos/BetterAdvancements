@@ -1,0 +1,16 @@
+command:
+  no-permission: "&c你没有权限使用这个命令。"
+  reload: "&aBetter Advancements 已成功重载。"
+  invalid-language: "&c语言 {language} 不可用。"
+  language-set: "&a你的语言已设置为 {language}。"
+  player-not-found: "&c玩家 {player} 不在线。"
+  give-success: "&a已将 {achievement} 授予 {player}。"
+  give-failed: "&c无法将 {achievement} 授予 {player}。"
+  reset: "&e已重置 {player} 的 Better Advancements 数据。"
+  usage: "&7用法: /ba <menu|stats|leaderboard|language|reload|give|reset>"
+notifications:
+  chat: "&6[成就] &f{title} &8- &7{description}"
+  title-main: "&6{title}"
+  title-sub: "&f已解锁第 {tier} 阶段"
+  action-bar-message: "&a+{points} 成就点"
+  boss-bar-message: "&e已完成: {title}"

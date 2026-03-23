@@ -1,0 +1,16 @@
+command:
+  no-permission: "&cУ вас нет прав для этой команды."
+  reload: "&aBetter Advancements успешно перезагружен."
+  invalid-language: "&cЯзык {language} недоступен."
+  language-set: "&aВаш язык установлен на {language}."
+  player-not-found: "&cИгрок {player} не в сети."
+  give-success: "&aДостижение {achievement} выдано игроку {player}."
+  give-failed: "&cНе удалось выдать {achievement} игроку {player}."
+  reset: "&eДанные Better Advancements для {player} сброшены."
+  usage: "&7Использование: /ba <menu|stats|leaderboard|language|reload|give|reset>"
+notifications:
+  chat: "&6[Достижение] &f{title} &8- &7{description}"
+  title-main: "&6{title}"
+  title-sub: "&fОткрыт уровень {tier}"
+  action-bar-message: "&a+{points} очков достижений"
+  boss-bar-message: "&eВыполнено: {title}"

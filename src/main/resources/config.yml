@@ -1,0 +1,11 @@
+general:
+  default-language: en
+  cache-save-interval-seconds: 60
+  hidden-achievement-placeholder: "&8???"
+
+notifications:
+  chat: true
+  title: true
+  action-bar: true
+  boss-bar: true
+  sound: UI_TOAST_CHALLENGE_COMPLETE
