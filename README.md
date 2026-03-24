@@ -102,8 +102,9 @@ Pratikte bu proje Paper odaklı derlenmiştir. Spigot uyumluluğu hedeflenmiş o
 2. Dosyayı sunucunuzun plugins klasörüne yerleştirin.
 3. İsteğe bağlı olarak Vault ve PlaceholderAPI'yi de plugins klasörüne koyun.
 4. Sunucuyu başlatın.
-5. İlk açılıştan sonra oluşan BetterAdvancements klasöründeki yapılandırmaları düzenleyin.
-6. Gerekirse sunucuyu yeniden başlatın veya /ba reload kullanın.
+5. İlk açılışta sunucu, plugin.yml içinde tanımlı JDBC kütüphanelerini Maven Central üzerinden otomatik indirir.
+6. İlk açılıştan sonra oluşan BetterAdvancements klasöründeki yapılandırmaları düzenleyin.
+7. Gerekirse sunucuyu yeniden başlatın veya /ba reload kullanın.
 
 ### Kaynaktan çalıştırma
 
@@ -111,6 +112,7 @@ Pratikte bu proje Paper odaklı derlenmiştir. Spigot uyumluluğu hedeflenmiş o
 2. Java 17 kurulu olduğundan emin olun.
 3. Gradle wrapper ile build alın.
 4. Oluşan JAR dosyasını plugins klasörüne kopyalayın.
+5. İlk sunucu açılışında HikariCP, SQLite JDBC ve MySQL Connector/J otomatik indirilir; bu nedenle build çıktısı fat jar yerine ince bir plugin jar olarak üretilir.
 
 ## İlk Açılışta Ne Olur
 
