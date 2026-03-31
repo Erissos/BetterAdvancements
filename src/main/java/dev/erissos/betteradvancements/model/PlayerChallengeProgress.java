@@ -7,6 +7,7 @@ public final class PlayerChallengeProgress {
     private int progress;
     private boolean completed;
     private Instant completedAt;
+    private String completedCycleKey;
 
     public int getProgress() {
         return progress;
@@ -25,7 +26,26 @@ public final class PlayerChallengeProgress {
         this.completedAt = Instant.now();
     }
 
+    public void complete(String cycleKey) {
+        complete();
+        this.completedCycleKey = cycleKey;
+    }
+
+    public void reset() {
+        this.progress = 0;
+        this.completed = false;
+        this.completedAt = null;
+    }
+
     public Instant getCompletedAt() {
         return completedAt;
+    }
+
+    public String getCompletedCycleKey() {
+        return completedCycleKey;
+    }
+
+    public void setCompletedCycleKey(String completedCycleKey) {
+        this.completedCycleKey = completedCycleKey;
     }
 }

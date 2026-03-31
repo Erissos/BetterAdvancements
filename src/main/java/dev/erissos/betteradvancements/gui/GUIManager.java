@@ -751,63 +751,68 @@ public final class GUIManager implements Listener {
                 .map(id -> achievementManager.getAdvancement(id)
                         .map(BetterAdvancement::title)
                         .orElse(capitalize(id)))
-                .reduce((left, right) -> left + ", " + right)
-                .orElse("-");
+            .reduce((left, right) -> left + text("texts.general.list-separator") + right)
+            .orElse(text("texts.general.none"));
     }
 
     private String formatObjective(BetterAdvancement advancement) {
         Map<String, String> conditions = advancement.trigger().conditions();
         String subject = switch (advancement.trigger().type()) {
-            case BLOCK_BREAK -> capitalize(conditions.getOrDefault("material", "Blocks"));
-            case ITEM_CRAFT, ITEM_CONSUME, SMELT -> capitalize(conditions.getOrDefault("item", "Items"));
-            case MOB_KILL, PLAYER_KILL, BREED, TAME -> capitalize(conditions.getOrDefault("entity", "Targets"));
-            case EXPLORE_BIOME -> capitalize(conditions.getOrDefault("biome", "Biomes"));
-            case COMMAND -> "/" + conditions.getOrDefault("command", "command");
-            case JOIN -> "server joins";
-            case DISTANCE_WALK -> "blocks travelled";
-            case FISH -> "fish caught";
-            case ENCHANT -> "enchantments made";
-            case PLAYTIME -> "minutes played";
-            case CUSTOM -> "custom objective";
+            case BLOCK_BREAK -> capitalize(conditions.getOrDefault("material", text("texts.objective.subject-default.blocks")));
+            case ITEM_CRAFT, ITEM_CONSUME, SMELT -> capitalize(conditions.getOrDefault("item", text("texts.objective.subject-default.items")));
+            case MOB_KILL, PLAYER_KILL, BREED, TAME -> capitalize(conditions.getOrDefault("entity", text("texts.objective.subject-default.targets")));
+            case EXPLORE_BIOME -> capitalize(conditions.getOrDefault("biome", text("texts.objective.subject-default.biomes")));
+            case COMMAND -> "/" + conditions.getOrDefault("command", text("texts.objective.subject-default.command"));
+            case JOIN -> text("texts.objective.subject-default.server-joins");
+            case DISTANCE_WALK -> text("texts.objective.subject-default.blocks-travelled");
+            case FISH -> text("texts.objective.subject-default.fish-caught");
+            case ENCHANT -> text("texts.objective.subject-default.enchants");
+            case PLAYTIME -> text("texts.objective.subject-default.minutes-played");
+            case CUSTOM -> text("texts.objective.subject-default.custom");
         };
 
         return switch (advancement.trigger().type()) {
-            case JOIN -> "Join the server";
-            case BLOCK_BREAK -> "Break " + advancement.trigger().target() + " " + subject;
-            case ITEM_CRAFT -> "Craft " + advancement.trigger().target() + " " + subject;
-            case MOB_KILL -> "Defeat " + advancement.trigger().target() + " " + subject;
-            case PLAYER_KILL -> "Defeat " + advancement.trigger().target() + " player" + (advancement.trigger().target() == 1 ? "" : "s");
-            case EXPLORE_BIOME -> "Discover " + subject;
-            case DISTANCE_WALK -> "Travel " + advancement.trigger().target() + " blocks";
-            case FISH -> "Catch " + advancement.trigger().target() + " fish";
-            case ENCHANT -> "Enchant " + advancement.trigger().target() + " item" + (advancement.trigger().target() == 1 ? "" : "s");
-            case SMELT -> "Smelt " + advancement.trigger().target() + " " + subject;
-            case BREED -> "Breed " + advancement.trigger().target() + " " + subject;
-            case TAME -> "Tame " + advancement.trigger().target() + " " + subject;
-            case PLAYTIME -> "Play for " + advancement.trigger().target() + " minutes";
-            case ITEM_CONSUME -> "Consume " + advancement.trigger().target() + " " + subject;
-            case COMMAND -> "Use " + subject;
-            case CUSTOM -> "Reach target: " + advancement.trigger().target();
+            case JOIN -> text("texts.objective.templates.join");
+            case BLOCK_BREAK -> text("texts.objective.templates.break", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case ITEM_CRAFT -> text("texts.objective.templates.craft", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case MOB_KILL -> text("texts.objective.templates.defeat", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case PLAYER_KILL -> text(advancement.trigger().target() == 1 ? "texts.objective.templates.defeat-player-single" : "texts.objective.templates.defeat-player-multi", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case EXPLORE_BIOME -> text("texts.objective.templates.discover", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case DISTANCE_WALK -> text("texts.objective.templates.travel", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case FISH -> text("texts.objective.templates.fish", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case ENCHANT -> text(advancement.trigger().target() == 1 ? "texts.objective.templates.enchant-single" : "texts.objective.templates.enchant-multi", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case SMELT -> text("texts.objective.templates.smelt", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case BREED -> text("texts.objective.templates.breed", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case TAME -> text("texts.objective.templates.tame", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case PLAYTIME -> text("texts.objective.templates.playtime", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case ITEM_CONSUME -> text("texts.objective.templates.consume", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case COMMAND -> text("texts.objective.templates.command", placeholders("target", advancement.trigger().target(), "subject", subject));
+            case CUSTOM -> text("texts.objective.templates.custom", placeholders("target", advancement.trigger().target(), "subject", subject));
         };
     }
 
     private String formatRewards(BetterAdvancement advancement) {
         if (advancement.rewards().isEmpty()) {
-            return "No extra reward";
+            return text("texts.rewards.none");
         }
         return advancement.rewards().stream()
                 .map(this::formatReward)
-                .reduce((left, right) -> left + ", " + right)
-                .orElse("No extra reward");
+                .reduce((left, right) -> left + text("texts.general.list-separator") + right)
+                .orElse(text("texts.rewards.none"));
     }
 
     private String formatReward(RewardDefinition reward) {
         return switch (reward.type()) {
-            case POINTS -> reward.amount() + " points";
-            case XP -> reward.amount() + " XP";
-            case MONEY -> "$" + reward.amount();
-            case ITEM -> reward.amount() + "x " + capitalize(reward.value());
-            case COMMAND -> reward.value().isBlank() ? "Command reward" : "Command: /" + reward.value();
+            case POINTS -> text("texts.rewards.templates.points", placeholders("amount", reward.amount(), "value", reward.value()));
+            case XP -> text("texts.rewards.templates.xp", placeholders("amount", reward.amount(), "value", reward.value()));
+            case MONEY -> text("texts.rewards.templates.money", placeholders("amount", reward.amount(), "value", reward.value()));
+            case ITEM -> text("texts.rewards.templates.item", placeholders("amount", reward.amount(), "value", capitalize(reward.value())));
+            case COMMAND -> reward.value().isBlank()
+                    ? text("texts.rewards.templates.command-empty", placeholders("amount", reward.amount(), "value", reward.value()))
+                    : text("texts.rewards.templates.command", placeholders("amount", reward.amount(), "value", reward.value()));
+            case BROADCAST -> text("texts.rewards.templates.broadcast", placeholders("amount", reward.amount(), "value", reward.value()));
+            case TITLE -> text("texts.rewards.templates.title", placeholders("amount", reward.amount(), "value", reward.value()));
+            case SOUND -> text("texts.rewards.templates.sound", placeholders("amount", reward.amount(), "value", reward.value()));
         };
     }
 
@@ -841,7 +846,7 @@ public final class GUIManager implements Listener {
     }
 
     private String formatTierName(Tier tier) {
-        return tier == null ? "Unknown" : tier.getDisplayKey();
+        return tier == null ? text("texts.general.unknown") : tier.getDisplayKey();
     }
 
     private int mainTierSlot(Tier tier) {
@@ -910,7 +915,7 @@ public final class GUIManager implements Listener {
 
     private String capitalize(String value) {
         if (value == null || value.isEmpty()) {
-            return "Unknown";
+            return text("texts.general.unknown");
         }
         String[] parts = value.replace('_', ' ').toLowerCase(Locale.ROOT).trim().split("\\s+");
         StringBuilder builder = new StringBuilder();
@@ -923,7 +928,7 @@ public final class GUIManager implements Listener {
             }
             builder.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
         }
-        return builder.isEmpty() ? "Unknown" : builder.toString();
+        return builder.isEmpty() ? text("texts.general.unknown") : builder.toString();
     }
 
     private String text(String path) {

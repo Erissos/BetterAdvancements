@@ -6,7 +6,10 @@ import dev.erissos.betteradvancements.data.PlayerDataManager;
 import dev.erissos.betteradvancements.gui.GUIManager;
 import dev.erissos.betteradvancements.lang.LanguageManager;
 import dev.erissos.betteradvancements.manager.AchievementManager;
+import dev.erissos.betteradvancements.manager.ChallengeManager;
 import dev.erissos.betteradvancements.manager.LeaderboardManager;
+import dev.erissos.betteradvancements.manager.SeasonManager;
+import dev.erissos.betteradvancements.model.ChallengeDefinition;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,24 +25,35 @@ import java.util.Map;
 public final class BetterAdvancementsCommand implements CommandExecutor, TabCompleter {
 
     private final BetterAdvancementsPlugin plugin;
+    private final ConfigManager configManager;
     private final AchievementManager achievementManager;
     private final PlayerDataManager playerDataManager;
     private final GUIManager guiManager;
     private final LeaderboardManager leaderboardManager;
     private final LanguageManager languageManager;
+    private final ChallengeManager challengeManager;
+    private final SeasonManager seasonManager;
 
-    public BetterAdvancementsCommand(BetterAdvancementsPlugin plugin, ConfigManager configManager, AchievementManager achievementManager, PlayerDataManager playerDataManager, GUIManager guiManager, LeaderboardManager leaderboardManager, LanguageManager languageManager) {
+    public BetterAdvancementsCommand(BetterAdvancementsPlugin plugin, ConfigManager configManager, AchievementManager achievementManager, PlayerDataManager playerDataManager, GUIManager guiManager, LeaderboardManager leaderboardManager, LanguageManager languageManager, ChallengeManager challengeManager, SeasonManager seasonManager) {
         this.plugin = plugin;
+        this.configManager = configManager;
         this.achievementManager = achievementManager;
         this.playerDataManager = playerDataManager;
         this.guiManager = guiManager;
         this.leaderboardManager = leaderboardManager;
         this.languageManager = languageManager;
+        this.challengeManager = challengeManager;
+        this.seasonManager = seasonManager;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         String locale = languageManager.getLocale(sender);
+
+        if (sender instanceof Player && !sender.hasPermission("ba.use")) {
+            sender.sendMessage(languageManager.getComponent(sender, locale, "command.no-permission", Map.of()));
+            return true;
+        }
 
         if (args.length == 0 || args[0].equalsIgnoreCase("menu")) {
             if (!(sender instanceof Player player)) {
@@ -52,15 +66,30 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
             case "stats" -> {
-                if (sender instanceof Player player) {
-                    guiManager.openStats(player);
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
+                    return true;
                 }
+                guiManager.openStats(player);
                 return true;
             }
             case "leaderboard" -> {
-                if (sender instanceof Player player) {
-                    guiManager.openLeaderboard(player, args.length > 1 && args[1].equalsIgnoreCase("session"));
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
+                    return true;
                 }
+                if (args.length > 1 && args[1].equalsIgnoreCase("season")) {
+                    int rank = 1;
+                    for (var entry : leaderboardManager.getSeasonLeaderboard(10)) {
+                        sender.sendMessage(languageManager.getComponent(sender, locale, "command.season-leader-line", Map.of(
+                                "rank", String.valueOf(rank++),
+                                "player", entry.name(),
+                                "points", String.valueOf(entry.points())
+                        )));
+                    }
+                    return true;
+                }
+                guiManager.openLeaderboard(player, args.length > 1 && args[1].equalsIgnoreCase("session"));
                 return true;
             }
             case "language" -> {
@@ -87,8 +116,83 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                 sender.sendMessage(languageManager.getComponent(sender, locale, "command.reload", Map.of()));
                 return true;
             }
+            case "season" -> {
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
+                    return true;
+                }
+                var profile = playerDataManager.getOrCreate(player.getUniqueId());
+                if (args.length > 1 && args[1].equalsIgnoreCase("rewards")) {
+                    for (Integer threshold : seasonManager.getRewardThresholds()) {
+                        boolean claimed = profile.getClaimedSeasonRewards().contains(threshold);
+                        String status = languageManager.getMessage(locale, claimed ? "command.status.claimed" : "command.status.available");
+                        sender.sendMessage(languageManager.getComponent(sender, locale, "command.season-reward-line", Map.of(
+                                "threshold", String.valueOf(threshold),
+                                "status", status
+                        )));
+                    }
+                    return true;
+                }
+                sender.sendMessage(languageManager.getComponent(sender, locale, "command.season-info", Map.of(
+                        "season", seasonManager.currentSeasonId(),
+                        "season_points", String.valueOf(profile.getSeasonPoints()),
+                        "points", String.valueOf(profile.getPoints()),
+                        "prestige", String.valueOf(profile.getPrestigeLevel())
+                )));
+                return true;
+            }
+            case "prestige" -> {
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
+                    return true;
+                }
+                var profile = playerDataManager.getOrCreate(player.getUniqueId());
+                int total = achievementManager.getAdvancements().size();
+                int completed = profile.getCompletedAdvancements();
+                if (completed < total) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.prestige-requirements", Map.of(
+                            "completed", String.valueOf(completed),
+                            "total", String.valueOf(total)
+                    )));
+                    return true;
+                }
+
+                profile.incrementPrestige();
+                profile.getAdvancementProgress().clear();
+                if (configManager.getMainConfig().getBoolean("prestige.reset-challenges", true)) {
+                    profile.getChallengeProgress().clear();
+                }
+                int bonusPoints = configManager.getMainConfig().getInt("prestige.bonus-points", 250);
+                profile.addPoints(bonusPoints);
+                profile.addSeasonPoints(bonusPoints);
+                playerDataManager.setLastKnownName(player.getUniqueId(), player.getName());
+                playerDataManager.saveProfile(player.getUniqueId());
+                sender.sendMessage(languageManager.getComponent(sender, locale, "command.prestige-success", Map.of(
+                        "prestige", String.valueOf(profile.getPrestigeLevel())
+                )));
+                return true;
+            }
+            case "challenges" -> {
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
+                    return true;
+                }
+                for (ChallengeDefinition challenge : challengeManager.getActiveChallenges()) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.challenge-line", Map.of(
+                            "title", challenge.title(),
+                            "type", challenge.type().toUpperCase(Locale.ROOT),
+                            "target", String.valueOf(challenge.trigger().target())
+                    )));
+                }
+                return true;
+            }
             case "give" -> {
                 if (!sender.hasPermission("ba.admin") || args.length < 3) {
+                    if (!sender.hasPermission("ba.admin")) {
+                        sender.sendMessage(languageManager.getComponent(sender, locale, "command.no-permission", Map.of()));
+                    } else {
+                        sender.sendMessage(languageManager.getComponent(sender, locale, "command.usage", Map.of()));
+                    }
                     return true;
                 }
                 Player target = Bukkit.getPlayerExact(args[1]);
@@ -102,6 +206,11 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
             }
             case "reset" -> {
                 if (!sender.hasPermission("ba.admin") || args.length < 2) {
+                    if (!sender.hasPermission("ba.admin")) {
+                        sender.sendMessage(languageManager.getComponent(sender, locale, "command.no-permission", Map.of()));
+                    } else {
+                        sender.sendMessage(languageManager.getComponent(sender, locale, "command.usage", Map.of()));
+                    }
                     return true;
                 }
                 Player target = Bukkit.getPlayerExact(args[1]);
@@ -124,13 +233,16 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return List.of("menu", "stats", "leaderboard", "language", "reload", "give", "reset");
+            return List.of("menu", "stats", "leaderboard", "challenges", "season", "prestige", "language", "reload", "give", "reset");
         }
         if (args.length == 2 && (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("reset"))) {
             return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("leaderboard")) {
-            return List.of("global", "session");
+            return List.of("global", "session", "season");
+        }
+        if (args.length == 2 && args[0].equalsIgnoreCase("season")) {
+            return List.of("rewards");
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("language")) {
             return new ArrayList<>(languageManager.getLanguages().keySet());

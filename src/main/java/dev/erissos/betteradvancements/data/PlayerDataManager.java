@@ -2,6 +2,7 @@ package dev.erissos.betteradvancements.data;
 
 import dev.erissos.betteradvancements.BetterAdvancementsPlugin;
 import dev.erissos.betteradvancements.config.ConfigManager;
+import dev.erissos.betteradvancements.manager.SeasonManager;
 import dev.erissos.betteradvancements.model.PlayerProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,14 +23,16 @@ public final class PlayerDataManager {
 
     private final BetterAdvancementsPlugin plugin;
     private final ConfigManager configManager;
+    private final SeasonManager seasonManager;
     private final Map<UUID, PlayerProfile> cache = new ConcurrentHashMap<>();
     private final Map<UUID, String> lastKnownNames = new ConcurrentHashMap<>();
     private final ExecutorService executor = Executors.newFixedThreadPool(2);
     private StorageAdapter storageAdapter;
 
-    public PlayerDataManager(BetterAdvancementsPlugin plugin, ConfigManager configManager) {
+    public PlayerDataManager(BetterAdvancementsPlugin plugin, ConfigManager configManager, SeasonManager seasonManager) {
         this.plugin = plugin;
         this.configManager = configManager;
+        this.seasonManager = seasonManager;
     }
 
     public void start() {
@@ -46,13 +49,16 @@ public final class PlayerDataManager {
                 return created;
             });
             profile.setLastSeen(Instant.now());
+            normalizeSeason(profile);
             cache.put(player.getUniqueId(), profile);
             return profile;
         }, executor);
     }
 
     public PlayerProfile getOrCreate(UUID uniqueId) {
-        return cache.computeIfAbsent(uniqueId, PlayerProfile::new);
+        PlayerProfile profile = cache.computeIfAbsent(uniqueId, PlayerProfile::new);
+        normalizeSeason(profile);
+        return profile;
     }
 
     public Optional<PlayerProfile> getCachedProfile(UUID uniqueId) {
@@ -100,5 +106,14 @@ public final class PlayerDataManager {
         saveAll().join();
         storageAdapter.close();
         executor.shutdown();
+    }
+
+    private void normalizeSeason(PlayerProfile profile) {
+        String currentSeason = seasonManager.currentSeasonId();
+        if (!currentSeason.equals(profile.getSeasonId())) {
+            profile.setSeasonId(currentSeason);
+            profile.setSeasonPoints(0);
+            profile.getClaimedSeasonRewards().clear();
+        }
     }
 }

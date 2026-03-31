@@ -8,7 +8,16 @@ command:
   give-success: "<#50fa7b>Granted <#fda4af><achievement></#fda4af> to <#7dd3fc><player></#7dd3fc>.</#50fa7b>"
   give-failed: "<#ff6b6b>Could not grant <#fda4af><achievement></#fda4af> to <#7dd3fc><player></#7dd3fc>.</#ff6b6b>"
   reset: "<#facc15>Reset Better Advancements data for <#7dd3fc><player></#7dd3fc>.</#facc15>"
-  usage: "<gray>Usage: <#7dd3fc>/ba <white>menu|stats|leaderboard|language|reload|give|reset</white></#7dd3fc></gray>"
+  season-info: "<#7dd3fc>Season <white><season></white> <dark_gray>|</dark_gray> Season Points: <#facc15><season_points></#facc15> <dark_gray>|</dark_gray> Total Points: <#50fa7b><points></#50fa7b> <dark_gray>|</dark_gray> Prestige: <#fda4af><prestige></#fda4af>"
+  challenge-line: "<#f59e0b>[<type>]</#f59e0b> <white><title></white> <dark_gray>(target: <target>)</dark_gray>"
+  season-leader-line: "<#facc15>#<rank></#facc15> <white><player></white> <dark_gray>-</dark_gray> <#7dd3fc><points></#7dd3fc> season points"
+  season-reward-line: "<white>Reward @ <#facc15><threshold></#facc15></white> <dark_gray>-</dark_gray> <#7dd3fc><status></#7dd3fc>"
+  status:
+    claimed: "CLAIMED"
+    available: "AVAILABLE"
+  prestige-requirements: "<#ff6b6b>You need full completion to prestige. <#ffd166><completed>/<total></#ffd166></#ff6b6b>"
+  prestige-success: "<#50fa7b>Prestige upgraded to <#fda4af><prestige></#fda4af>! Progress reset and bonus granted.</#50fa7b>"
+  usage: "<gray>Usage: <#7dd3fc>/ba <white>menu|stats|leaderboard|challenges|season|prestige|language|reload|give|reset</white></#7dd3fc></gray>"
 notifications:
   chat: "<gradient:#f59e0b:#f97316>[Advancement]</gradient> <white><title></white> <dark_gray>•</dark_gray> <gray><description></gray>"
   title-main: "<gradient:#f59e0b:#fb7185><title></gradient>"

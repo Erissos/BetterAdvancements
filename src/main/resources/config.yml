@@ -3,6 +3,17 @@ general:
   cache-save-interval-seconds: 60
   hidden-achievement-placeholder: "<dark_gray>???</dark_gray>"
 
+prestige:
+  bonus-points: 250
+  reset-challenges: true
+
+challenges:
+  broadcast-rotation: true
+
+messages:
+  challenge-rotation-broadcast: "<gradient:#34d399:#60a5fa>[BA]</gradient> <white>Daily/Weekly challenges have rotated.</white>"
+  season-reward-unlocked: "<gradient:#f59e0b:#f97316>[Season]</gradient> <white>Reward unlocked at <#facc15>{threshold}</#facc15> points.</white>"
+
 notifications:
   chat: true
   title: true

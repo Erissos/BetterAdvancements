@@ -10,7 +10,9 @@ public record ChallengeDefinition(
         String description,
         TriggerDefinition trigger,
         int pointsReward,
-        List<RewardDefinition> rewards
+    List<RewardDefinition> rewards,
+    boolean repeatable,
+    String repeatWindow
 ) {
 
     public ChallengeDefinition {

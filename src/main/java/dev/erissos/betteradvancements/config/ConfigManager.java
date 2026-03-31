@@ -20,6 +20,7 @@ public final class ConfigManager {
     private FileConfiguration guiConfig;
     private FileConfiguration achievementsConfig;
     private FileConfiguration challengesConfig;
+    private FileConfiguration seasonConfig;
     private final Map<String, FileConfiguration> languageConfigs = new LinkedHashMap<>();
 
     public ConfigManager(BetterAdvancementsPlugin plugin) {
@@ -32,6 +33,7 @@ public final class ConfigManager {
         ensureResource("gui.yml");
         ensureResource("achievements.yml");
         ensureResource("challenges.yml");
+        ensureResource("season.yml");
 
         File langFolder = new File(plugin.getDataFolder(), "lang");
         if (!langFolder.exists() && !langFolder.mkdirs()) {
@@ -51,6 +53,7 @@ public final class ConfigManager {
         this.guiConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "gui.yml"));
         this.achievementsConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "achievements.yml"));
         this.challengesConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "challenges.yml"));
+        this.seasonConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "season.yml"));
         this.languageConfigs.clear();
         File langFolder = new File(plugin.getDataFolder(), "lang");
         File[] files = langFolder.listFiles((dir, name) -> name.endsWith(".yml"));
@@ -101,6 +104,10 @@ public final class ConfigManager {
 
     public FileConfiguration getChallengesConfig() {
         return challengesConfig;
+    }
+
+    public FileConfiguration getSeasonConfig() {
+        return seasonConfig;
     }
 
     public Map<String, FileConfiguration> getLanguageConfigs() {

@@ -39,14 +39,16 @@ public final class AchievementManager {
     private final PlayerDataManager playerDataManager;
     private final LanguageManager languageManager;
     private final VaultHook vaultHook;
+    private final SeasonManager seasonManager;
     private final Map<String, BetterAdvancement> advancements = new ConcurrentHashMap<>();
 
-    public AchievementManager(BetterAdvancementsPlugin plugin, ConfigManager configManager, PlayerDataManager playerDataManager, LanguageManager languageManager, VaultHook vaultHook) {
+    public AchievementManager(BetterAdvancementsPlugin plugin, ConfigManager configManager, PlayerDataManager playerDataManager, LanguageManager languageManager, VaultHook vaultHook, SeasonManager seasonManager) {
         this.plugin = plugin;
         this.configManager = configManager;
         this.playerDataManager = playerDataManager;
         this.languageManager = languageManager;
         this.vaultHook = vaultHook;
+        this.seasonManager = seasonManager;
     }
 
     public void load() {
@@ -255,6 +257,7 @@ public final class AchievementManager {
         progress.complete();
         profile.incrementSessionCompletions();
         profile.addPoints(advancement.points());
+        seasonManager.addSeasonPoints(player, profile, advancement.points());
         applyRewards(player, profile, advancement);
         plugin.getNotificationManager().notifyCompletion(player, advancement, profile.getLanguage());
     }
@@ -270,6 +273,24 @@ public final class AchievementManager {
                     Material material = Material.matchMaterial(reward.value());
                     if (material != null) {
                         player.getInventory().addItem(new ItemStack(material, Math.max(1, reward.amount())));
+                    }
+                }
+                case BROADCAST -> Bukkit.broadcast(dev.erissos.betteradvancements.util.ItemUtils.component(
+                        reward.value().replace("{player}", player.getName())
+                ));
+                case TITLE -> {
+                    String[] titleParts = reward.value().split("\\|", 2);
+                    String mainTitle = titleParts.length > 0 ? titleParts[0] : "";
+                    String subTitle = titleParts.length > 1 ? titleParts[1] : "";
+                    player.showTitle(net.kyori.adventure.title.Title.title(
+                        dev.erissos.betteradvancements.util.ItemUtils.component(mainTitle.replace("{player}", player.getName())),
+                        dev.erissos.betteradvancements.util.ItemUtils.component(subTitle.replace("{player}", player.getName()))
+                    ));
+                }
+                case SOUND -> {
+                    try {
+                        player.playSound(player.getLocation(), org.bukkit.Sound.valueOf(reward.value().toUpperCase(Locale.ROOT)), 1.0F, 1.0F);
+                    } catch (IllegalArgumentException ignored) {
                     }
                 }
             }

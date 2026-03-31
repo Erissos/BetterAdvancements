@@ -5,6 +5,7 @@ import dev.erissos.betteradvancements.command.BetterAdvancementsCommand;
 import dev.erissos.betteradvancements.config.ConfigManager;
 import dev.erissos.betteradvancements.data.PlayerDataManager;
 import dev.erissos.betteradvancements.gui.GUIManager;
+import dev.erissos.betteradvancements.integration.BetterAdvancementsExpansion;
 import dev.erissos.betteradvancements.integration.PlaceholderHook;
 import dev.erissos.betteradvancements.integration.VaultHook;
 import dev.erissos.betteradvancements.lang.LanguageManager;
@@ -13,6 +14,7 @@ import dev.erissos.betteradvancements.manager.AchievementManager;
 import dev.erissos.betteradvancements.manager.ChallengeManager;
 import dev.erissos.betteradvancements.manager.LeaderboardManager;
 import dev.erissos.betteradvancements.manager.NotificationManager;
+import dev.erissos.betteradvancements.manager.SeasonManager;
 import dev.erissos.betteradvancements.model.Tier;
 import dev.erissos.betteradvancements.service.BetterAdvancementsService;
 import org.bukkit.Bukkit;
@@ -32,6 +34,8 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
     private NotificationManager notificationManager;
     private GUIManager guiManager;
     private BetterAdvancementsService apiService;
+    private SeasonManager seasonManager;
+    private BetterAdvancementsExpansion placeholderExpansion;
 
     @Override
     public void onEnable() {
@@ -42,13 +46,14 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
         this.placeholderHook = new PlaceholderHook();
         this.vaultHook = new VaultHook(this);
-        this.playerDataManager = new PlayerDataManager(this, configManager);
+        this.seasonManager = new SeasonManager(configManager);
+        this.playerDataManager = new PlayerDataManager(this, configManager, seasonManager);
         this.playerDataManager.start();
         this.languageManager = new LanguageManager(this, configManager, placeholderHook);
         this.languageManager.load();
 
-        this.achievementManager = new AchievementManager(this, configManager, playerDataManager, languageManager, vaultHook);
-        this.challengeManager = new ChallengeManager(this, configManager, playerDataManager);
+        this.achievementManager = new AchievementManager(this, configManager, playerDataManager, languageManager, vaultHook, seasonManager);
+        this.challengeManager = new ChallengeManager(this, configManager, playerDataManager, vaultHook, seasonManager);
         this.leaderboardManager = new LeaderboardManager(this, playerDataManager, achievementManager);
         this.notificationManager = new NotificationManager(this, configManager, languageManager);
         this.guiManager = new GUIManager(this, configManager, achievementManager, challengeManager, leaderboardManager, playerDataManager, languageManager);
@@ -56,12 +61,18 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
         this.achievementManager.load();
         this.challengeManager.load();
+        this.challengeManager.start();
         this.leaderboardManager.start();
+
+        if (placeholderHook.isAvailable()) {
+            this.placeholderExpansion = new BetterAdvancementsExpansion(this, playerDataManager);
+            this.placeholderExpansion.register();
+        }
 
         Bukkit.getPluginManager().registerEvents(new AdvancementListener(this, achievementManager, challengeManager, playerDataManager), this);
         Bukkit.getPluginManager().registerEvents(guiManager, this);
 
-        BetterAdvancementsCommand commandExecutor = new BetterAdvancementsCommand(this, configManager, achievementManager, playerDataManager, guiManager, leaderboardManager, languageManager);
+        BetterAdvancementsCommand commandExecutor = new BetterAdvancementsCommand(this, configManager, achievementManager, playerDataManager, guiManager, leaderboardManager, languageManager, challengeManager, seasonManager);
         PluginCommand command = getCommand("ba");
         if (command != null) {
             command.setExecutor(commandExecutor);
@@ -75,6 +86,12 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
     public void onDisable() {
         if (leaderboardManager != null) {
             leaderboardManager.stop();
+        }
+        if (challengeManager != null) {
+            challengeManager.stop();
+        }
+        if (placeholderExpansion != null) {
+            placeholderExpansion.unregister();
         }
         if (playerDataManager != null) {
             playerDataManager.shutdown();

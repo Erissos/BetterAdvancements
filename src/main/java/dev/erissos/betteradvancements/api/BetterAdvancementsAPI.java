@@ -22,4 +22,6 @@ public interface BetterAdvancementsAPI {
     List<LeaderboardEntry> getGlobalLeaderboard(int limit);
 
     List<LeaderboardEntry> getSessionLeaderboard(int limit);
+
+    List<LeaderboardEntry> getSeasonLeaderboard(int limit);
 }

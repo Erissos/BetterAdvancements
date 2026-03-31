@@ -2,8 +2,10 @@ package dev.erissos.betteradvancements.model;
 
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public final class PlayerProfile {
@@ -11,8 +13,12 @@ public final class PlayerProfile {
     private final UUID uniqueId;
     private String language = "en";
     private int points;
+    private int seasonPoints;
+    private String seasonId = "default";
+    private int prestigeLevel;
     private int sessionCompletions;
     private long sessionJoinMillis = System.currentTimeMillis();
+    private final Set<Integer> claimedSeasonRewards = new HashSet<>();
     private final Map<String, PlayerAchievementProgress> advancementProgress = new HashMap<>();
     private final Map<String, PlayerChallengeProgress> challengeProgress = new HashMap<>();
     private Instant lastSeen = Instant.now();
@@ -43,6 +49,42 @@ public final class PlayerProfile {
 
     public void addPoints(int amount) {
         this.points += amount;
+    }
+
+    public int getSeasonPoints() {
+        return seasonPoints;
+    }
+
+    public void setSeasonPoints(int seasonPoints) {
+        this.seasonPoints = seasonPoints;
+    }
+
+    public void addSeasonPoints(int amount) {
+        this.seasonPoints += amount;
+    }
+
+    public String getSeasonId() {
+        return seasonId;
+    }
+
+    public void setSeasonId(String seasonId) {
+        this.seasonId = seasonId;
+    }
+
+    public int getPrestigeLevel() {
+        return prestigeLevel;
+    }
+
+    public void setPrestigeLevel(int prestigeLevel) {
+        this.prestigeLevel = prestigeLevel;
+    }
+
+    public void incrementPrestige() {
+        this.prestigeLevel++;
+    }
+
+    public Set<Integer> getClaimedSeasonRewards() {
+        return claimedSeasonRewards;
     }
 
     public int getSessionCompletions() {

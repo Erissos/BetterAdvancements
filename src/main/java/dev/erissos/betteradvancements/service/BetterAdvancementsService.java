@@ -54,4 +54,9 @@ public final class BetterAdvancementsService implements BetterAdvancementsAPI {
     public List<LeaderboardEntry> getSessionLeaderboard(int limit) {
         return leaderboardManager.getSessionLeaderboard(limit);
     }
+
+    @Override
+    public List<LeaderboardEntry> getSeasonLeaderboard(int limit) {
+        return leaderboardManager.getSeasonLeaderboard(limit);
+    }
 }

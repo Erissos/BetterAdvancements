@@ -499,3 +499,53 @@ leaderboard:
       lore:
         - "<li><gray>Slots #1-#3 use the podium layout."
         - "<li><gray>Other players appear in the tactical row below."
+
+texts:
+  general:
+    unknown: "Unknown"
+    none: "-"
+    list-separator: ", "
+  objective:
+    subject-default:
+      blocks: "Blocks"
+      items: "Items"
+      targets: "Targets"
+      biomes: "Biomes"
+      command: "command"
+      server-joins: "server joins"
+      blocks-travelled: "blocks travelled"
+      fish-caught: "fish caught"
+      enchants: "enchantments made"
+      minutes-played: "minutes played"
+      custom: "custom objective"
+    templates:
+      join: "Join the server"
+      break: "Break {target} {subject}"
+      craft: "Craft {target} {subject}"
+      defeat: "Defeat {target} {subject}"
+      defeat-player-single: "Defeat {target} player"
+      defeat-player-multi: "Defeat {target} players"
+      discover: "Discover {subject}"
+      travel: "Travel {target} blocks"
+      fish: "Catch {target} fish"
+      enchant-single: "Enchant {target} item"
+      enchant-multi: "Enchant {target} items"
+      smelt: "Smelt {target} {subject}"
+      breed: "Breed {target} {subject}"
+      tame: "Tame {target} {subject}"
+      playtime: "Play for {target} minutes"
+      consume: "Consume {target} {subject}"
+      command: "Use {subject}"
+      custom: "Reach target: {target}"
+  rewards:
+    none: "No extra reward"
+    templates:
+      points: "{amount} points"
+      xp: "{amount} XP"
+      money: "${amount}"
+      item: "{amount}x {value}"
+      command-empty: "Command reward"
+      command: "Command: /{value}"
+      broadcast: "Broadcast"
+      title: "Title"
+      sound: "Sound: {value}"

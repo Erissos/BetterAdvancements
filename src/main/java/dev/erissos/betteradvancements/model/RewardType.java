@@ -5,5 +5,8 @@ public enum RewardType {
     MONEY,
     ITEM,
     XP,
-    POINTS
+    POINTS,
+    BROADCAST,
+    TITLE,
+    SOUND
 }

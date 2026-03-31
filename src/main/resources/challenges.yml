@@ -1,6 +1,8 @@
 challenges:
   daily_lumberjack:
     type: daily
+    repeatable: true
+    repeat-window: daily
     title: "Timber Hour"
     description: "Break 64 oak logs today."
     trigger:
@@ -42,6 +44,8 @@ challenges:
         amount: 10
   weekly_archmage:
     type: weekly
+    repeatable: true
+    repeat-window: weekly
     title: "Arcane Marathon"
     description: "Enchant 20 items this week."
     trigger:
@@ -52,6 +56,9 @@ challenges:
       reward-1:
         type: XP
         amount: 500
+      reward-2:
+        type: SOUND
+        value: ENTITY_PLAYER_LEVELUP
   weekly_pioneer:
     type: weekly
     title: "World Pioneer"
@@ -69,6 +76,8 @@ challenges:
         amount: 8
   weekly_warlord:
     type: weekly
+    repeatable: true
+    repeat-window: weekly
     title: "Arena Week"
     description: "Win 10 PvP fights."
     trigger:
@@ -79,3 +88,6 @@ challenges:
       reward-1:
         type: COMMAND
         value: "say {player} dominated the arena this week!"
+      reward-2:
+        type: BROADCAST
+        value: "<gold>{player}</gold> finished Arena Week!"

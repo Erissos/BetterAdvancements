@@ -1,0 +1,15 @@
+season:
+  mode: monthly
+  timezone: Europe/Istanbul
+  fixed-id: default
+  reward-message: true
+  rewards:
+    "250":
+      commands:
+        - "give {player} emerald 4"
+    "750":
+      commands:
+        - "give {player} diamond 2"
+    "1500":
+      commands:
+        - "say {player} reached 1500 season points!"

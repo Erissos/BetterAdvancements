@@ -20,6 +20,7 @@ public final class LeaderboardManager {
     private final AchievementManager achievementManager;
     private List<LeaderboardEntry> globalLeaderboard = new ArrayList<>();
     private List<LeaderboardEntry> sessionLeaderboard = new ArrayList<>();
+    private List<LeaderboardEntry> seasonLeaderboard = new ArrayList<>();
     private int taskId = -1;
 
     public LeaderboardManager(BetterAdvancementsPlugin plugin, PlayerDataManager playerDataManager, AchievementManager achievementManager) {
@@ -42,6 +43,7 @@ public final class LeaderboardManager {
     public void refresh() {
         playerDataManager.loadAllProfiles().thenAccept(allProfiles -> {
             this.globalLeaderboard = buildEntries(allProfiles);
+            this.seasonLeaderboard = buildSeasonEntries(allProfiles);
             this.sessionLeaderboard = buildEntries(new ArrayList<>(playerDataManager.getCachedProfiles())).stream()
                     .sorted(Comparator.comparingInt(LeaderboardEntry::completed).reversed().thenComparingInt(LeaderboardEntry::points).reversed())
                     .toList();
@@ -54,6 +56,10 @@ public final class LeaderboardManager {
 
     public List<LeaderboardEntry> getSessionLeaderboard(int limit) {
         return sessionLeaderboard.stream().limit(limit).toList();
+    }
+
+    public List<LeaderboardEntry> getSeasonLeaderboard(int limit) {
+        return seasonLeaderboard.stream().limit(limit).toList();
     }
 
     private List<LeaderboardEntry> buildEntries(List<PlayerProfile> profiles) {
@@ -73,6 +79,23 @@ public final class LeaderboardManager {
                         .thenComparingInt(LeaderboardEntry::points).reversed())
                 .toList();
     }
+
+            private List<LeaderboardEntry> buildSeasonEntries(List<PlayerProfile> profiles) {
+            Map<String, BetterAdvancement> registry = achievementManager.getAdvancements().stream()
+                .collect(java.util.stream.Collectors.toMap(BetterAdvancement::id, advancement -> advancement));
+            return profiles.stream()
+                .map(profile -> new LeaderboardEntry(
+                    profile.getUniqueId(),
+                    resolveName(profile.getUniqueId()),
+                    profile.getCompletedAdvancements(),
+                    achievementManager.getProgressPercent(profile),
+                    profile.getSeasonPoints(),
+                    profile.getHighestTierCompleted(registry)
+                ))
+                .sorted(Comparator.comparingInt(LeaderboardEntry::points).reversed()
+                    .thenComparingInt(LeaderboardEntry::completed).reversed())
+                .toList();
+            }
 
     private String resolveName(UUID uniqueId) {
         return Bukkit.getOfflinePlayer(uniqueId).getName() == null ? uniqueId.toString().substring(0, 8) : Bukkit.getOfflinePlayer(uniqueId).getName();

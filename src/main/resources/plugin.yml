@@ -12,7 +12,7 @@ libraries:
 commands:
   ba:
     description: Better Advancements main command
-    usage: /ba <menu|stats|leaderboard|reload|give|reset|language>
+    usage: /ba <menu|stats|leaderboard|challenges|season|prestige|reload|give|reset|language>
     aliases: [betteradvancements]
 permissions:
   ba.use:
