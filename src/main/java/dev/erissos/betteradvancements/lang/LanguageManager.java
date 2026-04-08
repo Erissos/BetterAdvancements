@@ -44,6 +44,18 @@ public final class LanguageManager {
         return languages.containsKey(locale.toLowerCase(Locale.ROOT));
     }
 
+    public String getDisplayName(String locale) {
+        String normalized = locale == null || locale.isBlank()
+                ? defaultLanguage
+                : locale.toLowerCase(Locale.ROOT);
+        Locale displayLocale = Locale.forLanguageTag(normalized.replace('_', '-'));
+        String displayName = displayLocale.getDisplayLanguage(displayLocale);
+        if (displayName == null || displayName.isBlank()) {
+            return normalized.toUpperCase(Locale.ROOT);
+        }
+        return Character.toUpperCase(displayName.charAt(0)) + displayName.substring(1);
+    }
+
     public String getMessage(String locale, String key) {
         String selectedLocale = locale == null ? defaultLanguage : locale.toLowerCase(Locale.ROOT);
         FileConfiguration configuration = languages.get(selectedLocale);

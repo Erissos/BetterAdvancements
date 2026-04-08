@@ -18,6 +18,11 @@ public final class PlayerProfile {
     private int prestigeLevel;
     private int sessionCompletions;
     private long sessionJoinMillis = System.currentTimeMillis();
+    private boolean chatNotificationsEnabled = true;
+    private boolean titleNotificationsEnabled = true;
+    private boolean actionBarNotificationsEnabled = true;
+    private boolean bossBarNotificationsEnabled = true;
+    private boolean soundNotificationsEnabled = true;
     private final Set<Integer> claimedSeasonRewards = new HashSet<>();
     private final Map<String, PlayerAchievementProgress> advancementProgress = new HashMap<>();
     private final Map<String, PlayerChallengeProgress> challengeProgress = new HashMap<>();
@@ -101,6 +106,46 @@ public final class PlayerProfile {
 
     public void setSessionJoinMillis(long sessionJoinMillis) {
         this.sessionJoinMillis = sessionJoinMillis;
+    }
+
+    public boolean isChatNotificationsEnabled() {
+        return chatNotificationsEnabled;
+    }
+
+    public void setChatNotificationsEnabled(boolean chatNotificationsEnabled) {
+        this.chatNotificationsEnabled = chatNotificationsEnabled;
+    }
+
+    public boolean isTitleNotificationsEnabled() {
+        return titleNotificationsEnabled;
+    }
+
+    public void setTitleNotificationsEnabled(boolean titleNotificationsEnabled) {
+        this.titleNotificationsEnabled = titleNotificationsEnabled;
+    }
+
+    public boolean isActionBarNotificationsEnabled() {
+        return actionBarNotificationsEnabled;
+    }
+
+    public void setActionBarNotificationsEnabled(boolean actionBarNotificationsEnabled) {
+        this.actionBarNotificationsEnabled = actionBarNotificationsEnabled;
+    }
+
+    public boolean isBossBarNotificationsEnabled() {
+        return bossBarNotificationsEnabled;
+    }
+
+    public void setBossBarNotificationsEnabled(boolean bossBarNotificationsEnabled) {
+        this.bossBarNotificationsEnabled = bossBarNotificationsEnabled;
+    }
+
+    public boolean isSoundNotificationsEnabled() {
+        return soundNotificationsEnabled;
+    }
+
+    public void setSoundNotificationsEnabled(boolean soundNotificationsEnabled) {
+        this.soundNotificationsEnabled = soundNotificationsEnabled;
     }
 
     public Map<String, PlayerAchievementProgress> getAdvancementProgress() {

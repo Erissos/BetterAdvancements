@@ -157,6 +157,15 @@ public final class GUIManager implements Listener {
                 lines("main.leaderboard.lore"),
                 boolValue("main.leaderboard.glow")
         ));
+        inventory.setItem(intValue("main.categories.slot"), ItemUtils.create(
+            text("main.categories.material"),
+            text("main.categories.title"),
+            lines("main.categories.lore", placeholders(
+                "categories", orderedCategories().size(),
+                "completed", profile.getCompletedAdvancements()
+            )),
+            boolValue("main.categories.glow")
+        ));
         inventory.setItem(intValue("main.season.slot"), ItemUtils.create(
             text("main.season.material"),
             text("main.season.title"),
@@ -178,25 +187,67 @@ public final class GUIManager implements Listener {
             )),
             boolValue("main.prestige.glow")
         ));
-        inventory.setItem(intValue("main.locale.slot"), ItemUtils.create(
-                text("main.locale.material"),
-                text("main.locale.title"),
-                lines("main.locale.lore", placeholders("language", profile.getLanguage().toUpperCase(Locale.ROOT))),
-                boolValue("main.locale.glow")
-        ));
-        inventory.setItem(intValue("main.overview.slot"), ItemUtils.create(
-                text("main.overview.material"),
-                text("main.overview.title"),
-                lines("main.overview.lore", placeholders(
-                        "completed", profile.getCompletedAdvancements(),
-                        "rare", achievementManager.getRareCompletions(profile),
-                        "challenges", challengeManager.getActiveChallenges().size()
+            inventory.setItem(intValue("main.settings.slot"), ItemUtils.create(
+                text("main.settings.material"),
+                text("main.settings.title"),
+                lines("main.settings.lore", placeholders(
+                    "language", languageManager.getDisplayName(profile.getLanguage()),
+                    "chat", settingState(profile.isChatNotificationsEnabled()),
+                    "title_state", settingState(profile.isTitleNotificationsEnabled())
                 )),
-                boolValue("main.overview.glow")
-        ));
+                boolValue("main.settings.glow")
+            ));
 
         player.openInventory(inventory);
     }
+
+            public void openCategoryMenu(Player player) {
+            PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
+            Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.CATEGORY, null, false), MENU_SIZE, ItemUtils.component(text("category-menu.title")));
+
+            paintFrame(inventory, "category-menu.frame");
+            applyFillerGroups(inventory, "category-menu.fillers");
+            fillEmptySlots(inventory, "category-menu.background");
+
+            inventory.setItem(intValue("category-menu.profile.slot"), createPlayerHeadCard(
+                player.getUniqueId(),
+                text("category-menu.profile.title"),
+                lines("category-menu.profile.lore", placeholders(
+                    "categories", orderedCategories().size(),
+                    "completed", profile.getCompletedAdvancements(),
+                    "total", achievementManager.getAdvancements().size(),
+                    "rare", achievementManager.getRareCompletions(profile)
+                )),
+                boolValue("category-menu.profile.glow")
+            ));
+
+            List<String> categories = orderedCategories();
+            List<Integer> slots = intList("category-menu.auto-slots");
+            for (int index = 0; index < Math.min(categories.size(), slots.size()); index++) {
+                inventory.setItem(slots.get(index), createCategorySummaryCard(profile, categories.get(index)));
+            }
+
+            inventory.setItem(intValue("category-menu.stats.slot"), ItemUtils.create(
+                text("category-menu.stats.material"),
+                text("category-menu.stats.title"),
+                lines("category-menu.stats.lore"),
+                boolValue("category-menu.stats.glow")
+            ));
+            inventory.setItem(intValue("category-menu.settings.slot"), ItemUtils.create(
+                text("category-menu.settings.material"),
+                text("category-menu.settings.title"),
+                lines("category-menu.settings.lore"),
+                boolValue("category-menu.settings.glow")
+            ));
+            inventory.setItem(intValue("category-menu.back.slot"), ItemUtils.create(
+                text("category-menu.back.material"),
+                text("category-menu.back.title"),
+                lines("category-menu.back.lore"),
+                boolValue("category-menu.back.glow")
+            ));
+
+            player.openInventory(inventory);
+            }
 
     public void openTierMenu(Player player, Tier tier) {
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
@@ -341,6 +392,58 @@ public final class GUIManager implements Listener {
 
         player.openInventory(inventory);
     }
+
+        public void openSettings(Player player) {
+        PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
+        Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.SETTINGS, null, false), MENU_SIZE, ItemUtils.component(text("settings-menu.title")));
+
+        paintFrame(inventory, "settings-menu.frame");
+        applyFillerGroups(inventory, "settings-menu.fillers");
+        fillEmptySlots(inventory, "settings-menu.background");
+
+        inventory.setItem(intValue("settings-menu.profile.slot"), createPlayerHeadCard(
+            player.getUniqueId(),
+            text("settings-menu.profile.title"),
+            lines("settings-menu.profile.lore", placeholders(
+                "language", languageManager.getDisplayName(profile.getLanguage()),
+                "chat", settingState(profile.isChatNotificationsEnabled()),
+                "title_state", settingState(profile.isTitleNotificationsEnabled()),
+                "action_bar", settingState(profile.isActionBarNotificationsEnabled()),
+                "boss_bar", settingState(profile.isBossBarNotificationsEnabled()),
+                "sound", settingState(profile.isSoundNotificationsEnabled())
+            )),
+            boolValue("settings-menu.profile.glow")
+        ));
+
+        inventory.setItem(intValue("settings-menu.language.slot"), ItemUtils.create(
+            text("settings-menu.language.material"),
+            text("settings-menu.language.title"),
+            lines("settings-menu.language.lore", placeholders(
+                "language", languageManager.getDisplayName(profile.getLanguage()),
+                "count", languageManager.getLanguages().size()
+            )),
+            boolValue("settings-menu.language.glow")
+        ));
+        inventory.setItem(intValue("settings-menu.toggles.chat.slot"), createSettingsToggleCard("settings-menu.toggles.chat", profile.isChatNotificationsEnabled()));
+        inventory.setItem(intValue("settings-menu.toggles.title.slot"), createSettingsToggleCard("settings-menu.toggles.title", profile.isTitleNotificationsEnabled()));
+        inventory.setItem(intValue("settings-menu.toggles.action-bar.slot"), createSettingsToggleCard("settings-menu.toggles.action-bar", profile.isActionBarNotificationsEnabled()));
+        inventory.setItem(intValue("settings-menu.toggles.boss-bar.slot"), createSettingsToggleCard("settings-menu.toggles.boss-bar", profile.isBossBarNotificationsEnabled()));
+        inventory.setItem(intValue("settings-menu.toggles.sound.slot"), createSettingsToggleCard("settings-menu.toggles.sound", profile.isSoundNotificationsEnabled()));
+        inventory.setItem(intValue("settings-menu.categories.slot"), ItemUtils.create(
+            text("settings-menu.categories.material"),
+            text("settings-menu.categories.title"),
+            lines("settings-menu.categories.lore"),
+            boolValue("settings-menu.categories.glow")
+        ));
+        inventory.setItem(intValue("settings-menu.back.slot"), ItemUtils.create(
+            text("settings-menu.back.material"),
+            text("settings-menu.back.title"),
+            lines("settings-menu.back.lore"),
+            boolValue("settings-menu.back.glow")
+        ));
+
+        player.openInventory(inventory);
+        }
 
     public void openLeaderboard(Player player, boolean session) {
         List<LeaderboardEntry> entries = session ? leaderboardManager.getSessionLeaderboard(10) : leaderboardManager.getGlobalLeaderboard(10);
@@ -640,6 +743,7 @@ public final class GUIManager implements Listener {
         switch (holder.type()) {
             case MAIN -> handleMainClick(player, event.getSlot());
             case TIER -> handleTierClick(player, holder.tier(), event.getSlot());
+            case CATEGORY -> handleCategoryClick(player, event.getSlot());
             case STATS -> {
                 if (event.getSlot() == intValue("stats.back.slot")) {
                     openMainMenu(player);
@@ -649,6 +753,7 @@ public final class GUIManager implements Listener {
             case CHALLENGES -> handleChallengesClick(player, event.getSlot());
             case SEASON -> handleSeasonClick(player, event.getSlot());
             case PRESTIGE -> handlePrestigeClick(player, event.getSlot());
+            case SETTINGS -> handleSettingsClick(player, event.getSlot());
         }
     }
 
@@ -674,6 +779,10 @@ public final class GUIManager implements Listener {
             openChallenges(player);
             return;
         }
+        if (slot == intValue("main.categories.slot")) {
+            openCategoryMenu(player);
+            return;
+        }
         if (slot == intValue("main.leaderboard.slot")) {
             openLeaderboard(player, false);
             return;
@@ -684,6 +793,82 @@ public final class GUIManager implements Listener {
         }
         if (slot == intValue("main.prestige.slot")) {
             openPrestige(player);
+            return;
+        }
+        if (slot == intValue("main.settings.slot")) {
+            openSettings(player);
+            return;
+        }
+    }
+
+    private void handleCategoryClick(Player player, int slot) {
+        if (slot == intValue("category-menu.stats.slot")) {
+            openStats(player);
+            return;
+        }
+        if (slot == intValue("category-menu.settings.slot")) {
+            openSettings(player);
+            return;
+        }
+        if (slot == intValue("category-menu.back.slot")) {
+            openMainMenu(player);
+            return;
+        }
+
+        PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
+        List<String> categories = orderedCategories();
+        List<Integer> slots = intList("category-menu.auto-slots");
+        for (int index = 0; index < Math.min(categories.size(), slots.size()); index++) {
+            if (slot != slots.get(index)) {
+                continue;
+            }
+            BetterAdvancement target = findNextTarget(profile, categories.get(index));
+            if (target != null) {
+                openTierMenu(player, target.tier());
+            }
+            return;
+        }
+    }
+
+    private void handleSettingsClick(Player player, int slot) {
+        PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
+        boolean changed = false;
+
+        if (slot == intValue("settings-menu.language.slot")) {
+            String nextLanguage = cycleLanguage(player, profile);
+            player.sendMessage(languageManager.getComponent(player, nextLanguage, "command.language-set", Map.of(
+                    "language", languageManager.getDisplayName(nextLanguage)
+            )));
+            openSettings(player);
+            return;
+        }
+        if (slot == intValue("settings-menu.toggles.chat.slot")) {
+            profile.setChatNotificationsEnabled(!profile.isChatNotificationsEnabled());
+            changed = true;
+        } else if (slot == intValue("settings-menu.toggles.title.slot")) {
+            profile.setTitleNotificationsEnabled(!profile.isTitleNotificationsEnabled());
+            changed = true;
+        } else if (slot == intValue("settings-menu.toggles.action-bar.slot")) {
+            profile.setActionBarNotificationsEnabled(!profile.isActionBarNotificationsEnabled());
+            changed = true;
+        } else if (slot == intValue("settings-menu.toggles.boss-bar.slot")) {
+            profile.setBossBarNotificationsEnabled(!profile.isBossBarNotificationsEnabled());
+            changed = true;
+        } else if (slot == intValue("settings-menu.toggles.sound.slot")) {
+            profile.setSoundNotificationsEnabled(!profile.isSoundNotificationsEnabled());
+            changed = true;
+        } else if (slot == intValue("settings-menu.categories.slot")) {
+            openCategoryMenu(player);
+            return;
+        } else if (slot == intValue("settings-menu.back.slot")) {
+            openMainMenu(player);
+            return;
+        }
+
+        if (changed) {
+            playerDataManager.setLastKnownName(player.getUniqueId(), player.getName());
+            playerDataManager.saveProfile(player.getUniqueId());
+            openSettings(player);
         }
     }
 
@@ -1028,6 +1213,54 @@ public final class GUIManager implements Listener {
         );
     }
 
+            private ItemStack createCategorySummaryCard(PlayerProfile profile, String category) {
+            String categoryPath = section("category-menu.categories." + category) == null
+                ? "category-menu.categories.default"
+                : "category-menu.categories." + category;
+            long total = achievementManager.getAdvancements().stream()
+                .filter(advancement -> advancement.category().equalsIgnoreCase(category))
+                .count();
+            long completed = achievementManager.getAdvancements().stream()
+                .filter(advancement -> advancement.category().equalsIgnoreCase(category))
+                .filter(advancement -> isCompleted(profile, advancement))
+                .count();
+            long unlocked = achievementManager.getAdvancements().stream()
+                .filter(advancement -> advancement.category().equalsIgnoreCase(category))
+                .filter(advancement -> achievementManager.isUnlocked(profile, advancement))
+                .count();
+            long rare = achievementManager.getAdvancements().stream()
+                .filter(advancement -> advancement.category().equalsIgnoreCase(category))
+                .filter(advancement -> advancement.rarity().equalsIgnoreCase("legendary") || advancement.rarity().equalsIgnoreCase("mythic"))
+                .filter(advancement -> isCompleted(profile, advancement))
+                .count();
+            BetterAdvancement focus = findNextTarget(profile, category);
+
+            return ItemUtils.create(
+                text(categoryPath + ".material"),
+                text(categoryPath + ".title", placeholders("category", capitalize(category))),
+                lines(categoryPath + ".lore", placeholders(
+                    "category", capitalize(category),
+                    "completed", completed,
+                    "total", total,
+                    "unlocked", unlocked,
+                    "rare", rare,
+                    "focus", focus == null ? text("category-menu.values.none") : focus.title(),
+                    "tier", focus == null ? text("category-menu.values.none") : formatTierName(focus.tier())
+                )),
+                completed > 0 || boolValue(categoryPath + ".glow")
+            );
+            }
+
+            private ItemStack createSettingsToggleCard(String path, boolean enabled) {
+            String statePath = enabled ? path + ".enabled" : path + ".disabled";
+            return ItemUtils.create(
+                text(path + ".material"),
+                text(statePath + ".title"),
+                lines(statePath + ".lore", placeholders("state", settingState(enabled))),
+                enabled
+            );
+            }
+
     private List<String> buildSeasonLeaderboardLore() {
         List<LeaderboardEntry> entries = leaderboardManager.getSeasonLeaderboard(3);
         if (entries.isEmpty()) {
@@ -1052,6 +1285,36 @@ public final class GUIManager implements Listener {
                 .filter(threshold -> threshold > seasonPoints)
                 .findFirst()
                 .orElse(0);
+    }
+
+    private List<String> orderedCategories() {
+        List<String> ordered = new ArrayList<>(config().getStringList("category-menu.order"));
+        for (BetterAdvancement advancement : achievementManager.getAdvancements()) {
+            String category = advancement.category().toLowerCase(Locale.ROOT);
+            if (!ordered.contains(category)) {
+                ordered.add(category);
+            }
+        }
+        return ordered;
+    }
+
+    private String cycleLanguage(Player player, PlayerProfile profile) {
+        List<String> languages = new ArrayList<>(languageManager.getLanguages().keySet());
+        if (languages.isEmpty()) {
+            return profile.getLanguage();
+        }
+        languages.sort(String::compareToIgnoreCase);
+        String current = profile.getLanguage().toLowerCase(Locale.ROOT);
+        int currentIndex = languages.indexOf(current);
+        String next = languages.get((currentIndex + 1 + languages.size()) % languages.size());
+        profile.setLanguage(next);
+        playerDataManager.setLastKnownName(player.getUniqueId(), player.getName());
+        playerDataManager.saveProfile(player.getUniqueId());
+        return next;
+    }
+
+    private String settingState(boolean enabled) {
+        return text(enabled ? "settings-menu.states.enabled" : "settings-menu.states.disabled");
     }
 
     private ChallengeDefinition findActiveChallenge(String type) {
@@ -1178,6 +1441,22 @@ public final class GUIManager implements Listener {
                         .findFirst()
                         .orElse(null));
     }
+
+                private BetterAdvancement findNextTarget(PlayerProfile profile, String category) {
+                return achievementManager.getAdvancements().stream()
+                    .sorted(Comparator.comparingInt((BetterAdvancement advancement) -> advancement.tier().getWeight())
+                        .thenComparingInt(advancement -> advancement.guiPosition().getOrDefault("slot", 0)))
+                    .filter(advancement -> advancement.category().equalsIgnoreCase(category))
+                    .filter(advancement -> !isCompleted(profile, advancement))
+                    .filter(advancement -> achievementManager.isUnlocked(profile, advancement))
+                    .findFirst()
+                    .orElseGet(() -> achievementManager.getAdvancements().stream()
+                        .sorted(Comparator.comparingInt((BetterAdvancement advancement) -> advancement.tier().getWeight())
+                            .thenComparingInt(advancement -> advancement.guiPosition().getOrDefault("slot", 0)))
+                        .filter(advancement -> advancement.category().equalsIgnoreCase(category))
+                        .findFirst()
+                        .orElse(null));
+                }
 
     private boolean isCompleted(PlayerProfile profile, BetterAdvancement advancement) {
         PlayerAchievementProgress progress = profile.getAdvancementProgress().get(advancement.id());

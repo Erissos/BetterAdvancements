@@ -103,7 +103,9 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                 }
                 playerDataManager.getOrCreate(player.getUniqueId()).setLanguage(requested);
                 playerDataManager.saveProfile(player.getUniqueId());
-                sender.sendMessage(languageManager.getComponent(sender, requested, "command.language-set", Map.of("language", requested)));
+                sender.sendMessage(languageManager.getComponent(sender, requested, "command.language-set", Map.of(
+                    "language", languageManager.getDisplayName(requested)
+                )));
                 return true;
             }
             case "reload" -> {
