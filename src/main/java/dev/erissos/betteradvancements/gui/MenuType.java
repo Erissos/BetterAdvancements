@@ -4,5 +4,8 @@ public enum MenuType {
     MAIN,
     TIER,
     STATS,
-    LEADERBOARD
+    LEADERBOARD,
+    CHALLENGES,
+    SEASON,
+    PRESTIGE
 }

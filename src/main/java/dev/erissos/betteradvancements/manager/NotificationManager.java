@@ -29,7 +29,7 @@ public final class NotificationManager {
         Map<String, String> placeholders = Map.of(
                 "title", advancement.title(),
                 "description", advancement.description(),
-                "tier", advancement.tier().name(),
+            "tier", advancement.tier().getDisplayKey(),
                 "points", String.valueOf(advancement.points())
         );
 

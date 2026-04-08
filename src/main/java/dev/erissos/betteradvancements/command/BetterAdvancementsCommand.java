@@ -121,6 +121,10 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
                     return true;
                 }
+                if (args.length == 1 || (args.length > 1 && args[1].equalsIgnoreCase("menu"))) {
+                    guiManager.openSeason(player);
+                    return true;
+                }
                 var profile = playerDataManager.getOrCreate(player.getUniqueId());
                 if (args.length > 1 && args[1].equalsIgnoreCase("rewards")) {
                     for (Integer threshold : seasonManager.getRewardThresholds()) {
@@ -144,6 +148,10 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
             case "prestige" -> {
                 if (!(sender instanceof Player player)) {
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
+                    return true;
+                }
+                if (args.length == 1 || (args.length > 1 && args[1].equalsIgnoreCase("menu"))) {
+                    guiManager.openPrestige(player);
                     return true;
                 }
                 var profile = playerDataManager.getOrCreate(player.getUniqueId());
@@ -175,6 +183,10 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
             case "challenges" -> {
                 if (!(sender instanceof Player player)) {
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
+                    return true;
+                }
+                if (args.length == 1 || (args.length > 1 && args[1].equalsIgnoreCase("menu"))) {
+                    guiManager.openChallenges(player);
                     return true;
                 }
                 for (ChallengeDefinition challenge : challengeManager.getActiveChallenges()) {
@@ -242,7 +254,13 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
             return List.of("global", "session", "season");
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("season")) {
-            return List.of("rewards");
+            return List.of("menu", "rewards");
+        }
+        if (args.length == 2 && args[0].equalsIgnoreCase("challenges")) {
+            return List.of("menu", "list");
+        }
+        if (args.length == 2 && args[0].equalsIgnoreCase("prestige")) {
+            return List.of("menu", "confirm");
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("language")) {
             return new ArrayList<>(languageManager.getLanguages().keySet());

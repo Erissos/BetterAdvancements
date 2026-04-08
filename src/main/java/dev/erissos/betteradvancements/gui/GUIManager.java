@@ -3,13 +3,16 @@ package dev.erissos.betteradvancements.gui;
 import dev.erissos.betteradvancements.BetterAdvancementsPlugin;
 import dev.erissos.betteradvancements.config.ConfigManager;
 import dev.erissos.betteradvancements.data.PlayerDataManager;
+import dev.erissos.betteradvancements.lang.LanguageManager;
 import dev.erissos.betteradvancements.manager.AchievementManager;
 import dev.erissos.betteradvancements.manager.ChallengeManager;
 import dev.erissos.betteradvancements.manager.LeaderboardManager;
+import dev.erissos.betteradvancements.manager.SeasonManager;
 import dev.erissos.betteradvancements.model.BetterAdvancement;
 import dev.erissos.betteradvancements.model.ChallengeDefinition;
 import dev.erissos.betteradvancements.model.LeaderboardEntry;
 import dev.erissos.betteradvancements.model.PlayerAchievementProgress;
+import dev.erissos.betteradvancements.model.PlayerChallengeProgress;
 import dev.erissos.betteradvancements.model.PlayerProfile;
 import dev.erissos.betteradvancements.model.RewardDefinition;
 import dev.erissos.betteradvancements.model.Tier;
@@ -28,6 +31,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -44,19 +50,26 @@ public final class GUIManager implements Listener {
     private static final int MENU_SIZE = 54;
     private static final List<Integer> DEFAULT_MAIN_TIER_SLOTS = List.of(19, 20, 22, 24, 25);
     private static final List<Integer> DEFAULT_STATS_TIER_SLOTS = List.of(19, 20, 21, 22, 23);
+    private static final DateTimeFormatter SESSION_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+            .withLocale(Locale.US)
+            .withZone(ZoneId.systemDefault());
 
     private final ConfigManager configManager;
     private final AchievementManager achievementManager;
     private final ChallengeManager challengeManager;
     private final LeaderboardManager leaderboardManager;
     private final PlayerDataManager playerDataManager;
+    private final SeasonManager seasonManager;
+    private final LanguageManager languageManager;
 
-    public GUIManager(BetterAdvancementsPlugin plugin, ConfigManager configManager, AchievementManager achievementManager, ChallengeManager challengeManager, LeaderboardManager leaderboardManager, PlayerDataManager playerDataManager, dev.erissos.betteradvancements.lang.LanguageManager languageManager) {
+    public GUIManager(BetterAdvancementsPlugin plugin, ConfigManager configManager, AchievementManager achievementManager, ChallengeManager challengeManager, LeaderboardManager leaderboardManager, PlayerDataManager playerDataManager, SeasonManager seasonManager, LanguageManager languageManager) {
         this.configManager = configManager;
         this.achievementManager = achievementManager;
         this.challengeManager = challengeManager;
         this.leaderboardManager = leaderboardManager;
         this.playerDataManager = playerDataManager;
+        this.seasonManager = seasonManager;
+        this.languageManager = languageManager;
     }
 
     public void reload() {
@@ -143,6 +156,27 @@ public final class GUIManager implements Listener {
                 text("main.leaderboard.title"),
                 lines("main.leaderboard.lore"),
                 boolValue("main.leaderboard.glow")
+        ));
+        inventory.setItem(intValue("main.season.slot"), ItemUtils.create(
+            text("main.season.material"),
+            text("main.season.title"),
+            lines("main.season.lore", placeholders(
+                "season", seasonManager.currentSeasonId(),
+                "season_points", profile.getSeasonPoints(),
+                "reward_count", seasonManager.getRewardThresholds().size()
+            )),
+            boolValue("main.season.glow")
+        ));
+        inventory.setItem(intValue("main.prestige.slot"), ItemUtils.create(
+            text("main.prestige.material"),
+            text("main.prestige.title"),
+            lines("main.prestige.lore", placeholders(
+                "prestige", profile.getPrestigeLevel(),
+                "completed", profile.getCompletedAdvancements(),
+                "total", achievementManager.getAdvancements().size(),
+                "bonus", configManager.getMainConfig().getInt("prestige.bonus-points", 250)
+            )),
+            boolValue("main.prestige.glow")
         ));
         inventory.setItem(intValue("main.locale.slot"), ItemUtils.create(
                 text("main.locale.material"),
@@ -288,7 +322,7 @@ public final class GUIManager implements Listener {
                 text("stats.session.title"),
                 lines("stats.session.lore", placeholders(
                         "session_completions", profile.getSessionCompletions(),
-                        "session_join", profile.getSessionJoinMillis()
+                "session_join", formatSessionJoin(profile.getSessionJoinMillis())
                 )),
                 boolValue("stats.session.glow")
         ));
@@ -371,6 +405,225 @@ public final class GUIManager implements Listener {
         player.openInventory(inventory);
     }
 
+    public void openChallenges(Player player) {
+    PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
+    Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.CHALLENGES, null, false), MENU_SIZE, ItemUtils.component(text("challenges.title")));
+
+    paintFrame(inventory, "challenges.frame");
+    applyFillerGroups(inventory, "challenges.fillers");
+    fillEmptySlots(inventory, "challenges.background");
+
+    inventory.setItem(intValue("challenges.profile.slot"), createPlayerHeadCard(
+        player.getUniqueId(),
+        text("challenges.profile.title"),
+        lines("challenges.profile.lore", placeholders(
+            "active", challengeManager.getActiveChallenges().size(),
+            "completed", profile.getCompletedChallenges(),
+            "season_points", profile.getSeasonPoints()
+        )),
+        boolValue("challenges.profile.glow")
+    ));
+
+    ChallengeDefinition daily = findActiveChallenge("daily");
+    ChallengeDefinition weekly = findActiveChallenge("weekly");
+    inventory.setItem(intValue("challenges.cards.daily.slot"), createChallengeCard("challenges.cards.daily", daily, profile));
+    inventory.setItem(intValue("challenges.cards.weekly.slot"), createChallengeCard("challenges.cards.weekly", weekly, profile));
+
+    inventory.setItem(intValue("challenges.summary.slot"), ItemUtils.create(
+        text("challenges.summary.material"),
+        text("challenges.summary.title"),
+        lines("challenges.summary.lore", placeholders(
+            "active", challengeManager.getActiveChallenges().size(),
+            "completed", profile.getCompletedChallenges(),
+            "points", profile.getPoints()
+        )),
+        boolValue("challenges.summary.glow")
+    ));
+    inventory.setItem(intValue("challenges.season.slot"), ItemUtils.create(
+        text("challenges.season.material"),
+        text("challenges.season.title"),
+        lines("challenges.season.lore"),
+        boolValue("challenges.season.glow")
+    ));
+    inventory.setItem(intValue("challenges.prestige.slot"), ItemUtils.create(
+        text("challenges.prestige.material"),
+        text("challenges.prestige.title"),
+        lines("challenges.prestige.lore"),
+        boolValue("challenges.prestige.glow")
+    ));
+    inventory.setItem(intValue("challenges.back.slot"), ItemUtils.create(
+        text("challenges.back.material"),
+        text("challenges.back.title"),
+        lines("challenges.back.lore"),
+        boolValue("challenges.back.glow")
+    ));
+
+    player.openInventory(inventory);
+    }
+
+    public void openSeason(Player player) {
+    PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
+    Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.SEASON, null, false), MENU_SIZE, ItemUtils.component(text("season-menu.title")));
+
+    paintFrame(inventory, "season-menu.frame");
+    applyFillerGroups(inventory, "season-menu.fillers");
+    fillEmptySlots(inventory, "season-menu.background");
+
+    inventory.setItem(intValue("season-menu.profile.slot"), createPlayerHeadCard(
+        player.getUniqueId(),
+        text("season-menu.profile.title"),
+        lines("season-menu.profile.lore", placeholders(
+            "season", seasonManager.currentSeasonId(),
+            "season_points", profile.getSeasonPoints(),
+            "points", profile.getPoints(),
+            "claimed", profile.getClaimedSeasonRewards().size(),
+            "reward_count", seasonManager.getRewardThresholds().size(),
+            "prestige", profile.getPrestigeLevel()
+        )),
+        boolValue("season-menu.profile.glow")
+    ));
+
+    List<Integer> rewardSlots = intList("season-menu.rewards.auto-slots");
+    List<Integer> thresholds = seasonManager.getRewardThresholds();
+    for (int index = 0; index < Math.min(rewardSlots.size(), thresholds.size()); index++) {
+        int threshold = thresholds.get(index);
+        inventory.setItem(rewardSlots.get(index), createSeasonRewardCard(profile, threshold));
+    }
+    if (thresholds.isEmpty()) {
+        inventory.setItem(intValue("season-menu.rewards.empty.slot"), ItemUtils.create(
+            text("season-menu.rewards.empty.material"),
+            text("season-menu.rewards.empty.title"),
+            lines("season-menu.rewards.empty.lore"),
+            boolValue("season-menu.rewards.empty.glow")
+        ));
+    }
+
+    inventory.setItem(intValue("season-menu.leaderboard.slot"), ItemUtils.create(
+        text("season-menu.leaderboard.material"),
+        text("season-menu.leaderboard.title"),
+        buildSeasonLeaderboardLore(),
+        boolValue("season-menu.leaderboard.glow")
+    ));
+    inventory.setItem(intValue("season-menu.progress.slot"), ItemUtils.create(
+        text("season-menu.progress.material"),
+        text("season-menu.progress.title"),
+        lines("season-menu.progress.lore", placeholders(
+            "next_threshold", nextSeasonThreshold(profile.getSeasonPoints()),
+            "reward_count", thresholds.size(),
+            "claimed", profile.getClaimedSeasonRewards().size()
+        )),
+        boolValue("season-menu.progress.glow")
+    ));
+    inventory.setItem(intValue("season-menu.challenges.slot"), ItemUtils.create(
+        text("season-menu.challenges.material"),
+        text("season-menu.challenges.title"),
+        lines("season-menu.challenges.lore"),
+        boolValue("season-menu.challenges.glow")
+    ));
+    inventory.setItem(intValue("season-menu.prestige.slot"), ItemUtils.create(
+        text("season-menu.prestige.material"),
+        text("season-menu.prestige.title"),
+        lines("season-menu.prestige.lore"),
+        boolValue("season-menu.prestige.glow")
+    ));
+    inventory.setItem(intValue("season-menu.back.slot"), ItemUtils.create(
+        text("season-menu.back.material"),
+        text("season-menu.back.title"),
+        lines("season-menu.back.lore"),
+        boolValue("season-menu.back.glow")
+    ));
+
+    player.openInventory(inventory);
+    }
+
+    public void openPrestige(Player player) {
+    PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
+    int total = achievementManager.getAdvancements().size();
+    int completed = profile.getCompletedAdvancements();
+    boolean eligible = completed >= total && total > 0;
+
+    Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.PRESTIGE, null, false), MENU_SIZE, ItemUtils.component(text("prestige-menu.title")));
+
+    paintFrame(inventory, "prestige-menu.frame");
+    applyFillerGroups(inventory, "prestige-menu.fillers");
+    fillEmptySlots(inventory, "prestige-menu.background");
+
+    inventory.setItem(intValue("prestige-menu.profile.slot"), createPlayerHeadCard(
+        player.getUniqueId(),
+        text("prestige-menu.profile.title"),
+        lines("prestige-menu.profile.lore", placeholders(
+            "prestige", profile.getPrestigeLevel(),
+            "completed", completed,
+            "total", total,
+            "season_points", profile.getSeasonPoints(),
+            "bonus", configManager.getMainConfig().getInt("prestige.bonus-points", 250)
+        )),
+        boolValue("prestige-menu.profile.glow")
+    ));
+    inventory.setItem(intValue("prestige-menu.readiness.slot"), ItemUtils.create(
+        text("prestige-menu.readiness.material"),
+        text("prestige-menu.readiness.title"),
+        lines("prestige-menu.readiness.lore", placeholders(
+            "completed", completed,
+            "total", total,
+            "progress", total == 0 ? 0 : formatPercent((completed * 100.0D) / total),
+            "status", text(eligible ? "prestige-menu.status.ready" : "prestige-menu.status.locked")
+        )),
+        boolValue("prestige-menu.readiness.glow")
+    ));
+    inventory.setItem(intValue("prestige-menu.impact.slot"), ItemUtils.create(
+        text("prestige-menu.impact.material"),
+        text("prestige-menu.impact.title"),
+        lines("prestige-menu.impact.lore", placeholders(
+            "challenge_reset", configManager.getMainConfig().getBoolean("prestige.reset-challenges", true) ? text("prestige-menu.values.enabled") : text("prestige-menu.values.disabled"),
+            "bonus", configManager.getMainConfig().getInt("prestige.bonus-points", 250)
+        )),
+        boolValue("prestige-menu.impact.glow")
+    ));
+    inventory.setItem(intValue("prestige-menu.rewards.slot"), ItemUtils.create(
+        text("prestige-menu.rewards.material"),
+        text("prestige-menu.rewards.title"),
+        lines("prestige-menu.rewards.lore", placeholders(
+            "bonus", configManager.getMainConfig().getInt("prestige.bonus-points", 250),
+            "next_prestige", profile.getPrestigeLevel() + 1
+        )),
+        boolValue("prestige-menu.rewards.glow")
+    ));
+
+    String actionPath = eligible ? "prestige-menu.action.ready" : "prestige-menu.action.locked";
+    inventory.setItem(intValue("prestige-menu.action.slot"), ItemUtils.create(
+        text(actionPath + ".material"),
+        text(actionPath + ".title"),
+        lines(actionPath + ".lore", placeholders(
+            "completed", completed,
+            "total", total,
+            "next_prestige", profile.getPrestigeLevel() + 1,
+            "bonus", configManager.getMainConfig().getInt("prestige.bonus-points", 250)
+        )),
+        boolValue(actionPath + ".glow")
+    ));
+    inventory.setItem(intValue("prestige-menu.season.slot"), ItemUtils.create(
+        text("prestige-menu.season.material"),
+        text("prestige-menu.season.title"),
+        lines("prestige-menu.season.lore"),
+        boolValue("prestige-menu.season.glow")
+    ));
+    inventory.setItem(intValue("prestige-menu.challenges.slot"), ItemUtils.create(
+        text("prestige-menu.challenges.material"),
+        text("prestige-menu.challenges.title"),
+        lines("prestige-menu.challenges.lore"),
+        boolValue("prestige-menu.challenges.glow")
+    ));
+    inventory.setItem(intValue("prestige-menu.back.slot"), ItemUtils.create(
+        text("prestige-menu.back.material"),
+        text("prestige-menu.back.title"),
+        lines("prestige-menu.back.lore"),
+        boolValue("prestige-menu.back.glow")
+    ));
+
+    player.openInventory(inventory);
+    }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
@@ -393,6 +646,9 @@ public final class GUIManager implements Listener {
                 }
             }
             case LEADERBOARD -> handleLeaderboardClick(player, event.getSlot());
+            case CHALLENGES -> handleChallengesClick(player, event.getSlot());
+            case SEASON -> handleSeasonClick(player, event.getSlot());
+            case PRESTIGE -> handlePrestigeClick(player, event.getSlot());
         }
     }
 
@@ -414,8 +670,20 @@ public final class GUIManager implements Listener {
             openStats(player);
             return;
         }
+        if (slot == intValue("main.challenge.slot")) {
+            openChallenges(player);
+            return;
+        }
         if (slot == intValue("main.leaderboard.slot")) {
             openLeaderboard(player, false);
+            return;
+        }
+        if (slot == intValue("main.season.slot")) {
+            openSeason(player);
+            return;
+        }
+        if (slot == intValue("main.prestige.slot")) {
+            openPrestige(player);
         }
     }
 
@@ -450,6 +718,53 @@ public final class GUIManager implements Listener {
         }
         if (slot == intValue("leaderboard.footer.session.slot")) {
             openLeaderboard(player, true);
+        }
+    }
+
+    private void handleChallengesClick(Player player, int slot) {
+        if (slot == intValue("challenges.season.slot")) {
+            openSeason(player);
+            return;
+        }
+        if (slot == intValue("challenges.prestige.slot")) {
+            openPrestige(player);
+            return;
+        }
+        if (slot == intValue("challenges.back.slot")) {
+            openMainMenu(player);
+        }
+    }
+
+    private void handleSeasonClick(Player player, int slot) {
+        if (slot == intValue("season-menu.challenges.slot")) {
+            openChallenges(player);
+            return;
+        }
+        if (slot == intValue("season-menu.prestige.slot")) {
+            openPrestige(player);
+            return;
+        }
+        if (slot == intValue("season-menu.back.slot")) {
+            openMainMenu(player);
+        }
+    }
+
+    private void handlePrestigeClick(Player player, int slot) {
+        if (slot == intValue("prestige-menu.action.slot")) {
+            attemptPrestige(player);
+            openPrestige(player);
+            return;
+        }
+        if (slot == intValue("prestige-menu.season.slot")) {
+            openSeason(player);
+            return;
+        }
+        if (slot == intValue("prestige-menu.challenges.slot")) {
+            openChallenges(player);
+            return;
+        }
+        if (slot == intValue("prestige-menu.back.slot")) {
+            openMainMenu(player);
         }
     }
 
@@ -660,6 +975,164 @@ public final class GUIManager implements Listener {
         }
         lore.addAll(lines("main.challenge.footer-lore"));
         return lore;
+    }
+
+    private ItemStack createChallengeCard(String path, ChallengeDefinition challenge, PlayerProfile profile) {
+        if (challenge == null) {
+            return ItemUtils.create(
+                    text(path + ".empty.material"),
+                    text(path + ".empty.title"),
+                    lines(path + ".empty.lore"),
+                    boolValue(path + ".empty.glow")
+            );
+        }
+
+        PlayerChallengeProgress progress = profile.getChallengeProgress().get(challenge.id());
+        boolean completed = progress != null && progress.isCompleted();
+        int current = progress == null ? 0 : progress.getProgress();
+        return ItemUtils.create(
+                text(path + ".active.material"),
+                text(path + ".active.title", placeholders("title", challenge.title())),
+                lines(path + ".active.lore", placeholders(
+                        "title", challenge.title(),
+                        "description", challenge.description(),
+                        "type", capitalize(challenge.type()),
+                        "progress", current,
+                        "target", challenge.trigger().target(),
+                        "status", text(completed ? "challenges.status.completed" : "challenges.status.active"),
+                        "objective", formatChallengeObjective(challenge),
+                        "points", challenge.pointsReward(),
+                        "rewards", formatChallengeRewards(challenge)
+                )),
+                completed || boolValue(path + ".active.glow")
+        );
+    }
+
+    private ItemStack createSeasonRewardCard(PlayerProfile profile, int threshold) {
+        boolean claimed = profile.getClaimedSeasonRewards().contains(threshold);
+        boolean ready = profile.getSeasonPoints() >= threshold;
+        String status = claimed
+                ? text("season-menu.status.claimed")
+                : ready ? text("season-menu.status.ready") : text("season-menu.status.locked");
+
+        return ItemUtils.create(
+                text("season-menu.rewards.card.material"),
+                text("season-menu.rewards.card.title", placeholders("threshold", threshold)),
+                lines("season-menu.rewards.card.lore", placeholders(
+                        "threshold", threshold,
+                        "status", status,
+                        "season_points", profile.getSeasonPoints(),
+                        "commands", seasonManager.getRewardCommands(threshold).size()
+                )),
+                claimed || ready
+        );
+    }
+
+    private List<String> buildSeasonLeaderboardLore() {
+        List<LeaderboardEntry> entries = leaderboardManager.getSeasonLeaderboard(3);
+        if (entries.isEmpty()) {
+            return lines("season-menu.leaderboard.empty-lore");
+        }
+
+        List<String> lore = new ArrayList<>();
+        for (int index = 0; index < entries.size(); index++) {
+            LeaderboardEntry entry = entries.get(index);
+            lore.add(text("season-menu.leaderboard.entry", placeholders(
+                    "rank", index + 1,
+                    "player", entry.name(),
+                    "points", entry.points()
+            )));
+        }
+        lore.addAll(lines("season-menu.leaderboard.footer-lore"));
+        return lore;
+    }
+
+    private Integer nextSeasonThreshold(int seasonPoints) {
+        return seasonManager.getRewardThresholds().stream()
+                .filter(threshold -> threshold > seasonPoints)
+                .findFirst()
+                .orElse(0);
+    }
+
+    private ChallengeDefinition findActiveChallenge(String type) {
+        return challengeManager.getActiveChallenges().stream()
+                .filter(challenge -> challenge.type().equalsIgnoreCase(type))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private String formatChallengeObjective(ChallengeDefinition challenge) {
+        Map<String, String> conditions = challenge.trigger().conditions();
+        String subject = switch (challenge.trigger().type()) {
+            case BLOCK_BREAK -> capitalize(conditions.getOrDefault("material", text("texts.objective.subject-default.blocks")));
+            case ITEM_CRAFT, ITEM_CONSUME, SMELT -> capitalize(conditions.getOrDefault("item", text("texts.objective.subject-default.items")));
+            case MOB_KILL, PLAYER_KILL, BREED, TAME -> capitalize(conditions.getOrDefault("entity", text("texts.objective.subject-default.targets")));
+            case EXPLORE_BIOME -> capitalize(conditions.getOrDefault("biome", text("texts.objective.subject-default.biomes")));
+            case COMMAND -> "/" + conditions.getOrDefault("command", text("texts.objective.subject-default.command"));
+            case JOIN -> text("texts.objective.subject-default.server-joins");
+            case DISTANCE_WALK -> text("texts.objective.subject-default.blocks-travelled");
+            case FISH -> text("texts.objective.subject-default.fish-caught");
+            case ENCHANT -> text("texts.objective.subject-default.enchants");
+            case PLAYTIME -> text("texts.objective.subject-default.minutes-played");
+            case CUSTOM -> text("texts.objective.subject-default.custom");
+        };
+
+        return switch (challenge.trigger().type()) {
+            case JOIN -> text("texts.objective.templates.join");
+            case BLOCK_BREAK -> text("texts.objective.templates.break", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case ITEM_CRAFT -> text("texts.objective.templates.craft", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case MOB_KILL -> text("texts.objective.templates.defeat", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case PLAYER_KILL -> text(challenge.trigger().target() == 1 ? "texts.objective.templates.defeat-player-single" : "texts.objective.templates.defeat-player-multi", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case EXPLORE_BIOME -> text("texts.objective.templates.discover", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case DISTANCE_WALK -> text("texts.objective.templates.travel", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case FISH -> text("texts.objective.templates.fish", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case ENCHANT -> text(challenge.trigger().target() == 1 ? "texts.objective.templates.enchant-single" : "texts.objective.templates.enchant-multi", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case SMELT -> text("texts.objective.templates.smelt", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case BREED -> text("texts.objective.templates.breed", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case TAME -> text("texts.objective.templates.tame", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case PLAYTIME -> text("texts.objective.templates.playtime", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case ITEM_CONSUME -> text("texts.objective.templates.consume", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case COMMAND -> text("texts.objective.templates.command", placeholders("target", challenge.trigger().target(), "subject", subject));
+            case CUSTOM -> text("texts.objective.templates.custom", placeholders("target", challenge.trigger().target(), "subject", subject));
+        };
+    }
+
+    private String formatChallengeRewards(ChallengeDefinition challenge) {
+        List<String> rewards = new ArrayList<>();
+        rewards.add(text("texts.rewards.templates.points", placeholders("amount", challenge.pointsReward())));
+        rewards.addAll(challenge.rewards().stream().map(this::formatReward).toList());
+        return rewards.stream()
+                .reduce((left, right) -> left + text("texts.general.list-separator") + right)
+                .orElse(text("texts.rewards.none"));
+    }
+
+    private boolean attemptPrestige(Player player) {
+        PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
+        int total = achievementManager.getAdvancements().size();
+        int completed = profile.getCompletedAdvancements();
+        String locale = languageManager.getLocale(player);
+        if (completed < total) {
+            player.sendMessage(languageManager.getComponent(player, locale, "command.prestige-requirements", Map.of(
+                "completed", String.valueOf(completed),
+                "total", String.valueOf(total)
+            )));
+            return false;
+        }
+
+        profile.incrementPrestige();
+        profile.getAdvancementProgress().clear();
+        if (configManager.getMainConfig().getBoolean("prestige.reset-challenges", true)) {
+            profile.getChallengeProgress().clear();
+        }
+        int bonusPoints = configManager.getMainConfig().getInt("prestige.bonus-points", 250);
+        profile.addPoints(bonusPoints);
+        profile.addSeasonPoints(bonusPoints);
+        playerDataManager.setLastKnownName(player.getUniqueId(), player.getName());
+        playerDataManager.saveProfile(player.getUniqueId());
+        player.sendMessage(languageManager.getComponent(player, locale, "command.prestige-success", Map.of(
+            "prestige", String.valueOf(profile.getPrestigeLevel())
+        )));
+        return true;
     }
 
     private List<String> buildTierFocusLore(PlayerProfile profile, Tier tier) {
@@ -911,6 +1384,13 @@ public final class GUIManager implements Listener {
 
     private String formatPercent(double value) {
         return String.format(Locale.US, "%.2f", value);
+    }
+
+    private String formatSessionJoin(long epochMillis) {
+        if (epochMillis <= 0L) {
+            return text("texts.general.unknown");
+        }
+        return SESSION_TIME_FORMATTER.format(Instant.ofEpochMilli(epochMillis));
     }
 
     private String capitalize(String value) {

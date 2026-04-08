@@ -9,10 +9,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public final class ItemUtils {
 
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private static final Pattern LEGACY_HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
     private ItemUtils() {
     }
@@ -47,7 +49,8 @@ public final class ItemUtils {
         if (value == null || value.isEmpty()) {
             return "";
         }
-        return "<!italic>" + value
+        String normalized = LEGACY_HEX_PATTERN.matcher(value).replaceAll("<#$1>");
+        return "<!italic>" + normalized
                 .replace("<li>", "")
                 .replace("</li>", "");
     }

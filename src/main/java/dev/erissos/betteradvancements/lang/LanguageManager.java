@@ -45,8 +45,18 @@ public final class LanguageManager {
     }
 
     public String getMessage(String locale, String key) {
-        FileConfiguration configuration = languages.getOrDefault(locale.toLowerCase(Locale.ROOT), languages.get(defaultLanguage));
-        return configuration == null ? key : configuration.getString(key, key);
+        String selectedLocale = locale == null ? defaultLanguage : locale.toLowerCase(Locale.ROOT);
+        FileConfiguration configuration = languages.get(selectedLocale);
+        if (configuration != null && configuration.contains(key)) {
+            return configuration.getString(key, key);
+        }
+
+        FileConfiguration fallback = languages.get(defaultLanguage);
+        if (fallback != null && fallback.contains(key)) {
+            return fallback.getString(key, key);
+        }
+
+        return key;
     }
 
     public String getMessage(Player player, String key) {

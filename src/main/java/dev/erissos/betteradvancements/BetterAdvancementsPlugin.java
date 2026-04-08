@@ -56,7 +56,7 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
         this.challengeManager = new ChallengeManager(this, configManager, playerDataManager, vaultHook, seasonManager);
         this.leaderboardManager = new LeaderboardManager(this, playerDataManager, achievementManager);
         this.notificationManager = new NotificationManager(this, configManager, languageManager);
-        this.guiManager = new GUIManager(this, configManager, achievementManager, challengeManager, leaderboardManager, playerDataManager, languageManager);
+        this.guiManager = new GUIManager(this, configManager, achievementManager, challengeManager, leaderboardManager, playerDataManager, seasonManager, languageManager);
         this.apiService = new BetterAdvancementsService(achievementManager, playerDataManager, leaderboardManager);
 
         this.achievementManager.load();
