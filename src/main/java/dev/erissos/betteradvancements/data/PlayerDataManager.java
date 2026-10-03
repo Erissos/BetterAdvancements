@@ -56,7 +56,11 @@ public final class PlayerDataManager {
     }
 
     public PlayerProfile getOrCreate(UUID uniqueId) {
-        PlayerProfile profile = cache.computeIfAbsent(uniqueId, PlayerProfile::new);
+        PlayerProfile profile = cache.computeIfAbsent(uniqueId, id -> {
+            PlayerProfile created = new PlayerProfile(id);
+            created.setLanguage(configManager.getMainConfig().getString("general.default-language", "en"));
+            return created;
+        });
         normalizeSeason(profile);
         return profile;
     }

@@ -7,6 +7,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
@@ -59,8 +61,17 @@ public final class ConfigManager {
         File[] files = langFolder.listFiles((dir, name) -> name.endsWith(".yml"));
         if (files != null) {
             for (File file : files) {
-                String key = file.getName().replace(".yml", "").toLowerCase();
-                languageConfigs.put(key, YamlConfiguration.loadConfiguration(file));
+                String key = file.getName().replace(".yml", "").toLowerCase(java.util.Locale.ROOT);
+                YamlConfiguration language = YamlConfiguration.loadConfiguration(file);
+                InputStream resource = plugin.getResource("lang/" + file.getName());
+                if (resource != null) {
+                    try (var reader = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
+                        language.setDefaults(YamlConfiguration.loadConfiguration(reader));
+                    } catch (IOException exception) {
+                        throw new IllegalStateException("Cannot load language defaults", exception);
+                    }
+                }
+                languageConfigs.put(key, language);
             }
         }
     }

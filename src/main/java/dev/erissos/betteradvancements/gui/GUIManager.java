@@ -1124,7 +1124,11 @@ public final class GUIManager implements Listener {
         ItemStack item = ItemUtils.create("PLAYER_HEAD", title, lore, glow);
         if (item.getItemMeta() instanceof SkullMeta skullMeta) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uniqueId);
-            skullMeta.setOwningPlayer(offlinePlayer);
+            // 1.20.6's skull implementation rejects profiles whose cached name is null.
+            // Keep the default head until the player has a known profile.
+            if (offlinePlayer.getName() != null) {
+                skullMeta.setOwningPlayer(offlinePlayer);
+            }
             item.setItemMeta(skullMeta);
         }
         return item;

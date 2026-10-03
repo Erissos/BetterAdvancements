@@ -1,4 +1,6 @@
 command:
+  general-help: "<gray>Komutlar: /<command> menu | /<command> help | /<command> language [code] | /<command> reload</gray>"
+  language-info: "<gray>Diliniz: <language>. Kullanılabilir diller: <languages>.</gray>"
   player-only: "<gradient:#f5d38c:#d6b36a>Gorev Arayuzu</gradient> <dark_gray>»</dark_gray> <#f87171>Bu islem yalnizca oyun icindeki oyuncular tarafindan kullanilabilir.</#f87171>"
   no-permission: "<gradient:#f5d38c:#d6b36a>Gorev Arayuzu</gradient> <dark_gray>»</dark_gray> <#f87171>Bu Better Advancements islemi icin yetkin bulunmuyor.</#f87171>"
   reload: "<gradient:#f5d38c:#d6b36a>Gorev Arayuzu</gradient> <dark_gray>»</dark_gray> <#86efac>Yapilandirma, dil paketleri ve menuler basariyla yenilendi.</#86efac>"
@@ -17,7 +19,7 @@ command:
     available: "HAZIR"
   prestige-requirements: "<gradient:#f5d38c:#d6b36a>Prestij</gradient> <dark_gray>»</dark_gray> <#f87171>Once tum ilerlemeyi tamamlamalisin.</#f87171> <#d4d4d8>Mevcut durum:</#d4d4d8> <#fde68a><completed>/<total></#fde68a>"
   prestige-success: "<gradient:#f5d38c:#d6b36a>Prestij</gradient> <dark_gray>»</dark_gray> <#86efac>Prestij seviyen artik</#86efac> <#f9a8d4><prestige></#f9a8d4><#86efac>.</#86efac>"
-  usage: "<gradient:#f5d38c:#d6b36a>Kullanim</gradient> <dark_gray>»</dark_gray> <#67e8f9>/ba</#67e8f9> <#f8fafc>menu|stats|leaderboard|challenges|season|prestige|language|reload|give|reset</#f8fafc>"
+  usage: "<gradient:#f5d38c:#d6b36a>Kullanim</gradient> <dark_gray>»</dark_gray> <#67e8f9>/ba</#67e8f9> <#f8fafc>menu|help|stats|leaderboard|challenges|season|prestige|language|reload|give|reset</#f8fafc>"
 notifications:
   chat: "<gradient:#f5d38c:#d6b36a>Gorev Tamamlandi</gradient> <dark_gray>»</dark_gray> <#f8fafc><title></#f8fafc> <dark_gray>•</dark_gray> <#d4d4d8><description></#d4d4d8>"
   title-main: "<gradient:#f5d38c:#d6b36a><title></gradient>"

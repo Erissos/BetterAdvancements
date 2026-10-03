@@ -33,7 +33,8 @@ public final class LanguageManager {
     public void load() {
         this.languages.clear();
         this.languages.putAll(configManager.getLanguageConfigs());
-        this.defaultLanguage = configManager.getMainConfig().getString("general.default-language", "en").toLowerCase(Locale.ROOT);
+        this.defaultLanguage = resolveLanguage(configManager.getMainConfig().getString("general.default-language", "en"));
+        if (defaultLanguage == null) defaultLanguage = "en";
     }
 
     public String getDefaultLanguage() {
@@ -41,7 +42,15 @@ public final class LanguageManager {
     }
 
     public boolean hasLanguage(String locale) {
-        return languages.containsKey(locale.toLowerCase(Locale.ROOT));
+        return resolveLanguage(locale) != null;
+    }
+
+    public String resolveLanguage(String code) {
+        if (code == null) return null;
+        String normalized = code.trim().replace('-', '_').toLowerCase(Locale.ROOT);
+        if (languages.containsKey(normalized)) return normalized;
+        String base = normalized.split("_", 2)[0];
+        return normalized.contains("_") && languages.containsKey(base) ? base : null;
     }
 
     public String getDisplayName(String locale) {
@@ -57,25 +66,22 @@ public final class LanguageManager {
     }
 
     public String getMessage(String locale, String key) {
-        String selectedLocale = locale == null ? defaultLanguage : locale.toLowerCase(Locale.ROOT);
+        String selectedLocale = resolveLanguage(locale);
         FileConfiguration configuration = languages.get(selectedLocale);
         if (configuration != null && configuration.contains(key)) {
-            return configuration.getString(key, key);
+            return configuration.getString(key);
         }
 
         FileConfiguration fallback = languages.get(defaultLanguage);
         if (fallback != null && fallback.contains(key)) {
-            return fallback.getString(key, key);
+            return fallback.getString(key);
         }
 
         return key;
     }
 
     public String getMessage(Player player, String key) {
-        String selectedLocale = plugin.getPlayerDataManager().getCachedProfile(player.getUniqueId())
-                .map(profile -> profile.getLanguage().toLowerCase(Locale.ROOT))
-                .orElse(defaultLanguage);
-        return getMessage(selectedLocale, key);
+        return getMessage(getLocale(player), key);
     }
 
     public Component getComponent(String locale, String key, Map<String, String> placeholders) {
@@ -97,7 +103,9 @@ public final class LanguageManager {
 
     public String getLocale(CommandSender sender) {
         if (sender instanceof Player player) {
-            return plugin.getPlayerDataManager().getOrCreate(player.getUniqueId()).getLanguage().toLowerCase(Locale.ROOT);
+            String selected = plugin.getPlayerDataManager().getCachedProfile(player.getUniqueId())
+                    .map(profile -> resolveLanguage(profile.getLanguage())).orElse(defaultLanguage);
+            return selected == null ? defaultLanguage : selected;
         }
         return defaultLanguage;
     }

@@ -56,9 +56,9 @@ public final class NotificationManager {
         }
         String soundName = configManager.getMainConfig().getString("notifications.sound", "UI_TOAST_CHALLENGE_COMPLETE");
         if (profile.isSoundNotificationsEnabled()) {
-            try {
-                player.playSound(player.getLocation(), Sound.valueOf(soundName), 1.0F, 1.0F);
-            } catch (IllegalArgumentException ignored) {
+            Sound sound = dev.erissos.betteradvancements.util.SoundResolver.parse(soundName, null);
+            if (sound != null) {
+                player.playSound(player.getLocation(), sound, 1.0F, 1.0F);
             }
         }
     }

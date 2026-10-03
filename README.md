@@ -1,6 +1,26 @@
 # Better Advancements
 
-Better Advancements, Minecraft 1.20 API tabanını hedefleyen; görev zincirleri, puan sistemi, GUI tabanlı ilerleme ekranları, günlük/haftalık challenge yapısı, liderlik tabloları ve çoklu dil desteği sunan veri odaklı bir progression eklentisidir.
+Better Advancements, Paper 1.20.6–26.2 sunucularını destekleyen; görev zincirleri, puan sistemi, GUI tabanlı ilerleme ekranları, günlük/haftalık challenge yapısı, liderlik tabloları ve çoklu dil desteği sunan veri odaklı bir progression eklentisidir.
+
+## Sürüm 1.1.0
+
+- Yapımcı: **Erissos**.
+- Desteklenen sunucular: **Paper 1.20.6–26.2**.
+- Sunucu Java sürümü: **1.20.6–1.21.11 için Java 21**, **26.1–26.2 için Java 25**.
+- Paketle gelen dil sayısı: **11**. Tercih oyuncuya özeldir ve kalıcıdır.
+- [JAR indir](https://github.com/Erissos/BetterAdvancements/releases/tag/1.1.0) · [Sürüm notları](CHANGELOG.md) · [Doğrulanan sürümler ve test kapsamı](docs/COMPATIBILITY.md).
+
+### Ortak komut düzeni
+
+| Komut | İşlev |
+|---|---|
+| `/ba` veya `/ba menu` | Ana menüyü açar |
+| `/ba help` | Yardımı gösterir |
+| `/ba language` | Mevcut dili ve kullanılabilir kodları gösterir |
+| `/ba language tr` | Yalnızca bu oyuncunun dilini Türkçe yapar |
+| `/ba reload` | Yönetici yetkisiyle yapılandırma ve dilleri yeniler |
+
+`lang` ve `locale`, `language` komutunun takma adlarıdır. `tr`, `tr_TR` ve `tr-TR` aynı dili seçer. Geçersiz kod mevcut tercihi değiştirmez. Konsol `help` ve `reload` kullanabilir. Parametresiz dil komutu ile kurulu diller listelenir.
 
 Bu README, sadece kısa bir tanıtım değil; kurulumdan özelleştirmeye, YAML şemasından geliştirici API kullanımına kadar ayrıntılı bir operasyon ve yapılandırma kılavuzudur.
 
@@ -86,13 +106,14 @@ Başlıca sınıf sorumlulukları:
 
 ## Uyumluluk ve Gereksinimler
 
-- Java 17
-- Minecraft API sürümü: 1.20
-- Derleme hedefi: Paper 1.20.4 API
+- Desteklenen sunucular: Paper 1.20.6–26.2
+- Derleme: JDK 21 ve Java 21 bytecode
+- Minimum API sürümü ve derleme hedefi: Paper 1.20.6
+- Sunucu Java sürümü: 1.20.6–1.21.11 için Java 21; 26.1–26.2 için Java 25 ([Paper gereksinimleri](https://docs.papermc.io/paper/getting-started/))
 - Vault: opsiyonel
 - PlaceholderAPI: opsiyonel
 
-Pratikte bu proje Paper odaklı derlenmiştir. Spigot uyumluluğu hedeflenmiş olsa da üretim ortamında önce test etmeniz önerilir.
+Bu sürüm Paper API kullanır. GUI parlaması gerçek enchantment eklemeden uygulanır; ses ayarları hem `UI_BUTTON_CLICK` gibi eski adları hem de `minecraft:ui.button.click` gibi anahtarları kabul eder.
 
 ## Kurulum
 
@@ -109,7 +130,7 @@ Pratikte bu proje Paper odaklı derlenmiştir. Spigot uyumluluğu hedeflenmiş o
 ### Kaynaktan çalıştırma
 
 1. Depoyu klonlayın.
-2. Java 17 kurulu olduğundan emin olun.
+2. Sunucu sürümünüze uygun Java sürümünün kurulu olduğundan emin olun: 1.20.6–1.21.11 için 21, 26.1–26.2 için 25.
 3. Gradle wrapper ile build alın.
 4. Oluşan JAR dosyasını plugins klasörüne kopyalayın.
 5. İlk sunucu açılışında HikariCP, SQLite JDBC ve MySQL Connector/J otomatik indirilir; bu nedenle build çıktısı fat jar yerine ince bir plugin jar olarak üretilir.
@@ -140,12 +161,13 @@ Alt komutlar:
 | Komut | Açıklama |
 | --- | --- |
 | /ba | Varsayılan olarak ana menüyü açar |
+| /ba help | Komut yardımını gösterir |
 | /ba menu | Ana progression menüsünü açar |
 | /ba stats | Oyuncunun istatistik ekranını açar |
 | /ba leaderboard | Global leaderboard ekranını açar |
 | /ba leaderboard session | Session leaderboard ekranını açar |
 | /ba leaderboard global | Global leaderboard ekranını açar |
-| /ba language <kod> | Oyuncunun arayüz dilini değiştirir |
+| /ba language [kod] | Mevcut dili gösterir veya oyuncunun komut/bildirim dilini değiştirir |
 | /ba reload | YAML yapılandırmalarını yeniden yükler |
 | /ba give <oyuncu> <advancementId> | Belirtilen advancement'i zorla verir |
 | /ba reset <oyuncu> | Oyuncunun Better Advancements verisini sıfırlar |
@@ -153,7 +175,7 @@ Alt komutlar:
 Önemli davranış notları:
 
 - Menü, stats ve leaderboard komutları fiilen oyuncu için tasarlanmıştır.
-- reload, give ve reset akışlarında ba.admin kontrolü uygulanır.
+- reload için ba.reload veya ba.admin; give ve reset için ba.admin gerekir.
 - language değişikliği oyuncu profiline kalıcı olarak kaydedilir.
 
 ## Yetkiler
@@ -164,8 +186,9 @@ plugin.yml içinde tanımlı yetkiler:
 | --- | --- | --- |
 | ba.use | true | Genel kullanım düğümü |
 | ba.admin | op | Reload, give ve reset gibi yönetici işlemleri |
+| ba.reload | op | Yalnızca yapılandırma yenileme yetkisi |
 
-Not: Çekirdek komut kontrolünde aktif permission denetimi esas olarak ba.admin üzerinde uygulanır.
+Oyuncu komutları ba.use ile korunur. Yönetici komutları yetkiye göre tab listesinde gösterilir.
 
 ## Dosya ve Klasör Yapısı
 
@@ -201,16 +224,16 @@ Varsayılan ana anahtarlar:
 
 ```yml
 general:
-	default-language: en
-	cache-save-interval-seconds: 60
-	hidden-achievement-placeholder: "<dark_gray>???</dark_gray>"
+  default-language: en
+  cache-save-interval-seconds: 60
+  hidden-achievement-placeholder: "<dark_gray>???</dark_gray>"
 
 notifications:
-	chat: true
-	title: true
-	action-bar: true
-	boss-bar: true
-	sound: UI_TOAST_CHALLENGE_COMPLETE
+  chat: true
+  title: true
+  action-bar: true
+  boss-bar: true
+  sound: UI_TOAST_CHALLENGE_COMPLETE
 ```
 
 Alan açıklamaları:
@@ -235,19 +258,19 @@ Varsayılan yapı:
 
 ```yml
 storage:
-	type: sqlite
-	sqlite:
-		file: better-advancements.db
-	mysql:
-		host: localhost
-		port: 3306
-		database: better_advancements
-		username: root
-		password: password
+  type: sqlite
+  sqlite:
+    file: better-advancements.db
+  mysql:
+    host: localhost
+    port: 3306
+    database: better_advancements
+    username: root
+    password: password
 
 pool:
-	maximum-size: 8
-	minimum-idle: 2
+  maximum-size: 8
+  minimum-idle: 2
 ```
 
 Kullanım:
@@ -259,19 +282,19 @@ Kullanım:
 
 ```yml
 storage:
-	type: mysql
-	sqlite:
-		file: better-advancements.db
-	mysql:
-		host: 127.0.0.1
-		port: 3306
-		database: better_advancements
-		username: minecraft
-		password: super-secret
+  type: mysql
+  sqlite:
+    file: better-advancements.db
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    database: better_advancements
+    username: minecraft
+    password: super-secret
 
 pool:
-	maximum-size: 10
-	minimum-idle: 2
+  maximum-size: 10
+  minimum-idle: 2
 ```
 
 Önemli not:
@@ -330,33 +353,33 @@ Bir advancement kaydı genel olarak şu alanları içerir:
 
 ```yml
 achievements:
-	sample_advancement:
-		title: "Stone Worker"
-		description: "Break 128 stone blocks."
-		tier: skilled
-		category: builder
-		icon: STONE_PICKAXE
-		hidden: false
-		points: 15
-		rarity: uncommon
-		trigger:
-			type: BLOCK_BREAK
-			target: 128
-			conditions:
-				material: STONE
-		dependencies:
-			- t1_stone_age
-		rewards:
-			reward-1:
-				type: XP
-				amount: 250
-			reward-2:
-				type: ITEM
-				value: IRON_PICKAXE
-				amount: 1
-		gui:
-			slot: 21
-			page: 0
+  sample_advancement:
+    title: "Stone Worker"
+    description: "Break 128 stone blocks."
+    tier: skilled
+    category: builder
+    icon: STONE_PICKAXE
+    hidden: false
+    points: 15
+    rarity: uncommon
+    trigger:
+      type: BLOCK_BREAK
+      target: 128
+      conditions:
+        material: STONE
+    dependencies:
+      - t1_stone_age
+    rewards:
+      reward-1:
+        type: XP
+        amount: 250
+      reward-2:
+        type: ITEM
+        value: IRON_PICKAXE
+        amount: 1
+    gui:
+      slot: 21
+      page: 0
 ```
 
 Alanların anlamı:
@@ -391,20 +414,20 @@ Challenge alanları:
 
 ```yml
 challenges:
-	weekly_builder:
-		type: weekly
-		title: "Master Mason"
-		description: "Craft 200 stone bricks this week."
-		trigger:
-			type: ITEM_CRAFT
-			target: 200
-			conditions:
-				item: STONE_BRICKS
-		points-reward: 50
-		rewards:
-			reward-1:
-				type: XP
-				amount: 300
+  weekly_builder:
+    type: weekly
+    title: "Master Mason"
+    description: "Craft 200 stone bricks this week."
+    trigger:
+      type: ITEM_CRAFT
+      target: 200
+      conditions:
+        item: STONE_BRICKS
+    points-reward: 50
+    rewards:
+      reward-1:
+        type: XP
+        amount: 300
 ```
 
 Varsayılan paket:
@@ -509,22 +532,22 @@ Desteklenen reward tipleri:
 
 ```yml
 rewards:
-	reward-1:
-		type: COMMAND
-		value: "crate give {player} vote 1"
-	reward-2:
-		type: MONEY
-		amount: 500
-	reward-3:
-		type: ITEM
-		value: DIAMOND
-		amount: 3
-	reward-4:
-		type: XP
-		amount: 200
-	reward-5:
-		type: POINTS
-		amount: 15
+  reward-1:
+    type: COMMAND
+    value: "crate give {player} vote 1"
+  reward-2:
+    type: MONEY
+    amount: 500
+  reward-3:
+    type: ITEM
+    value: DIAMOND
+    amount: 3
+  reward-4:
+    type: XP
+    amount: 200
+  reward-5:
+    type: POINTS
+    amount: 15
 ```
 
 Detaylar:
@@ -609,7 +632,7 @@ Arayüz bileşenleri:
 
 Dil paketleri lang klasörü altında YML dosyaları olarak tutulur.
 
-Varsayılan diller:
+**11 hazır dil:**
 
 - en
 - tr
@@ -627,7 +650,10 @@ Dil seçimi akışı:
 
 1. Yeni oyuncu, config.yml içindeki default-language değerini alır.
 2. Oyuncu /ba language <kod> ile dili değiştirirse profil kalıcı olarak güncellenir.
-3. Bildirimler ve komut mesajları bu dile göre çözülür.
+3. Bildirimler ve komut mesajları bu dile göre çözülür; gui.yml içindeki sabit tasarım metinleri ayrıca yapılandırılır.
+4. Eksik mesaj anahtarları JAR içindeki çevirilerden tamamlanır; özelleştirilmiş dosyalar değiştirilmez.
+
+SQLite eş zamanlı profil kayıtları tek havuz bağlantısıyla sıraya alınır. `pool.maximum-size` ve `pool.minimum-idle` MySQL için uygulanır. Veritabanı tipini değiştirmek tam yeniden başlatma gerektirir.
 
 Dil mesajları MiniMessage kullandığı için şunları rahatça yapabilirsiniz:
 
@@ -753,17 +779,17 @@ if (registration != null) {
 
 ## Build Alma
 
-Bu proje Java 17 hedefler ve Gradle wrapper ile derlenir.
+Bu proje Java 21 hedefler, Paper 1.20.6 API ile Gradle wrapper kullanılarak derlenir. Build için JDK 21 gereklidir.
 
 Komut:
 
 ```powershell
-.\gradlew.bat build
+.\gradlew.bat clean build
 ```
 
-Çıktı tipik olarak build/libs klasöründe oluşur.
+Kurulum JAR'ı `build/libs/BetterAdvancements-1.1.0.jar` dosyasıdır. `-sources.jar` sunucu eklentisi değildir.
 
-Projede gömülü gelen bağımlılıklar:
+Paper'ın `plugin.yml` libraries alanı üzerinden ilk açılışta yüklediği çalışma zamanı bağımlılıkları:
 
 - HikariCP
 - sqlite-jdbc

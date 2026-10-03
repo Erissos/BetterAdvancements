@@ -1,4 +1,6 @@
 command:
+  general-help: "<gray>Commands: /<command> menu | /<command> help | /<command> language [code] | /<command> reload</gray>"
+  language-info: "<gray>Current language: <language>. Available: <languages>.</gray>"
   player-only: "<gradient:#f5d38c:#d6b36a>Quest Interface</gradient> <dark_gray>»</dark_gray> <#f87171>Only players can use this action from inside the game.</#f87171>"
   no-permission: "<gradient:#f5d38c:#d6b36a>Quest Interface</gradient> <dark_gray>»</dark_gray> <#f87171>You do not have access to this Better Advancements action.</#f87171>"
   reload: "<gradient:#f5d38c:#d6b36a>Quest Interface</gradient> <dark_gray>»</dark_gray> <#86efac>Configuration, language packs and menus were reloaded successfully.</#86efac>"
@@ -17,7 +19,7 @@ command:
     available: "AVAILABLE"
   prestige-requirements: "<gradient:#f5d38c:#d6b36a>Prestige</gradient> <dark_gray>»</dark_gray> <#f87171>Full completion is required first.</#f87171> <#d4d4d8>Current progress:</#d4d4d8> <#fde68a><completed>/<total></#fde68a>"
   prestige-success: "<gradient:#f5d38c:#d6b36a>Prestige</gradient> <dark_gray>»</dark_gray> <#86efac>Your prestige level is now</#86efac> <#f9a8d4><prestige></#f9a8d4><#86efac>.</#86efac>"
-  usage: "<gradient:#f5d38c:#d6b36a>Usage</gradient> <dark_gray>»</dark_gray> <#67e8f9>/ba</#67e8f9> <#f8fafc>menu|stats|leaderboard|challenges|season|prestige|language|reload|give|reset</#f8fafc>"
+  usage: "<gradient:#f5d38c:#d6b36a>Usage</gradient> <dark_gray>»</dark_gray> <#67e8f9>/ba</#67e8f9> <#f8fafc>menu|help|stats|leaderboard|challenges|season|prestige|language|reload|give|reset</#f8fafc>"
 notifications:
   chat: "<gradient:#f5d38c:#d6b36a>Quest Complete</gradient> <dark_gray>»</dark_gray> <#f8fafc><title></#f8fafc> <dark_gray>•</dark_gray> <#d4d4d8><description></#d4d4d8>"
   title-main: "<gradient:#f5d38c:#d6b36a><title></gradient>"

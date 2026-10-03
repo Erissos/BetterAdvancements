@@ -47,8 +47,10 @@ public final class JdbcStorageAdapter implements StorageAdapter {
             File databaseFile = new File(dataFolder, config.getString("storage.sqlite.file", "data.db"));
             hikariConfig.setJdbcUrl("jdbc:sqlite:" + databaseFile.getAbsolutePath());
         }
-        hikariConfig.setMaximumPoolSize(config.getInt("pool.maximum-size", 8));
-        hikariConfig.setMinimumIdle(config.getInt("pool.minimum-idle", 2));
+        // SQLite has a single writer. One pooled connection also prevents read/write lock upgrades.
+        boolean mysql = "mysql".equalsIgnoreCase(type);
+        hikariConfig.setMaximumPoolSize(mysql ? config.getInt("pool.maximum-size", 8) : 1);
+        hikariConfig.setMinimumIdle(mysql ? config.getInt("pool.minimum-idle", 2) : 1);
         hikariConfig.setPoolName("BetterAdvancementsPool");
         this.dataSource = new HikariDataSource(hikariConfig);
 
@@ -217,16 +219,19 @@ public final class JdbcStorageAdapter implements StorageAdapter {
     @Override
     public List<PlayerProfile> loadAllProfiles() {
         List<PlayerProfile> profiles = new ArrayList<>();
+        List<UUID> ids = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT uuid FROM ba_players");
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
-                loadProfile(UUID.fromString(resultSet.getString("uuid"))).ifPresent(profiles::add);
+                ids.add(UUID.fromString(resultSet.getString("uuid")));
             }
-            return profiles;
         } catch (SQLException exception) {
             throw new IllegalStateException("Could not load profiles", exception);
         }
+        // Release the listing connection before loading each profile from the same pool.
+        for (UUID id : ids) loadProfile(id).ifPresent(profiles::add);
+        return profiles;
     }
 
     @Override

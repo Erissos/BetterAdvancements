@@ -65,6 +65,11 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
         }
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
+            case "help" -> {
+                sender.sendMessage(languageManager.getComponent(sender, locale, "command.general-help", Map.of("command", label)));
+                sender.sendMessage(languageManager.getComponent(sender, locale, "command.usage", Map.of()));
+                return true;
+            }
             case "stats" -> {
                 if (!(sender instanceof Player player)) {
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
@@ -92,16 +97,23 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                 guiManager.openLeaderboard(player, args.length > 1 && args[1].equalsIgnoreCase("session"));
                 return true;
             }
-            case "language" -> {
-                if (!(sender instanceof Player player) || args.length < 2) {
+            case "language", "lang", "locale" -> {
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of()));
                     return true;
                 }
-                String requested = args[1].toLowerCase(Locale.ROOT);
-                if (!languageManager.hasLanguage(requested)) {
-                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.invalid-language", Map.of("language", requested)));
+                if (args.length < 2) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.language-info", Map.of(
+                            "language", locale, "languages", String.join(", ", languageManager.getLanguages().keySet().stream().sorted().toList()))));
+                    return true;
+                }
+                String requested = languageManager.resolveLanguage(args[1]);
+                if (requested == null) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.invalid-language", Map.of("language", args[1])));
                     return true;
                 }
                 playerDataManager.getOrCreate(player.getUniqueId()).setLanguage(requested);
+                playerDataManager.setLastKnownName(player.getUniqueId(), player.getName());
                 playerDataManager.saveProfile(player.getUniqueId());
                 sender.sendMessage(languageManager.getComponent(sender, requested, "command.language-set", Map.of(
                     "language", languageManager.getDisplayName(requested)
@@ -109,7 +121,7 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                 return true;
             }
             case "reload" -> {
-                if (!sender.hasPermission("ba.admin")) {
+                if (!sender.hasPermission("ba.reload") && !sender.hasPermission("ba.admin")) {
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.no-permission", Map.of()));
                     return true;
                 }
@@ -246,8 +258,18 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (sender instanceof Player && !sender.hasPermission("ba.use")) return List.of();
+        List<String> suggestions = suggestions(sender, args);
+        String prefix = args.length == 0 ? "" : args[args.length - 1].toLowerCase(Locale.ROOT);
+        return suggestions.stream().filter(value -> value.toLowerCase(Locale.ROOT).startsWith(prefix)).sorted().toList();
+    }
+
+    private List<String> suggestions(CommandSender sender, String[] args) {
         if (args.length == 1) {
-            return List.of("menu", "stats", "leaderboard", "challenges", "season", "prestige", "language", "reload", "give", "reset");
+            List<String> result = new ArrayList<>(List.of("menu", "help", "stats", "leaderboard", "challenges", "season", "prestige", "language"));
+            if (sender.hasPermission("ba.admin") || sender.hasPermission("ba.reload")) result.add("reload");
+            if (sender.hasPermission("ba.admin")) result.addAll(List.of("give", "reset"));
+            return result;
         }
         if (args.length == 2 && (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("reset"))) {
             return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
@@ -264,7 +286,7 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
         if (args.length == 2 && args[0].equalsIgnoreCase("prestige")) {
             return List.of("menu", "confirm");
         }
-        if (args.length == 2 && args[0].equalsIgnoreCase("language")) {
+        if (args.length == 2 && List.of("language", "lang", "locale").contains(args[0].toLowerCase(Locale.ROOT))) {
             return new ArrayList<>(languageManager.getLanguages().keySet());
         }
         if (args.length == 3 && args[0].equalsIgnoreCase("give")) {

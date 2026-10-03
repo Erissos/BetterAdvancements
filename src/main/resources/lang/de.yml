@@ -1,4 +1,6 @@
 command:
+  general-help: "<gray>Befehle: /<command> menu | /<command> help | /<command> language [code] | /<command> reload</gray>"
+  language-info: "<gray>Deine Sprache: <language>. Verfügbar: <languages>.</gray>"
   player-only: "<#fb7185>This action is bound to the in-game interface and can only be used by a player.</#fb7185>"
   no-permission: "<#fb7185>You do not have permission to use this Better Advancements action.</#fb7185>"
   reload: "<#4ade80>Better Advancements reloaded. Menus, language packs and progression settings are now live again.</#4ade80>"
@@ -17,7 +19,7 @@ command:
     available: "AVAILABLE"
   prestige-requirements: "<#fb7185>You need full completion before prestiging. Current progress: <#fde68a><completed>/<total></#fde68a>.</#fb7185>"
   prestige-success: "<#4ade80>Prestige upgraded to <#fda4af><prestige></#fda4af>. Route progress was reset and the prestige reward has been issued.</#4ade80>"
-  usage: "<gray>Usage:</gray> <#67e8f9>/ba <white>menu|stats|leaderboard|challenges|season|prestige|language|reload|give|reset</white></#67e8f9>"
+  usage: "<gray>Usage:</gray> <#67e8f9>/ba <white>menu|help|stats|leaderboard|challenges|season|prestige|language|reload|give|reset</white></#67e8f9>"
 notifications:
   chat: "<gradient:#f59e0b:#fb7185>[Advancement]</gradient> <#f8fafc><title></#f8fafc> <dark_gray>-</dark_gray> <#cbd5e1><description></#cbd5e1>"
   title-main: "<gradient:#fde68a:#fb7185><title></gradient>"

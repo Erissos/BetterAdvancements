@@ -288,9 +288,9 @@ public final class AchievementManager {
                     ));
                 }
                 case SOUND -> {
-                    try {
-                        player.playSound(player.getLocation(), org.bukkit.Sound.valueOf(reward.value().toUpperCase(Locale.ROOT)), 1.0F, 1.0F);
-                    } catch (IllegalArgumentException ignored) {
+                    org.bukkit.Sound sound = dev.erissos.betteradvancements.util.SoundResolver.parse(reward.value(), null);
+                    if (sound != null) {
+                        player.playSound(player.getLocation(), sound, 1.0F, 1.0F);
                     }
                 }
             }
