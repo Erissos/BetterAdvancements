@@ -1,6 +1,15 @@
 # Sürüm notları
 
-## 1.1.1-SNAPSHOT — yayımlanmamış düzeltmeler
+## 1.1.1-SNAPSHOT - sibling product links (2026-10-05; source snapshot)
+
+- Add optional protocol-1 Desperis sibling links, opt-in durable per-player language sync and source/event-specific live milestones.
+- Add configurable product-specific cooperation and conflict rules; preserve standalone ownership, money receipts, lowest Paper API and existing custom settings.
+- Add a documented feature/default matrix and compact three-version verification scope. No new release tag or GitHub Release; live achievement observations have no distributed delivery guarantee. Current verification: [compatibility](docs/COMPATIBILITY.md), [sanitized proof](docs/verification.json).
+
+
+## 1.1.1-SNAPSHOT - geliştirme kaynağı düzeltmeleri
+
+- Towny/GriefPrevention/WorldGuard/Lands/BentoBox/SuperiorSkyblock2 yerel koruma denetimleri, sağlayıcı/dünya/işlem ayarları ve hatalı yeniden yüklemede etkin ayarların korunması eklendi; config yorumları ve Desperis ürün başlıkları genişletildi.
 
 - Vault hizmeti arayüz üzerinden ve UUID hesabıyla bağlanır; reddedilen para ödülleri kalıcı bekler, belirsiz ödemeler incelemeye alınır.
 - Eşya/para ödülü makbuzları eski profilin yeniden yüklenmesinde ikinci teslimatı önler; açık sıfırlama yeni ödül dönemi açar.
@@ -32,4 +41,4 @@
 - SQLite erişimi tek havuz bağlantısına alınarak eş zamanlı kayıtlarda `SQLITE_BUSY` hatası giderilir. Profil listesi bağlantısı alt kayıtlar yüklenmeden bırakılır. MySQL havuz ayarları korunur.
 - GUI parlaması kaldırılan enchantment sabitinden bağımsızdır; adı bilinmeyen oyuncu başlıkları Paper 1.20.6'da güvenle oluşturulur.
 
-Altı gerçek Paper sürümünde üç eklentiyi birlikte kapsayan 43 kontrol/sürüm geçti. Ayrıntılar: [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
+Altı gerçek Paper sürümünde üç eklentiyi birlikte kapsayan 43 kontrol/sürüm geçti. Ayrıntılar: [docs/COMPATIBILITY.md](docs/COMPATIBILITY-RELEASE-1.1.0.md).

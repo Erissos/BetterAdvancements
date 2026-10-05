@@ -1,19 +1,28 @@
 # Better Advancements
 
+## Desperis suite integrations (source snapshot)
+
+Optional sibling-plugin features now include per-player language synchronization, explicit CUSTOM advancement/challenge milestones, company-based auction benefits and worker capacity, worker-cargo work-order browsing, and DDG-owned AdaptiveBosses encounters. Dungeon, bounty, pet, NPC and server-event rules prevent overlapping progression/effects. Each product retains its own payment receipts and works independently.
+
+Configure `suite-integrations` separately from territorial `integrations`. Language synchronization, company economic/cap benefits and linked dungeon bosses are **disabled by default**; opt in deliberately. Live milestones have no historical/offline backfill. See [suite matrix and settings](docs/SUITE-INTEGRATIONS.md) and [this product's rules](docs/SUITE-LINKS.md). Verification is limited to Paper **1.20.6, 1.21.11 and 26.2** and the compact scope recorded by the workspace coordinator; connected dungeon parties and crash-level delivery guarantees are not certified. This development source snapshot has no new tag or GitHub Release. See [current compatibility and exact verification scope](docs/COMPATIBILITY.md) and [sanitized proof](docs/verification.json).
+
+
 Better Advancements, Paper 1.20.6–26.2 sunucularını destekleyen; görev zincirleri, puan sistemi, GUI tabanlı ilerleme ekranları, günlük/haftalık challenge yapısı, liderlik tabloları ve çoklu dil desteği sunan veri odaklı bir progression eklentisidir.
 
 ## Geliştirme sürümü: 1.1.1-SNAPSHOT
 
-3 Ekim 2026 incelemesindeki dil, kayıt ve işlem güvenliği sorunlarının düzeltmeleri bu kaynakta bulunur. GitHub'daki 1.1.0 yayımlanmış sürümünden sonra gelen, henüz yayımlanmamış geliştirme buildidir; test sunucusunda doğrulanır. Paper 1.20.6 API ve Java 21 derleme hedefi korunur.
+Bu geliştirme kaynağı `1.1.1-SNAPSHOT` sürümündedir; 1.1.0 etiketli yayından sonraki dil, kayıt, işlem güvenliği ve Desperis entegrasyonlarını içerir. Bu kaynak güncellemesi yeni sürüm etiketi veya GitHub Release oluşturmaz. Paper 1.20.6 API ve Java 21 bytecode hedefi korunur.
 
 Menü yerleşimi/malzemeleri `gui.yml` içinde; oyuncuya özel metinler `lang/<dil>.yml` içindeki `gui`, `values`, `content` alanlarındadır. İngilizce ortak `gui.yml` metinlerini kullanır. Paketle gelen 65 ilerleme ve 6 görev için dil karşılıkları vardır; Türkçe özgün başlıklar, diğer paketlerde yerelleştirilmiş amaç başlıkları bulunur. Minecraft eşya/yaratık/biyom terimleri doğrulanmış 26.2 dil varlıklarından alınmıştır.
 
 Özel görev başlığı/açıklaması özgün paket metninden farklıysa otomatik çeviri onun üzerine yazılmaz. Özel içerik çevirisinde `content.advancements.<id>.title/description` veya `content.challenges.<id>...` ve eşleşen `source-title/source-description` değerlerini düzenleyin. Bu kaynak alanları sunucunun içerik metniyle eşleşmelidir. `/ba language tr` ve menüdeki dil seçimi açık ekranı yeniler. Sezon ve görev rotasyonu bildirimi de oyuncunun dilindedir.
 
 
-MySQL 8.4.7 şema/işlem regresyonları ve bağlı ağ istemcisiyle oyuncuya özel dil/menü kontrolleri eklenmiştir. Doğrulama kapsamı [uyumluluk belgesindedir](docs/COMPATIBILITY.md).
+Eski MySQL ve ağ istemcisi sonuçları yalnızca kendi tarihsel JAR kimliklerine aittir. Bu snapshot için güncel üç sürümlük kapsam [uyumluluk belgesinde](docs/COMPATIBILITY.md), eski yayın kanıtı [tarihsel kayıtta](docs/COMPATIBILITY-RELEASE-1.1.0.md) bulunur.
 
 [Düzeltme notları](CHANGELOG.md) · [Kurtarma ve teslimat kuralları](docs/RECOVERY.md).
+
+[Desperis ürün bağlantıları ve CUSTOM hedefler](docs/SUITE-INTEGRATIONS.md): doğrulanmış canlı işlemler başarımları ve aktif görevleri ilerletebilir. On iki yerelleştirilmiş örnek `suite-achievements.yml` içinde varsayılan olarak kapalıdır; mevcut kataloglar değiştirilmez.
 
 Para ve eşya ödülleri kalıcı teslim kutusuyla korunur. `/ba claim` bekleyen ödülleri alır; tamamlanmış ödül makbuzları tekrar teslimatı önler. MySQL bağlantı seçenekleri `database.yml` içindeki `storage.mysql.parameters` alanından ayarlanır; sunucunuzun JDBC/TLS seçenekleri burada kullanılabilir. Eski paket Türkçesinin birebir varsayılan mesajları bellekte Türkçe harflerle güncellenir; özel mesajlar ve kurulu dosyalar korunur.
 
@@ -23,7 +32,7 @@ Para ve eşya ödülleri kalıcı teslim kutusuyla korunur. `/ba claim` bekleyen
 - Desteklenen sunucular: **Paper 1.20.6–26.2**.
 - Sunucu Java sürümü: **1.20.6–1.21.11 için Java 21**, **26.1–26.2 için Java 25**.
 - Paketle gelen dil sayısı: **11**. Tercih oyuncuya özeldir ve kalıcıdır.
-- [JAR indir](https://github.com/Erissos/BetterAdvancements/releases/tag/1.1.0) · [Sürüm notları](CHANGELOG.md) · [Doğrulanan sürümler ve test kapsamı](docs/COMPATIBILITY.md).
+- [JAR indir](https://github.com/Erissos/BetterAdvancements/releases/tag/1.1.0) · [Sürüm notları](CHANGELOG.md) · [Doğrulanan sürümler ve test kapsamı](docs/COMPATIBILITY-RELEASE-1.1.0.md).
 
 ### Ortak komut düzeni
 
@@ -802,7 +811,7 @@ Komut:
 .\gradlew.bat clean build
 ```
 
-Kurulum JAR'ı `build/libs/BetterAdvancements-1.1.0.jar` dosyasıdır. `-sources.jar` sunucu eklentisi değildir.
+Kurulum JAR'ı `build/libs/BetterAdvancements-1.1.1-SNAPSHOT.jar` dosyasıdır. `-sources.jar` sunucu eklentisi değildir.
 
 Paper'ın `plugin.yml` libraries alanı üzerinden ilk açılışta yüklediği çalışma zamanı bağımlılıkları:
 
@@ -901,3 +910,5 @@ Bilmeniz gerekenler:
 Better Advancements, sabit kodlanmış bir görev sistemi olmaktan çok, sunucu sahibinin kendi progression tasarımını inşa edebileceği bir iskele sunar. Bu projeyi verimli kullanmanın anahtarı, achievements.yml ve gui.yml dosyalarını birlikte düşünmek, trigger mantığını doğru kurgulamak ve reload ile restart farkını operasyonel olarak doğru yönetmektir.
 
 Sunucu konseptiniz ister survival odaklı olsun, ister RPG/quest temalı, mevcut yapı; zincirli görevler, gizli hedefler, puan ekonomisi ve GUI tabanlı takip için güçlü bir temel sağlar.
+
+Towny, GriefPrevention, WorldGuard, Lands, BentoBox ve SuperiorSkyblock2 için isteğe bağlı yerel izin entegrasyonları bulunur. Sağlayıcılar, işlem denetimleri, dünya filtreleri ve zorunlu bağımlılıklar yorumlu `config.yml` üzerinden ayarlanır. [Entegrasyon davranışı ve sınırları](docs/INTEGRATIONS.md) · [Yapılandırma](docs/CONFIGURATION.md). Diğer eklentiler otomatik kurulmaz.
