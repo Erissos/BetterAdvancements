@@ -34,3 +34,6 @@ target/
 
 ### Mac OS ###
 .DS_Store
+# Generated Eclipse output and local Gradle distribution; keep the official wrapper.
+/bin/
+/.tools/
