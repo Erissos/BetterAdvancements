@@ -784,6 +784,66 @@ gui:
         sound: 'Notifications sonores: {value}'
 content:
   advancements:
+    suite_animal_registered:
+      title: "Ton premier compagnon"
+      description: "Enregistre un nouveau cheval, âne ou mulet dans ton écurie."
+      source-title: "First Stable Companion"
+      source-description: "Register a new horse, donkey or mule in your stable."
+    suite_animal_fed:
+      title: "Les soins avant tout"
+      description: "Consomme dix aliments en nourrissant tes animaux de l'écurie."
+      source-title: "Care Comes First"
+      source-description: "Consume ten food items while feeding your own stable animals."
+    suite_animal_bred:
+      title: "Une nouvelle génération"
+      description: "Fais naître un poulain qui est bien enregistré dans ton écurie."
+      source-title: "A New Generation"
+      source-description: "Breed a foal that is successfully saved in your stable."
+    suite_auction_sale:
+      title: "Vendu !"
+      description: "Termine une vente aux enchères dont le paiement est réglé."
+      source-title: "Sold!"
+      source-description: "Complete a live auction sale with payment settled."
+    suite_auction_purchase:
+      title: "Une bonne affaire"
+      description: "Termine un achat aux enchères dont le paiement est réglé."
+      source-title: "A Good Find"
+      source-description: "Complete a live auction purchase with payment settled."
+    suite_business_created:
+      title: "Ouvert au public"
+      description: "Crée ta propre entreprise avec succès."
+      source-title: "Open for Business"
+      source-description: "Create your own business successfully."
+    suite_business_order:
+      title: "Commande livrée"
+      description: "Livre tous les produits d'un ordre de travail et reçois sa récompense."
+      source-title: "Order Delivered"
+      source-description: "Complete a work order with its full delivery and payout."
+    suite_bounty_claim:
+      title: "Prime encaissée"
+      description: "Reçois une prime après avoir éliminé un joueur dans les conditions requises."
+      source-title: "Bounty Collected"
+      source-description: "Earn a bounty payout from an eligible live player kill."
+    suite_worker_produced:
+      title: "Une équipe productive"
+      description: "Reçois soixante-quatre objets issus de la production achevée de tes ouvriers."
+      source-title: "A Productive Team"
+      source-description: "Receive sixty-four items from committed worker production."
+    suite_dungeon_clear:
+      title: "Expédition terminée"
+      description: "Termine un donjon actif et gagne sa récompense finale."
+      source-title: "Expedition Complete"
+      source-description: "Clear an active dungeon and earn its completion reward."
+    suite_boss_victory:
+      title: "Contre toute attente"
+      description: "Remporte un combat de boss adaptatif et reçois la récompense de victoire."
+      source-title: "Against the Odds"
+      source-description: "Win an adaptive boss encounter and earn its victory reward."
+    suite_event_mob_kill:
+      title: "Au cœur de l'action"
+      description: "Élimine dix créatures admissibles affectées par un événement actif du serveur."
+      source-title: "In the Thick of It"
+      source-description: "Defeat ten eligible mobs affected by an active server event."
     t1_welcome_home:
       title: Rejoignez le serveur
       description: Rejoignez le serveur.

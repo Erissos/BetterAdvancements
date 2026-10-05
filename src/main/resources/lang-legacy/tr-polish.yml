@@ -1,14 +1,14 @@
 command:
   general-help: '<gray>Komutlar: /<command> menu | /<command> help | /<command> language [code] | /<command> reload</gray>'
   language-info: '<gray>Diliniz: <language>. Kullanılabilir diller: <languages>.</gray>'
-  player-only: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#f87171>Bu işlem yalnızca oyun
-    içindeki oyuncular tarafından kullanılabilir.</#f87171>
-  no-permission: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#f87171>Bu Better Advancements
-    işlemi için yetkin bulunmuyor.</#f87171>
-  reload: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#86efac>Yapılandırma, dil paketleri
-    ve menüler başarıyla yenilendi.</#86efac>
-  invalid-language: <gradient:#f5d38c:#d6b36a>Dil</gradient> <dark_gray>»</dark_gray> <#f87171><language></#f87171> <#d4d4d8>bu
-    sunucuda kurulu değil.</#d4d4d8>
+  player-only: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#f87171>Bu işlem yalnızca
+    oyun içindeki oyuncular tarafından kullanılabilir.</#f87171>
+  no-permission: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#f87171>Bu Better
+    Advancements işlemi için yetkin bulunmuyor.</#f87171>
+  reload: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#86efac>Yapılandırma, dil
+    paketleri ve menüler başarıyla yenilendi.</#86efac>
+  invalid-language: <gradient:#f5d38c:#d6b36a>Dil</gradient> <dark_gray>»</dark_gray> <#f87171><language></#f87171>
+    <#d4d4d8>bu sunucuda kurulu değil.</#d4d4d8>
   language-set: <gradient:#f5d38c:#d6b36a>Dil</gradient> <dark_gray>»</dark_gray> <#f8fafc>Aktif profil dilin artık</#f8fafc>
     <#67e8f9><language></#67e8f9><#f8fafc>.</#f8fafc>
   player-not-found: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#f87171><player></#f87171>
@@ -17,34 +17,35 @@ command:
     <#d4d4d8>ilerlemesi</#d4d4d8> <#67e8f9><player></#67e8f9> <#d4d4d8>oyuncusuna verildi.</#d4d4d8>
   give-failed: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#f87171><achievement></#f87171>
     <#d4d4d8>ilerlemesi</#d4d4d8> <#67e8f9><player></#67e8f9> <#d4d4d8>oyuncusuna verilemedi.</#d4d4d8>
-  reset: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#fde68a><player></#fde68a> <#d4d4d8>için
-    Better Advancements verileri sıfırlandı.</#d4d4d8>
-  season-info: <gradient:#f5d38c:#d6b36a>Sezon Panosu</gradient> <dark_gray>»</dark_gray> <#67e8f9>Sezon</#67e8f9> <#f8fafc><season></#f8fafc>
-    <dark_gray>|</dark_gray> <#fde68a>Sezon Puanı</#fde68a> <#f8fafc><season_points></#f8fafc> <dark_gray>|</dark_gray> <#86efac>Toplam</#86efac>
-    <#f8fafc><points></#f8fafc> <dark_gray>|</dark_gray> <#f9a8d4>Prestij</#f9a8d4> <#f8fafc><prestige></#f8fafc>
-  challenge-line: '<gradient:#f5d38c:#d6b36a>Görev</gradient> <dark_gray>»</dark_gray> <#fbbf24><type></#fbbf24> <#f8fafc><title></#f8fafc>
-    <dark_gray>(hedef: <target>)</dark_gray>'
+  reset: <gradient:#f5d38c:#d6b36a>Görev Arayüzü</gradient> <dark_gray>»</dark_gray> <#fde68a><player></#fde68a>
+    <#d4d4d8>için Better Advancements verileri sıfırlandı.</#d4d4d8>
+  season-info: <gradient:#f5d38c:#d6b36a>Sezon Panosu</gradient> <dark_gray>»</dark_gray> <#67e8f9>Sezon</#67e8f9>
+    <#f8fafc><season></#f8fafc> <dark_gray>|</dark_gray> <#fde68a>Sezon Puanı</#fde68a> <#f8fafc><season_points></#f8fafc>
+    <dark_gray>|</dark_gray> <#86efac>Toplam</#86efac> <#f8fafc><points></#f8fafc> <dark_gray>|</dark_gray> <#f9a8d4>Prestij</#f9a8d4>
+    <#f8fafc><prestige></#f8fafc>
+  challenge-line: '<gradient:#f5d38c:#d6b36a>Görev</gradient> <dark_gray>»</dark_gray> <#fbbf24><type></#fbbf24>
+    <#f8fafc><title></#f8fafc> <dark_gray>(hedef: <target>)</dark_gray>'
   season-leader-line: <gradient:#f5d38c:#d6b36a>Sezon Sırası</gradient> <dark_gray>»</dark_gray> <#fde68a>#<rank></#fde68a>
     <#f8fafc><player></#f8fafc> <dark_gray>-</dark_gray> <#67e8f9><points></#67e8f9> <#d4d4d8>sezon puanı</#d4d4d8>
-  season-reward-line: <gradient:#f5d38c:#d6b36a>Sezon Ödülü</gradient> <dark_gray>»</dark_gray> <#f8fafc>Eşik</#f8fafc> <#fde68a><threshold></#fde68a>
-    <dark_gray>-</dark_gray> <#67e8f9><status></#67e8f9>
+  season-reward-line: <gradient:#f5d38c:#d6b36a>Sezon Ödülü</gradient> <dark_gray>»</dark_gray> <#f8fafc>Eşik</#f8fafc>
+    <#fde68a><threshold></#fde68a> <dark_gray>-</dark_gray> <#67e8f9><status></#67e8f9>
   status:
     claimed: ALINDI
     available: HAZIR
-  prestige-requirements: <gradient:#f5d38c:#d6b36a>Prestij</gradient> <dark_gray>»</dark_gray> <#f87171>Önce tüm ilerlemeyi
-    tamamlamalısın.</#f87171> <#d4d4d8>Mevcut durum:</#d4d4d8> <#fde68a><completed>/<total></#fde68a>
-  prestige-success: <gradient:#f5d38c:#d6b36a>Prestij</gradient> <dark_gray>»</dark_gray> <#86efac>Prestij seviyen artık</#86efac>
-    <#f9a8d4><prestige></#f9a8d4><#86efac>.</#86efac>
-  usage: <gradient:#f5d38c:#d6b36a>Kullanım</gradient> <dark_gray>»</dark_gray> <#67e8f9>/ba</#67e8f9> <#f8fafc>menu|help|stats|leaderboard|challenges|season|prestige|language|reload|give|reset</#f8fafc>
+  prestige-requirements: <gradient:#f5d38c:#d6b36a>Prestij</gradient> <dark_gray>»</dark_gray> <#f87171>Önce tüm
+    ilerlemeyi tamamlamalısın.</#f87171> <#d4d4d8>Mevcut durum:</#d4d4d8> <#fde68a><completed>/<total></#fde68a>
+  prestige-success: <gradient:#f5d38c:#d6b36a>Prestij</gradient> <dark_gray>»</dark_gray> <#86efac>Prestij seviyen
+    artık</#86efac> <#f9a8d4><prestige></#f9a8d4><#86efac>.</#86efac>
+  usage: <gradient:#f5d38c:#d6b36a>Kullanim</gradient> <dark_gray>»</dark_gray> <#67e8f9>/ba</#67e8f9> <#f8fafc>menu|help|stats|leaderboard|challenges|season|prestige|language|reload|give|reset</#f8fafc>
   storage-error: <red>Değişiklik kaydedilemedi. Tekrar deneyin.
   reward-claim: '<green>Teslim edilen ödül: <count>. Bekleyen ödüller teslim kutunuzda saklanır.'
 notifications:
-  chat: <gradient:#f5d38c:#d6b36a>Görev Tamamlandı</gradient> <dark_gray>»</dark_gray> <#f8fafc><title></#f8fafc> <dark_gray>•</dark_gray>
-    <#d4d4d8><description></#d4d4d8>
+  chat: <gradient:#f5d38c:#d6b36a>Gorev Tamamlandi</gradient> <dark_gray>»</dark_gray> <#f8fafc><title></#f8fafc>
+    <dark_gray>•</dark_gray> <#d4d4d8><description></#d4d4d8>
   title-main: <gradient:#f5d38c:#d6b36a><title></gradient>
-  title-sub: <#f8fafc><tier></#f8fafc> <#67e8f9>görev zinciri ilerledi</#67e8f9>
-  action-bar-message: <gradient:#86efac:#f5d38c>+<points> görev puanı profiline eklendi</gradient>
-  boss-bar-message: <gradient:#f5d38c:#d6b36a>Tamamlandı</gradient> <dark_gray>»</dark_gray> <#f8fafc><title></#f8fafc>
+  title-sub: <#f8fafc><tier></#f8fafc> <#67e8f9>gorev zinciri ilerledi</#67e8f9>
+  action-bar-message: <gradient:#86efac:#f5d38c>+<points> gorev puani profiline eklendi</gradient>
+  boss-bar-message: <gradient:#f5d38c:#d6b36a>Tamamlandi</gradient> <dark_gray>»</dark_gray> <#f8fafc><title></#f8fafc>
   season-reward-unlocked: <gold><threshold> puanlık sezon ödülü açıldı.
   challenge-rotation: <aqua>Günlük ve haftalık görevler yenilendi.
 gui:
@@ -57,11 +58,11 @@ gui:
     profile:
       title: <gold><bold>Oyuncu Profili
       lore:
-      - '<li><gray>Oyuncu: {player}'
+      - '<li><gray>Ad: {player}'
       - '<li><gray>Tamamlanma: {completion}%'
-      - '<li><gray>Toplam Puan: {points}'
+      - '<li><gray>Puan: {points}'
       - '<li><gray>En Yüksek Kademe: {highest_tier}'
-      - <li><gray>Kademe kartlarından görevlerini görüntüle.
+      - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     next-target:
       active:
         title: <yellow><bold>Sıradaki Görev
@@ -70,21 +71,21 @@ gui:
         - '<li><gray>Kademe: {tier}'
         - '<li><gray>Kategori: {category}'
         - '<li><gray>Hedef: {goal}'
-        - <li><gray>Bu görevin bulunduğu kademeyi açmak için tıkla.
+        - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
       empty:
-        title: <green><bold>Tüm Görevler Tamamlandı
+        title: <green><bold>Bu görev yolu tamamlandı.
         lore:
-        - <li><gray>Tüm kademe görevlerini tamamladın.
-        - <li><gray>Günlük ve haftalık görevler için
-        - <li><gray>Meydan Okumalar menüsüne göz at.
+        - <li><gray>Bu görev yolu tamamlandı.
+        - <li><gray>Bu görev yolu tamamlandı.
+        - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     challenge:
       title: <gold><bold>Meydan Okumalar
       empty-lore:
-      - <li><gray>Şu anda aktif günlük veya haftalık görev yok.
-      - <li><gray>Yeni görevler dönem değişiminde gelir.
+      - <li><gray>Henüz kullanılabilir kayıt yok.
+      - <li><dark_gray>Günlük ve haftalık görevler dönem değişiminde sıfırlanır.
       entry-title: '<li><yellow>{type}: {title}'
       entry-description: <li><dark_gray>{description}
-      entry-reward: '<li><gray>Ödül: {reward} puan'
+      entry-reward: '<li><gray>Ödül: {reward} Points'
       footer-lore:
       - <li><dark_gray>Günlük ve haftalık görevler dönem değişiminde sıfırlanır.
     tiers:
@@ -104,66 +105,67 @@ gui:
         name: <green><bold>Acemi · Görevler
         lore:
         - '<li><gray>Tamamlanma: {completion}%'
-        - '<li><gray>Açık Görevler: {unlocked}/{total}'
+        - '<li><gray>Açık: {unlocked}/{total}'
         - '<li><gray>Nadir Tamamlamalar: {rare}'
-        - <li><gray>Bu kademenin görevlerini açmak için tıkla.
+        - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
       skilled:
         display-name: Yetenekli
         name: <yellow><bold>Yetenekli · Görevler
         lore:
         - '<li><gray>Tamamlanma: {completion}%'
-        - '<li><gray>Açık Görevler: {unlocked}/{total}'
+        - '<li><gray>Açık: {unlocked}/{total}'
         - '<li><gray>Nadir Tamamlamalar: {rare}'
-        - <li><gray>Bu kademenin görevlerini açmak için tıkla.
+        - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
       expert:
         display-name: Uzman
         name: <aqua><bold>Uzman · Görevler
         lore:
         - '<li><gray>Tamamlanma: {completion}%'
-        - '<li><gray>Açık Görevler: {unlocked}/{total}'
+        - '<li><gray>Açık: {unlocked}/{total}'
         - '<li><gray>Nadir Tamamlamalar: {rare}'
-        - <li><gray>Bu kademenin görevlerini açmak için tıkla.
+        - <li><dark_gray>Görev ilerlemesini sıfırlamak ve prestij bonusunu almak için tıklayın.
       master:
         display-name: Usta
         name: <light_purple><bold>Usta · Görevler
         lore:
         - '<li><gray>Tamamlanma: {completion}%'
-        - '<li><gray>Açık Görevler: {unlocked}/{total}'
+        - '<li><gray>Açık: {unlocked}/{total}'
         - '<li><gray>Nadir Tamamlamalar: {rare}'
-        - <li><gray>Bu kademenin görevlerini açmak için tıkla.
+        - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
       mythic:
         display-name: Efsanevi
         name: <red><bold>Efsanevi · Görevler
         lore:
         - '<li><gray>Tamamlanma: {completion}%'
-        - '<li><gray>Açık Görevler: {unlocked}/{total}'
+        - '<li><gray>Açık: {unlocked}/{total}'
         - '<li><gray>Nadir Tamamlamalar: {rare}'
-        - <li><gray>Bu kademenin görevlerini açmak için tıkla.
+        - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     stats:
       title: <aqua><bold>İstatistikler
       lore:
-      - <li><gray>Puanını, tamamlanan görevlerini ve
-      - <li><gray>kategori ilerlemeni görüntüle.
-      - <li><gray>İstatistiklerini açmak için tıkla.
+      - <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
+      - <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
+      - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     leaderboard:
       title: <green><bold>Sıralama
       lore:
-      - <li><gray>Genel ve oturum sıralamalarını görüntüle.
-      - <li><gray>Diğer oyuncularla ilerlemeni karşılaştır.
-      - <li><gray>Sıralamayı açmak için tıkla.
+      - <li><gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+      - <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
+      - <li><dark_gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
     categories:
-      title: <gold><bold>Görev Kategorileri
+      title: <gold><bold>Genel Bakış
       lore:
-      - '<li><gray>Tamamlanan Görevler: {completed}'
+      - '<li><gray>Tamamlandı: {completed}'
       - '<li><gray>Kategoriler: {categories}'
-      - <li><gray>Görevleri kategorilerine göre incelemek için tıkla.
+      - '<li><gray>Nadir Tamamlamalar: {completed}'
+      - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     season:
-      title: <aqua><bold>Sezon
+      title: <aqua><bold>İlerleme
       lore:
       - '<li><gray>Sezon: {season}'
       - '<li><gray>Sezon Puanı: {season_points}'
-      - '<li><gray>Ödül Eşikleri: {reward_count}'
-      - <li><gray>Sezon ödüllerini ve sıralamayı açmak için tıkla.
+      - '<li><gray>Sayı: {reward_count}'
+      - <li><dark_gray>Sezon puanlarını, ödülleri ve sıralamayı takip edin.
     prestige:
       title: <light_purple><bold>Prestij
       lore:
@@ -172,7 +174,7 @@ gui:
       - '<li><gray>Bonus: {bonus}'
       - <li><dark_gray>Görev ilerlemesini sıfırlamak ve prestij bonusunu almak için tıklayın.
     settings:
-      title: <light_purple><bold>Dil ve Bildirimler
+      title: <light_purple><bold>Dil
       lore:
       - '<li><gray>Dil: {language}'
       - '<li><gray>Sohbet Bildirimleri: {chat}'
@@ -188,10 +190,10 @@ gui:
       title: <gold><bold>{tier_name} Genel Bakış
       lore:
       - '<li><gray>Tamamlanma: {completion}%'
-      - '<li><gray>Toplam Görev: {total}'
-      - '<li><gray>Açık Görevler: {unlocked}'
+      - '<li><gray>Sayı: {total}'
+      - '<li><gray>Açık: {unlocked}'
       - '<li><gray>Nadir Tamamlamalar: {rare}'
-      - <li><gray>Kartlarda gereksinimleri ve ilerlemeni incele.
+      - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     node:
       hidden-title: <gray><bold>Gizli Görev
       hidden-description: <dark_gray>Bu yolu açmak için gereken görevleri tamamlayın.
@@ -212,14 +214,14 @@ gui:
       requires-format: '<red>Gerekenler: {requirements}'
       unlocks-format: '<aqua>Açılanlar: {unlocks}'
       state:
-        completed: '<green>Durum: Tamamlandı'
-        unlocked: '<yellow>Durum: Açık — hedefi tamamlayabilirsin.'
-        locked: '<gray>Durum: Kilitli — önce gereken görevleri tamamla.'
+        completed: <green><bold>Bu görev yolu tamamlandı.
+        unlocked: <yellow><bold>Bu yolu açmak için gereken görevleri tamamlayın.
+        locked: <gray><bold>Bu yolu açmak için gereken görevleri tamamlayın.
     connectors:
       title-completed: <green><bold>{direction} Tamamlandı
       title-locked: <aqua><bold>{direction} Gerekenler
-      detail-completed: <li><gray>Bu bağlantının önceki görevi tamamlandı.
-      detail-locked: <li><gray>Bağlantı, önce tamamlaman gereken görevi gösterir.
+      detail-completed: <li><gray>Bu görev yolu tamamlandı.
+      detail-locked: <li><gray>Sonraki yolu açmak için tıklayın.
       direction-lore: '<li><dark_gray>Yön: {direction}'
       materials:
         completed: LIME_STAINED_GLASS_PANE
@@ -237,11 +239,11 @@ gui:
         active:
           title: '<aqua><bold>Önceki: {tier_name}'
           lore:
-          - <li><gray>Önceki kademeyi açmak için tıkla.
+          - <li><gray>Önceki yolu açmak için tıklayın.
         empty:
-          title: <gray>İlk Kademe
+          title: <gray><bold>Henüz kullanılabilir kayıt yok.
           lore:
-          - <li><gray>Bu kademeden önce başka bir kademe yok.
+          - <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
       legend-completed:
         title: <green><bold>Tamamlandı
         lore:
@@ -249,7 +251,7 @@ gui:
       legend-unlocked:
         title: <aqua><bold>Açık
         lore:
-        - <li><gray>Bu görevin hedefine ilerleyebilirsin.
+        - <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
       legend-locked:
         title: <gray><bold>Kilitli
         lore:
@@ -260,29 +262,29 @@ gui:
         - <li><gray>Genel bakışa dönmek için tıklayın.
       horizontal:
         title: <aqua><bold>Yatay Yol
-        detail: <li><gray>Yan yana görevler arasındaki bağlantıyı gösterir.
+        detail: <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
       vertical:
         title: <aqua><bold>Dikey Yol
-        detail: <li><gray>Üst ve alt görevler arasındaki bağlantıyı gösterir.
+        detail: <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
       focus:
         title: <gold><bold>Önerilen Görev
         active-lore:
         - '<li><gray>Önerilen Görev: {target}'
         - '<li><gray>Hedef: {goal}'
         - '<li><gray>Kategori: {category}'
-        - <li><gray>Hedefini oyun içinde tamamlayarak ilerle.
+        - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
         empty-lore:
-        - <li><gray>Bu kademede açık bir sonraki hedef yok.
-        - <li><gray>Kilitli görevlerin gereksinimlerini kontrol et.
+        - <li><gray>Henüz kullanılabilir kayıt yok.
+        - <li><dark_gray>Bu yolu açmak için gereken görevleri tamamlayın.
       next:
         active:
           title: '<gold><bold>Sonraki: {tier_name}'
           lore:
-          - <li><gray>Sonraki kademeyi açmak için tıkla.
+          - <li><gray>Sonraki yolu açmak için tıklayın.
         empty:
-          title: <gray>Son Kademe
+          title: <gray><bold>Henüz kullanılabilir kayıt yok.
           lore:
-          - <li><gray>Bu kademeden sonra başka bir kademe yok.
+          - <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
   stats:
     title: <aqua><bold>İstatistikler
     frame:
@@ -342,7 +344,7 @@ gui:
       title: <light_purple><bold>Nadir Tamamlamalar
       lore:
       - '<li><gray>Nadir Tamamlamalar: {rare}'
-      - <li><gray>Nadirlik, görevi tamamlayan oyuncu oranına bağlıdır.
+      - <li><dark_gray>Bu yolu açmak için gereken görevleri tamamlayın.
     session:
       title: <gold><bold>Oturum
       lore:
@@ -354,10 +356,10 @@ gui:
       - '<li><gray>Görev: {target}'
       - '<li><gray>Kademe: {tier}'
       - '<li><gray>Hedef: {goal}'
-      - <li><gray>Bu hedefi oyun içinde tamamlayabilirsin.
+      - <li><dark_gray> kullan
       empty-lore:
-      - <li><gray>Şu anda açık bir sonraki hedef yok.
-      - <li><gray>Kademe menülerinden kalan gereksinimleri incele.
+      - <li><gray>Henüz kullanılabilir kayıt yok.
+      - <li><dark_gray>Bu görev yolu tamamlandı.
     back:
       title: <red><bold>Ana Menüye Dön
       lore:
@@ -374,17 +376,17 @@ gui:
       - '<li><gray>Kategoriler: {categories}'
       - '<li><gray>Tamamlandı: {completed}/{total}'
       - '<li><gray>Nadir Tamamlamalar: {rare}'
-      - <li><gray>Bir kategori kartına tıkla ve görevlerini incele.
+      - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     categories:
       default:
         title: <gold><bold>{category}
         lore:
         - '<li><gray>Tamamlandı: {completed}/{total}'
-        - '<li><gray>Açık Görevler: {unlocked}'
+        - '<li><gray>Açık: {unlocked}'
         - '<li><gray>Nadir Tamamlamalar: {rare}'
         - '<li><gray>Önerilen Görev: {focus}'
         - '<li><gray>Kademe: {tier}'
-        - <li><gray>Önerilen görevin kademesini açmak için tıkla.
+        - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
       combat:
         title: <red><bold>Savaş
       exploration:
@@ -398,11 +400,11 @@ gui:
     stats:
       title: <aqua><bold>İstatistikler
       lore:
-      - <li><gray>İstatistiklerini görüntülemek için tıkla.
+      - <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     settings:
       title: <light_purple><bold>Ayarlar
       lore:
-      - <li><gray>Dil ve bildirim ayarlarını açmak için tıkla.
+      - <li><gray>Sonraki dili seçmek için tıklayın.
     back:
       title: <red><bold>Ana Menüye Dön
       lore:
@@ -427,9 +429,9 @@ gui:
     language:
       title: <light_purple><bold>Dil
       lore:
-      - '<li><gray>Seçili Dil: {language}'
-      - '<li><gray>Kullanılabilir Diller: {count}'
-      - <li><gray>Bir sonraki dili seçmek için tıkla.
+      - '<li><gray>Dil: {language}'
+      - '<li><gray>Sayı: {count}'
+      - <li><dark_gray>Sonraki dili seçmek için tıklayın.
     toggles:
       chat:
         enabled:
@@ -487,9 +489,9 @@ gui:
           - '<li><gray>Durum: {state}'
           - <li><dark_gray>Bu ayarı değiştirmek için tıklayın.
     categories:
-      title: <gold><bold>Görev Kategorileri
+      title: <gold><bold>Genel Bakış
       lore:
-      - <li><gray>Görev kategorilerine dönmek için tıkla.
+      - <li><gray>Genel bakışa dönmek için tıklayın.
     back:
       title: <red><bold>Ana Menüye Dön
       lore:
@@ -499,11 +501,11 @@ gui:
       disabled: Kapalı
   leaderboard:
     title:
-      global: <gold><bold>Genel Sıralama
-      session: <yellow><bold>Oturum Sıralaması
+      global: <gold><bold>Sıralama
+      session: <yellow><bold>Sıralama
     mode:
-      global: Genel
-      session: Bu Oturum
+      global: Görev yollarını keşfedin ve ilerlemenizi takip edin.
+      session: Görev yollarını keşfedin ve ilerlemenizi takip edin.
     frame:
       name: <dark_gray>
     background:
@@ -512,45 +514,45 @@ gui:
       global:
         title: <gold><bold>Genel
         lore:
-        - '<li><gray>Gösterilen Oyuncular: {entries}'
-        - '<li><gray>Sıralama: {mode}'
-        - <li><gray>Oyuncular tamamlanan görev sayısına göre sıralanır.
+        - '<li><gray>Sayı: {entries}'
+        - '<li><gray>Mod: {mode}'
+        - <li><dark_gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
       session:
         title: <yellow><bold>Oturum
         lore:
-        - '<li><gray>Gösterilen Oyuncular: {entries}'
-        - '<li><gray>Sıralama: {mode}'
-        - <li><gray>Bu oturumdaki ilerleme sıralamasını görüntüle.
+        - '<li><gray>Sayı: {entries}'
+        - '<li><gray>Mod: {mode}'
+        - <li><dark_gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
     empty:
-      title: <gray>Henüz Sıralama Yok
+      title: <aqua><bold>Henüz kullanılabilir kayıt yok.
       lore:
-      - <li><gray>Bu sıralama için henüz oyuncu kaydı yok.
-      - <li><gray>Görev tamamlandığında sıralama güncellenir.
+      - <li><gray>Henüz kullanılabilir kayıt yok.
+      - <li><dark_gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     cards:
       title: '{badge} {player}'
       badges:
-        '1': <gold><bold>#1
-        '2': <white><bold>#2
-        '3': <color:#d99a5e><bold>#3
-        '4': <aqua><bold>#4
-        '5': <aqua><bold>#5
-        '6': <aqua><bold>#6
-        '7': <aqua><bold>#7
-        '8': <aqua><bold>#8
-        '9': <aqua><bold>#9
-        '10': <aqua><bold>#10
+        '1': <gold><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        '2': <white><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        '3': <color:#d99a5e><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        '4': <aqua><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        '5': <aqua><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        '6': <aqua><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        '7': <aqua><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        '8': <aqua><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        '9': <aqua><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        '10': <aqua><bold>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
       lore:
       - '<li><gray>Tamamlandı: {completed}'
       - '<li><gray>İlerleme: {progression}%'
       - '<li><gray>Puan: {points}'
       - '<li><gray>En Yüksek Kademe: {highest_tier}'
       podium-extra:
-      - <li><gray>İlk üç oyuncudan biri.
+      - <li><dark_gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
     footer:
       global:
         title: <green><bold>Genel
         lore:
-        - <li><gray>Genel sıralamayı açmak için tıkla.
+        - <li><gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
       back:
         title: <red><bold>Ana Menüye Dön
         lore:
@@ -558,12 +560,12 @@ gui:
       session:
         title: <gold><bold>Oturum
         lore:
-        - <li><gray>Bu oturumun sıralamasını açmak için tıkla.
+        - <li><gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
       notes:
-        title: <aqua><bold>Sıralama Bilgisi
+        title: <aqua><bold>Sıralama
         lore:
-        - <li><gray>Genel sıralama tüm oyuncuları karşılaştırır.
-        - <li><gray>Oturum sıralaması bu girişteki ilerlemeyi gösterir.
+        - <li><gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
+        - <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
   challenges:
     title: <gold><bold>Meydan Okumalar
     frame:
@@ -589,9 +591,9 @@ gui:
           - <li><dark_gray>{description}
           - '<li><gray>Ödüller: {rewards}'
         empty:
-          title: <gray>Günlük Görev Yok
+          title: <gray><bold>Henüz kullanılabilir kayıt yok.
           lore:
-          - <li><gray>Şu anda aktif günlük görev bulunmuyor.
+          - <li><gray>Henüz kullanılabilir kayıt yok.
       weekly:
         active:
           title: '<light_purple><bold>Haftalık Görev: {title}'
@@ -603,9 +605,9 @@ gui:
           - <li><dark_gray>{description}
           - '<li><gray>Ödüller: {rewards}'
         empty:
-          title: <gray>Haftalık Görev Yok
+          title: <gray><bold>Henüz kullanılabilir kayıt yok.
           lore:
-          - <li><gray>Şu anda aktif haftalık görev bulunmuyor.
+          - <li><gray>Henüz kullanılabilir kayıt yok.
     summary:
       title: <aqua><bold>Meydan Okumalar
       lore:
@@ -614,9 +616,9 @@ gui:
       - '<li><gray>Puan: {points}'
       - <li><dark_gray>Günlük ve haftalık görevler dönem değişiminde sıfırlanır.
     season:
-      title: <aqua><bold>Sezon
+      title: <aqua><bold>İlerleme
       lore:
-      - <li><gray>Sezon puanını ve ödüllerini görüntülemek için tıkla.
+      - <li><gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
     prestige:
       title: <light_purple><bold>Prestij
       lore:
@@ -629,7 +631,7 @@ gui:
       active: <yellow>Aktif
       completed: <green>Tamamlandı
   season-menu:
-    title: <aqua><bold>Sezon
+    title: <aqua><bold>İlerleme
     frame:
       name: <dark_gray>
     background:
@@ -650,9 +652,9 @@ gui:
         - '<li><gray>Sezon Puanı: {season_points}'
         - '<li><gray>Komut: {commands}'
       empty:
-        title: <gray>Sezon Ödülü Yok
+        title: <gray><bold>Henüz kullanılabilir kayıt yok.
         lore:
-        - <li><gray>Bu sezon için yapılandırılmış ödül bulunmuyor.
+        - <li><gray>Henüz kullanılabilir kayıt yok.
     status:
       claimed: <green>Alındı
       ready: <yellow>Hazır
@@ -667,9 +669,9 @@ gui:
     progress:
       title: <yellow><bold>Ödüller
       lore:
-      - '<li><gray>Sonraki Ödül Eşiği: {next_threshold}'
-      - '<li><gray>Toplam Ödül Eşiği: {reward_count}'
-      - '<li><gray>Alınan Ödüller: {claimed}'
+      - '<li><gray>Eşik: {next_threshold}'
+      - '<li><gray>Sayı: {reward_count}'
+      - '<li><gray>Alındı: {claimed}'
     challenges:
       title: <gold><bold>Meydan Okumalar
       lore:
@@ -704,9 +706,9 @@ gui:
     impact:
       title: <red><bold>Sıfırlamanın Etkisi
       lore:
-      - <li><gray>Görev ilerlemesi sıfırlanır.
-      - '<li><gray>Meydan Okumaları Sıfırla: {challenge_reset}'
-      - '<li><gray>Kalıcı Prestij Bonusu: {bonus}'
+      - '<li><gray>İlerleme: Sıfırlamanın Etkisi'
+      - '<li><gray>Meydan Okumalar: {challenge_reset}'
+      - '<li><gray>Bonus: {bonus}'
     rewards:
       title: <gold><bold>Ödüller
       lore:
@@ -716,23 +718,23 @@ gui:
       ready:
         title: <green><bold>Prestij Kazan
         lore:
-        - <li><gray>Tüm kademe görevlerini tamamladın.
-        - '<li><gray>Yeni Prestij: {next_prestige}'
-        - '<li><gray>Kalıcı Bonus: {bonus}'
-        - <li><gray>İlerlemeni sıfırlayıp prestij kazanmak için tıkla.
+        - <li><gray>Bu görev yolu tamamlandı.
+        - '<li><gray>Prestij: {next_prestige}'
+        - '<li><gray>Bonus: {bonus}'
+        - <li><dark_gray>Görev ilerlemesini sıfırlamak ve prestij bonusunu almak için tıklayın.
       locked:
         title: <red><bold>Prestij Kilitli
         lore:
         - '<li><gray>Tamamlandı: {completed}/{total}'
         - '<li><gray>Prestij: {next_prestige}'
     season:
-      title: <aqua><bold>Sezon
+      title: <aqua><bold>İlerleme
       lore:
-      - <li><gray>Sezon puanını ve ödüllerini görüntülemek için tıkla.
+      - <li><gray>Oyuncu sıralamasını ve ilk üç sırayı görüntüleyin.
     challenges:
       title: <gold><bold>Meydan Okumalar
       lore:
-      - <li><gray>Günlük ve haftalık görevleri görüntülemek için tıkla.
+      - <li><gray>Görev yollarını keşfedin ve ilerlemenizi takip edin.
     back:
       title: <red><bold>Ana Menüye Dön
       lore:
@@ -747,27 +749,27 @@ gui:
     general:
       unknown: Bilinmiyor
       none: '-'
-      list-separator: ', '
+      list-separator: ','
     objective:
       subject-default:
-        blocks: blok
-        items: eşya
-        targets: yaratık
-        biomes: biyom
+        blocks: Bloklar
+        items: Eşyalar
+        targets: Hedefler
+        biomes: Biyomlar
         command: Komut
-        server-joins: sunucuya katılım
-        blocks-travelled: blok
-        fish-caught: balık
-        enchants: büyüleme
-        minutes-played: dakika
+        server-joins: Sunucuya katıl
+        blocks-travelled: Bloklar
+        fish-caught: balık yakala
+        enchants: eşya büyüle
+        minutes-played: dakika oyna
         custom: Hedef
       templates:
         join: Sunucuya katıl
         break: '{target} {subject} kır'
         craft: '{target} {subject} üret'
         defeat: '{target} {subject} yen'
-        defeat-player-single: '{target} oyuncuyu yen'
-        defeat-player-multi: '{target} oyuncuyu yen'
+        defeat-player-single: '{target} Hedefler yen'
+        defeat-player-multi: '{target} Hedefler yen'
         discover: '{subject} keşfet'
         travel: '{target} blok yürü'
         fish: '{target} balık yakala'
@@ -781,12 +783,12 @@ gui:
         command: '{subject} kullan'
         custom: 'Hedef: {target}'
     rewards:
-      none: Ödül yok
+      none: Henüz kullanılabilir kayıt yok.
       templates:
-        points: '{amount} görev puanı'
-        xp: '{amount} deneyim puanı'
+        points: '{amount} Puan'
+        xp: Görev yollarını keşfedin ve ilerlemenizi takip edin. {amount}
         money: ${amount}
-        item: '{amount} × {value}'
+        item: Görev yollarını keşfedin ve ilerlemenizi takip edin. {amount} {value}
         command-empty: Komut
         command: 'Komut: /{value}'
         broadcast: Duyuru
@@ -794,66 +796,6 @@ gui:
         sound: 'Ses Bildirimleri: {value}'
 content:
   advancements:
-    suite_animal_registered:
-      title: "İlk Yol Arkadaşın"
-      description: "Yeni bir at, eşek veya katırı ahırına kaydet."
-      source-title: "First Stable Companion"
-      source-description: "Register a new horse, donkey or mule in your stable."
-    suite_animal_fed:
-      title: "Önce Bakım"
-      description: "Ahırındaki hayvanları beslerken toplam on yem tüket."
-      source-title: "Care Comes First"
-      source-description: "Consume ten food items while feeding your own stable animals."
-    suite_animal_bred:
-      title: "Yeni Nesil"
-      description: "Çiftleşmeden doğan bir yavrunun ahırına kaydedilmesini sağla."
-      source-title: "A New Generation"
-      source-description: "Breed a foal that is successfully saved in your stable."
-    suite_auction_sale:
-      title: "Satıldı!"
-      description: "Ödemesi tamamlanan bir açık artırma satışı yap."
-      source-title: "Sold!"
-      source-description: "Complete a live auction sale with payment settled."
-    suite_auction_purchase:
-      title: "İyi Bir Alışveriş"
-      description: "Ödemesi tamamlanan bir açık artırma alışı yap."
-      source-title: "A Good Find"
-      source-description: "Complete a live auction purchase with payment settled."
-    suite_business_created:
-      title: "İşletmen Açık"
-      description: "Kendi işletmeni başarıyla kur."
-      source-title: "Open for Business"
-      source-description: "Create your own business successfully."
-    suite_business_order:
-      title: "Sipariş Teslim Edildi"
-      description: "Bir iş emrinin tüm ürünlerini teslim edip ödülünü kazan."
-      source-title: "Order Delivered"
-      source-description: "Complete a work order with its full delivery and payout."
-    suite_bounty_claim:
-      title: "Ödülün Peşinde"
-      description: "Kurallara uygun bir oyuncu öldürerek başına konulan ödülü kazan."
-      source-title: "Bounty Collected"
-      source-description: "Earn a bounty payout from an eligible live player kill."
-    suite_worker_produced:
-      title: "Üreten Ekip"
-      description: "İşçilerinin tamamlanan üretiminden toplam 64 eşya al."
-      source-title: "A Productive Team"
-      source-description: "Receive sixty-four items from committed worker production."
-    suite_dungeon_clear:
-      title: "Sefer Tamamlandı"
-      description: "Aktif bir zindanı tamamlayıp bitirme ödülünü kazan."
-      source-title: "Expedition Complete"
-      source-description: "Clear an active dungeon and earn its completion reward."
-    suite_boss_victory:
-      title: "Zorlu Zafer"
-      description: "Uyarlanabilir bir boss karşılaşmasını kazanıp zafer ödülünü al."
-      source-title: "Against the Odds"
-      source-description: "Win an adaptive boss encounter and earn its victory reward."
-    suite_event_mob_kill:
-      title: "Etkinliğin İçinde"
-      description: "Aktif sunucu etkinliğinden etkilenen on uygun yaratığı öldür."
-      source-title: "In the Thick of It"
-      source-description: "Defeat ten eligible mobs affected by an active server event."
     t1_welcome_home:
       title: Yuvaya Hoş Geldin
       description: Sunucuya katıl.
@@ -976,7 +918,7 @@ content:
       source-description: Smelt 64 glass blocks.
     t2_duelist:
       title: Düellocu
-      description: 3 oyuncuyu yen.
+      description: 3 Hedefler yen.
       source-title: Duelist
       source-description: Win 3 PvP fights.
     t2_diamond_path:
@@ -1041,7 +983,7 @@ content:
       source-description: Eat 32 golden carrots.
     t3_pvp_contender:
       title: Arena Yarışmacısı
-      description: 10 oyuncuyu yen.
+      description: 10 Hedefler yen.
       source-title: PvP Contender
       source-description: Win 10 PvP fights.
     t3_hidden_mycelium:
@@ -1106,7 +1048,7 @@ content:
       source-description: Breed 10 horses.
     t4_shadow_duelist:
       title: Gölge Düellocu
-      description: 25 oyuncuyu yen.
+      description: 25 Hedefler yen.
       source-title: Shadow Duelist
       source-description: Win 25 PvP fights.
     t4_secret_warden:
@@ -1161,7 +1103,7 @@ content:
       source-description: Breed 6 camels.
     t5_arena_god:
       title: Arena Tanrısı
-      description: 50 oyuncuyu yen.
+      description: 50 Hedefler yen.
       source-title: Arena God
       source-description: Win 50 PvP fights.
     t5_wither_ender:
@@ -1207,7 +1149,7 @@ content:
       source-description: Discover the End Highlands this week.
     weekly_warlord:
       title: Arena Haftası
-      description: 10 oyuncuyu yen.
+      description: 10 Hedefler yen.
       source-title: Arena Week
       source-description: Win 10 PvP fights.
 values:
@@ -1258,11 +1200,3 @@ values:
   farming: Çiftçilik
   magic: Büyü
   general: Genel Bakış
-  daily: Günlük
-  weekly: Haftalık
-  common: Yaygın
-  uncommon: Sıradışı
-  rare: Nadir
-  epic: Destansı
-  legendary: Efsanevi
-  mythic: Mitik

@@ -121,6 +121,16 @@ public final class LanguageManager {
         return languages;
     }
 
+    /** Preserve explicitly customized display names, otherwise use the native game's selected-language name. */
+    public String nativeName(CommandSender viewer, String identifier, String fallback) {
+        FileConfiguration selected = languages.get(getLocale(viewer));
+        if (selected == null) return fallback;
+        String path = "values." + identifier.toLowerCase(Locale.ROOT);
+        String value = selected.getString(path);
+        String bundled = selected.getDefaults() == null ? null : selected.getDefaults().getString(path);
+        return value != null && !value.equals(bundled) ? value : fallback;
+    }
+
     public String text(CommandSender viewer, String path, String fallback) {
         if (getLocale(viewer).equals("en") && path.startsWith("gui.")) return fallback;
         FileConfiguration selected = languages.get(getLocale(viewer));

@@ -784,6 +784,66 @@ gui:
         sound: 'Notificări sonore: {value}'
 content:
   advancements:
+    suite_animal_registered:
+      title: "Primul tău companion"
+      description: "Înregistrează un cal, un măgar sau un catâr nou în grajdul tău."
+      source-title: "First Stable Companion"
+      source-description: "Register a new horse, donkey or mule in your stable."
+    suite_animal_fed:
+      title: "Îngrijirea pe primul loc"
+      description: "Consumă zece alimente hrănind animalele din grajdul tău."
+      source-title: "Care Comes First"
+      source-description: "Consume ten food items while feeding your own stable animals."
+    suite_animal_bred:
+      title: "O nouă generație"
+      description: "Crește un mânz care este salvat cu succes în grajdul tău."
+      source-title: "A New Generation"
+      source-description: "Breed a foal that is successfully saved in your stable."
+    suite_auction_sale:
+      title: "Vândut!"
+      description: "Încheie o vânzare la licitație cu plata finalizată."
+      source-title: "Sold!"
+      source-description: "Complete a live auction sale with payment settled."
+    suite_auction_purchase:
+      title: "O achiziție bună"
+      description: "Încheie o cumpărare la licitație cu plata finalizată."
+      source-title: "A Good Find"
+      source-description: "Complete a live auction purchase with payment settled."
+    suite_business_created:
+      title: "Deschis pentru afaceri"
+      description: "Creează cu succes propria afacere."
+      source-title: "Open for Business"
+      source-description: "Create your own business successfully."
+    suite_business_order:
+      title: "Comandă livrată"
+      description: "Livrează toate produsele unei comenzi de lucru și primește recompensa."
+      source-title: "Order Delivered"
+      source-description: "Complete a work order with its full delivery and payout."
+    suite_bounty_claim:
+      title: "Recompensă încasată"
+      description: "Primește o recompensă pentru eliminarea unui jucător în condițiile permise."
+      source-title: "Bounty Collected"
+      source-description: "Earn a bounty payout from an eligible live player kill."
+    suite_worker_produced:
+      title: "O echipă productivă"
+      description: "Primește șaizeci și patru de obiecte din producția finalizată a lucrătorilor tăi."
+      source-title: "A Productive Team"
+      source-description: "Receive sixty-four items from committed worker production."
+    suite_dungeon_clear:
+      title: "Expediție încheiată"
+      description: "Finalizează o temniță activă și câștigă recompensa de final."
+      source-title: "Expedition Complete"
+      source-description: "Clear an active dungeon and earn its completion reward."
+    suite_boss_victory:
+      title: "Împotriva tuturor șanselor"
+      description: "Câștigă o luptă cu un șef adaptiv și primește recompensa pentru victorie."
+      source-title: "Against the Odds"
+      source-description: "Win an adaptive boss encounter and earn its victory reward."
+    suite_event_mob_kill:
+      title: "În mijlocul acțiunii"
+      description: "Învinge zece creaturi eligibile afectate de un eveniment activ al serverului."
+      source-title: "In the Thick of It"
+      source-description: "Defeat ten eligible mobs affected by an active server event."
     t1_welcome_home:
       title: Intră pe server
       description: Intră pe server.

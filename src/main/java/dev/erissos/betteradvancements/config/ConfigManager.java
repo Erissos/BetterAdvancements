@@ -88,16 +88,21 @@ public final class ConfigManager {
     }
 
     private void upgradeLegacyTurkish(YamlConfiguration language) {
-        InputStream resource=plugin.getResource("lang-legacy/tr.yml");
-        if (resource==null) return;
-        try (var reader=new InputStreamReader(resource,StandardCharsets.UTF_8)) {
-            var legacy=YamlConfiguration.loadConfiguration(reader);
-            for (String path:legacy.getKeys(true)) if (legacy.isString(path)
-                    && legacy.getString(path).equals(language.getString(path))
-                    && language.getDefaults()!=null && language.getDefaults().isString(path)) {
-                language.set(path,language.getDefaults().getString(path));
-            }
-        } catch (IOException failure) { throw new IllegalStateException("Cannot load legacy Turkish defaults",failure); }
+        for (String bundled : java.util.List.of("lang-legacy/tr.yml", "lang-legacy/tr-polish.yml")) {
+            InputStream resource=plugin.getResource(bundled);
+            if (resource==null) continue;
+            try (var reader=new InputStreamReader(resource,StandardCharsets.UTF_8)) {
+                var legacy=YamlConfiguration.loadConfiguration(reader);
+                for (String path:legacy.getKeys(true)) if (!legacy.isConfigurationSection(path)) {
+                    Object value = legacy.get(path);
+                    if ((value instanceof String || value instanceof java.util.List<?>)
+                            && java.util.Objects.equals(value, language.get(path))
+                            && language.getDefaults()!=null && language.getDefaults().contains(path)) {
+                        language.set(path,language.getDefaults().get(path));
+                    }
+                }
+            } catch (IOException failure) { throw new IllegalStateException("Cannot load legacy Turkish defaults",failure); }
+        }
     }
 
     private void ensureResource(String resourcePath) {

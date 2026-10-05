@@ -784,6 +784,66 @@ gui:
         sound: 'Avisos sonoros: {value}'
 content:
   advancements:
+    suite_animal_registered:
+      title: "Tu primer compañero"
+      description: "Registra un nuevo caballo, burro o mula en tu establo."
+      source-title: "First Stable Companion"
+      source-description: "Register a new horse, donkey or mule in your stable."
+    suite_animal_fed:
+      title: "Primero, los cuidados"
+      description: "Consume diez alimentos al dar de comer a tus animales del establo."
+      source-title: "Care Comes First"
+      source-description: "Consume ten food items while feeding your own stable animals."
+    suite_animal_bred:
+      title: "Una nueva generación"
+      description: "Cría un potro que quede guardado en tu establo."
+      source-title: "A New Generation"
+      source-description: "Breed a foal that is successfully saved in your stable."
+    suite_auction_sale:
+      title: "¡Vendido!"
+      description: "Completa una venta en subasta con el pago liquidado."
+      source-title: "Sold!"
+      source-description: "Complete a live auction sale with payment settled."
+    suite_auction_purchase:
+      title: "Una buena compra"
+      description: "Completa una compra en subasta con el pago liquidado."
+      source-title: "A Good Find"
+      source-description: "Complete a live auction purchase with payment settled."
+    suite_business_created:
+      title: "Abierto al público"
+      description: "Crea tu propio negocio correctamente."
+      source-title: "Open for Business"
+      source-description: "Create your own business successfully."
+    suite_business_order:
+      title: "Pedido entregado"
+      description: "Entrega todos los productos de una orden de trabajo y cobra su recompensa."
+      source-title: "Order Delivered"
+      source-description: "Complete a work order with its full delivery and payout."
+    suite_bounty_claim:
+      title: "Recompensa cobrada"
+      description: "Cobra una recompensa por una baja de jugador que cumpla las reglas."
+      source-title: "Bounty Collected"
+      source-description: "Earn a bounty payout from an eligible live player kill."
+    suite_worker_produced:
+      title: "Un equipo productivo"
+      description: "Recibe sesenta y cuatro objetos de la producción completada de tus trabajadores."
+      source-title: "A Productive Team"
+      source-description: "Receive sixty-four items from committed worker production."
+    suite_dungeon_clear:
+      title: "Expedición completada"
+      description: "Completa una mazmorra activa y gana su recompensa final."
+      source-title: "Expedition Complete"
+      source-description: "Clear an active dungeon and earn its completion reward."
+    suite_boss_victory:
+      title: "Contra todo pronóstico"
+      description: "Gana un encuentro con un jefe adaptativo y recibe la recompensa de victoria."
+      source-title: "Against the Odds"
+      source-description: "Win an adaptive boss encounter and earn its victory reward."
+    suite_event_mob_kill:
+      title: "En plena acción"
+      description: "Derrota a diez criaturas válidas afectadas por un evento activo del servidor."
+      source-title: "In the Thick of It"
+      source-description: "Defeat ten eligible mobs affected by an active server event."
     t1_welcome_home:
       title: Entra al servidor
       description: Entra al servidor.

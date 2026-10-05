@@ -784,6 +784,66 @@ gui:
         sound: 'Zvuková oznámení: {value}'
 content:
   advancements:
+    suite_animal_registered:
+      title: "Tvůj první společník"
+      description: "Zaregistruj nového koně, osla nebo mulu ve své stáji."
+      source-title: "First Stable Companion"
+      source-description: "Register a new horse, donkey or mule in your stable."
+    suite_animal_fed:
+      title: "Péče na prvním místě"
+      description: "Spotřebuj deset kusů krmiva při krmení svých zvířat ve stáji."
+      source-title: "Care Comes First"
+      source-description: "Consume ten food items while feeding your own stable animals."
+    suite_animal_bred:
+      title: "Nová generace"
+      description: "Odchovej hříbě, které se úspěšně uloží do tvé stáje."
+      source-title: "A New Generation"
+      source-description: "Breed a foal that is successfully saved in your stable."
+    suite_auction_sale:
+      title: "Prodáno!"
+      description: "Dokonči aukční prodej s vyrovnanou platbou."
+      source-title: "Sold!"
+      source-description: "Complete a live auction sale with payment settled."
+    suite_auction_purchase:
+      title: "Dobrý nákup"
+      description: "Dokonči aukční nákup s vyrovnanou platbou."
+      source-title: "A Good Find"
+      source-description: "Complete a live auction purchase with payment settled."
+    suite_business_created:
+      title: "Podnik je otevřený"
+      description: "Úspěšně založ vlastní podnik."
+      source-title: "Open for Business"
+      source-description: "Create your own business successfully."
+    suite_business_order:
+      title: "Objednávka doručena"
+      description: "Doruč všechny předměty pracovní objednávky a získej odměnu."
+      source-title: "Order Delivered"
+      source-description: "Complete a work order with its full delivery and payout."
+    suite_bounty_claim:
+      title: "Odměna za cíl"
+      description: "Získej odměnu za zabití hráče, které splňuje pravidla."
+      source-title: "Bounty Collected"
+      source-description: "Earn a bounty payout from an eligible live player kill."
+    suite_worker_produced:
+      title: "Produktivní tým"
+      description: "Získej 64 předmětů z dokončené výroby svých pracovníků."
+      source-title: "A Productive Team"
+      source-description: "Receive sixty-four items from committed worker production."
+    suite_dungeon_clear:
+      title: "Výprava dokončena"
+      description: "Dokonči aktivní dungeon a získej závěrečnou odměnu."
+      source-title: "Expedition Complete"
+      source-description: "Clear an active dungeon and earn its completion reward."
+    suite_boss_victory:
+      title: "Navzdory všemu"
+      description: "Vyhraj souboj s adaptivním bossem a získej odměnu za vítězství."
+      source-title: "Against the Odds"
+      source-description: "Win an adaptive boss encounter and earn its victory reward."
+    suite_event_mob_kill:
+      title: "Uprostřed dění"
+      description: "Poraz deset povolených tvorů ovlivněných aktivní událostí serveru."
+      source-title: "In the Thick of It"
+      source-description: "Defeat ten eligible mobs affected by an active server event."
     t1_welcome_home:
       title: Připojte se k serveru
       description: Připojte se k serveru.

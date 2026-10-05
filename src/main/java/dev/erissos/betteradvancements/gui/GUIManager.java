@@ -1748,6 +1748,14 @@ public final class GUIManager implements Listener {
         if (value == null || value.isEmpty()) {
             return text("texts.general.unknown");
         }
+        String language = languageManager.getLocale(renderingPlayer);
+        Material material = Material.matchMaterial(value);
+        if (material != null) return languageManager.nativeName(renderingPlayer, value,
+                dev.erissos.localization.VanillaNames.item(material, language));
+        try {
+            org.bukkit.entity.EntityType entity = org.bukkit.entity.EntityType.valueOf(value.toUpperCase(Locale.ROOT));
+            return languageManager.nativeName(renderingPlayer, value, dev.erissos.localization.VanillaNames.entity(entity, language));
+        } catch (IllegalArgumentException notAnEntity) { /* Category, biome or a custom display label. */ }
         String[] parts = value.replace('_', ' ').toLowerCase(Locale.ROOT).trim().split("\\s+");
         StringBuilder builder = new StringBuilder();
         for (String part : parts) {
