@@ -139,14 +139,10 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.invalid-language", Map.of("language", args[1])));
                     return true;
                 }
-                var profile = playerDataManager.getOrCreate(player.getUniqueId());
-                String previousLanguage = profile.getLanguage();
-                profile.setLanguage(requested);
                 playerDataManager.setLastKnownName(player.getUniqueId(), player.getName());
                 try {
-                    playerDataManager.saveProfile(player.getUniqueId()).join();
+                    plugin.setPersonalLanguage(player.getUniqueId(), requested);
                 } catch (RuntimeException failure) {
-                    profile.setLanguage(previousLanguage);
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.storage-error", Map.of())); return true;
                 }
                 sender.sendMessage(languageManager.getComponent(sender, requested, "command.language-set", Map.of("language", languageManager.getDisplayName(requested))));
@@ -203,7 +199,7 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                 }
                 var profile = playerDataManager.getOrCreate(player.getUniqueId());
                 int total = achievementManager.getAdvancements().size();
-                int completed = profile.getCompletedAdvancements();
+                int completed = achievementManager.getCompletedCount(profile);
                 if (completed < total) {
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.prestige-requirements", Map.of(
                             "completed", String.valueOf(completed),

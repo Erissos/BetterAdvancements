@@ -258,14 +258,24 @@ public final class JdbcStorageAdapter implements StorageAdapter {
 
     @Override
     public List<PlayerProfile> loadTopProfiles(int limit, String season) {
+        return loadTopProfiles(limit, season, null);
+    }
+
+    @Override
+    public List<PlayerProfile> loadTopProfiles(int limit, String season, java.util.Set<String> activeIds) {
         List<UUID> ids = new ArrayList<>();
+        List<String> active = activeIds == null ? null : activeIds.stream().sorted().toList();
+        String scope = active == null ? "" : active.isEmpty() ? "AND 1=0 "
+                : "AND a.advancement_id IN (" + String.join(",", java.util.Collections.nCopies(active.size(), "?")) + ") ";
         String sql = "SELECT p.uuid FROM ba_players p LEFT JOIN ba_advancement_progress a ON a.uuid = p.uuid "
+            + scope
             + (season == null ? "" : "WHERE p.season_id = ? ")
             + "GROUP BY p.uuid, p.points, p.season_points ORDER BY "
             + (season == null ? "SUM(CASE WHEN a.completed = 1 THEN 1 ELSE 0 END) DESC, p.points DESC" : "p.season_points DESC, SUM(CASE WHEN a.completed = 1 THEN 1 ELSE 0 END) DESC")
             + ", p.uuid ASC LIMIT ?";
         try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             int index = 1;
+            if (active != null) for (String id : active) statement.setString(index++, id);
             if (season != null) statement.setString(index++, season);
             statement.setInt(index, Math.max(1, Math.min(1000, limit)));
             try (ResultSet result = statement.executeQuery()) { while (result.next()) ids.add(UUID.fromString(result.getString(1))); }

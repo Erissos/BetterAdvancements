@@ -172,7 +172,7 @@ public final class GUIManager implements Listener {
             text("main.categories.title"),
             lines("main.categories.lore", placeholders(
                 "categories", orderedCategories().size(),
-                "completed", profile.getCompletedAdvancements()
+                "completed", achievementManager.getCompletedCount(profile)
             )),
             boolValue("main.categories.glow")
         ));
@@ -191,7 +191,7 @@ public final class GUIManager implements Listener {
             text("main.prestige.title"),
             lines("main.prestige.lore", placeholders(
                 "prestige", profile.getPrestigeLevel(),
-                "completed", profile.getCompletedAdvancements(),
+                "completed", achievementManager.getCompletedCount(profile),
                 "total", achievementManager.getAdvancements().size(),
                 "bonus", configManager.getMainConfig().getInt("prestige.bonus-points", 250)
             )),
@@ -230,7 +230,7 @@ public final class GUIManager implements Listener {
                 text("category-menu.profile.title"),
                 lines("category-menu.profile.lore", placeholders(
                     "categories", orderedCategories().size(),
-                    "completed", profile.getCompletedAdvancements(),
+                    "completed", achievementManager.getCompletedCount(profile),
                     "total", achievementManager.getAdvancements().size(),
                     "rare", achievementManager.getRareCompletions(profile)
                 )),
@@ -351,7 +351,7 @@ public final class GUIManager implements Listener {
                 player.getUniqueId(),
                 text("stats.profile.title"),
                 lines("stats.profile.lore", placeholders(
-                        "completed", profile.getCompletedAdvancements(),
+                        "completed", achievementManager.getCompletedCount(profile),
                         "total", achievementManager.getAdvancements().size(),
                         "progression", formatPercent(achievementManager.getProgressPercent(profile)),
                         "points", profile.getPoints(),
@@ -700,7 +700,7 @@ public final class GUIManager implements Listener {
     private void renderPrestige(Player player) {
     PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
     int total = achievementManager.getAdvancements().size();
-    int completed = profile.getCompletedAdvancements();
+    int completed = achievementManager.getCompletedCount(profile);
     boolean eligible = completed >= total && total > 0;
 
     Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.PRESTIGE, null, false), MENU_SIZE, ItemUtils.component(text("prestige-menu.title")));
@@ -1378,10 +1378,8 @@ public final class GUIManager implements Listener {
         String current = profile.getLanguage().toLowerCase(Locale.ROOT);
         int currentIndex = languages.indexOf(current);
         String next = languages.get((currentIndex + 1 + languages.size()) % languages.size());
-        profile.setLanguage(next);
         playerDataManager.setLastKnownName(player.getUniqueId(), player.getName());
-        try { playerDataManager.saveProfile(player.getUniqueId()).join(); }
-        catch (RuntimeException failure) { profile.setLanguage(current); throw failure; }
+        plugin.setPersonalLanguage(player.getUniqueId(), next);
         return next;
     }
 
@@ -1444,7 +1442,7 @@ public final class GUIManager implements Listener {
     private boolean attemptPrestige(Player player) {
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
         int total = achievementManager.getAdvancements().size();
-        int completed = profile.getCompletedAdvancements();
+        int completed = achievementManager.getCompletedCount(profile);
         String locale = languageManager.getLocale(player);
         if (completed < total) {
             player.sendMessage(languageManager.getComponent(player, locale, "command.prestige-requirements", Map.of(

@@ -1,0 +1,202 @@
+# Desperis / erisos — optional live suite objectives
+# These examples are disabled. Existing achievements.yml is never rewritten.
+# Enable deliberately, then /ba reload. IDs, tier slots, navigation and dependencies are checked first.
+# The default placements use free slots in the bundled five-tier layout. Customized layouts may need other slots.
+# source + event are required. Optional flat detail conditions (material, boss, dungeon, etc.) match exactly.
+# No history/backfill. Dependencies and ordinary completion/reward rules apply; no administrative grant.
+# The tier GUI is one page: gui.page must remain 0. Slots are real 9-column inventory cells.
+enabled: false
+achievements:
+  suite_animal_registered:
+    title: "First Stable Companion"
+    description: "Register a new horse, donkey or mule in your stable."
+    tier: TIER_1
+    category: suite
+    icon: SADDLE
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 11, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 1
+      conditions: {source: StableMan, event: animal_registered}
+    rewards: {}
+  suite_animal_fed:
+    title: "Care Comes First"
+    description: "Consume ten food items while feeding your own stable animals."
+    tier: TIER_1
+    category: suite
+    icon: GOLDEN_CARROT
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 13, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 10
+      conditions: {source: StableMan, event: animal_fed}
+    rewards: {}
+  suite_animal_bred:
+    title: "A New Generation"
+    description: "Breed a foal that is successfully saved in your stable."
+    tier: TIER_1
+    category: suite
+    icon: WHEAT
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 15, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 1
+      conditions: {source: StableMan, event: animal_bred}
+    rewards: {}
+  suite_auction_sale:
+    title: "Sold!"
+    description: "Complete a live auction sale with payment settled."
+    tier: TIER_2
+    category: suite
+    icon: GOLD_INGOT
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 11, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 1
+      conditions: {source: AuctionHousePro, event: auction_sale}
+    rewards: {}
+  suite_auction_purchase:
+    title: "A Good Find"
+    description: "Complete a live auction purchase with payment settled."
+    tier: TIER_2
+    category: suite
+    icon: CHEST
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 13, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 1
+      conditions: {source: AuctionHousePro, event: auction_purchase}
+    rewards: {}
+  suite_business_created:
+    title: "Open for Business"
+    description: "Create your own business successfully."
+    tier: TIER_2
+    category: suite
+    icon: OAK_SIGN
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 15, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 1
+      conditions: {source: PlayerBusiness, event: business_created}
+    rewards: {}
+  suite_business_order:
+    title: "Order Delivered"
+    description: "Complete a work order with its full delivery and payout."
+    tier: TIER_3
+    category: suite
+    icon: BARREL
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 11, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 1
+      conditions: {source: PlayerBusiness, event: business_order_completed}
+    rewards: {}
+  suite_bounty_claim:
+    title: "Bounty Collected"
+    description: "Earn a bounty payout from an eligible live player kill."
+    tier: TIER_3
+    category: suite
+    icon: COMPASS
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 13, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 1
+      conditions: {source: DynamicBounty, event: bounty_claim}
+    rewards: {}
+  suite_worker_produced:
+    title: "A Productive Team"
+    description: "Receive sixty-four items from committed worker production."
+    tier: TIER_3
+    category: suite
+    icon: IRON_PICKAXE
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 15, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 64
+      conditions: {source: SmartNPCWorkers, event: worker_produced}
+    rewards: {}
+  suite_dungeon_clear:
+    title: "Expedition Complete"
+    description: "Clear an active dungeon and earn its completion reward."
+    tier: TIER_4
+    category: suite
+    icon: ENDER_EYE
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 11, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 1
+      conditions: {source: DynamicDungeonGenerator, event: dungeon_clear}
+    rewards: {}
+  suite_boss_victory:
+    title: "Against the Odds"
+    description: "Win an adaptive boss encounter and earn its victory reward."
+    tier: TIER_4
+    category: suite
+    icon: NETHERITE_SWORD
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 13, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 1
+      conditions: {source: AdaptiveBosses, event: boss_victory}
+    rewards: {}
+  suite_event_mob_kill:
+    title: "In the Thick of It"
+    description: "Defeat ten eligible mobs affected by an active server event."
+    tier: TIER_5
+    category: suite
+    icon: FIREWORK_ROCKET
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: {slot: 11, page: 0}
+    trigger:
+      type: CUSTOM
+      target: 10
+      conditions: {source: ServerEventsEngine, event: event_mob_kill}
+    rewards: {}
+

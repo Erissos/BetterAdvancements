@@ -1,6 +1,7 @@
 package dev.erissos.betteradvancements;
 
 import dev.desperis.integration.IntegrationService;
+import dev.desperis.suite.SuiteIntegrationService;
 import dev.erissos.betteradvancements.api.BetterAdvancementsAPI;
 import dev.erissos.betteradvancements.command.BetterAdvancementsCommand;
 import dev.erissos.betteradvancements.config.ConfigManager;
@@ -26,6 +27,7 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
     private ConfigManager configManager;
     private IntegrationService integrations;
+    private SuiteIntegrationService suiteIntegrations;
     private LanguageManager languageManager;
     private PlayerDataManager playerDataManager;
     private PlaceholderHook placeholderHook;
@@ -47,6 +49,8 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
         this.configManager.bootstrap();
         this.integrations = new IntegrationService(this, configManager::getMainConfig);
         this.integrations.reload();
+        this.suiteIntegrations = new SuiteIntegrationService(this, configManager::getMainConfig);
+        this.suiteIntegrations.reload();
         Tier.loadFromConfig(configManager.getGuiConfig());
 
         this.placeholderHook = new PlaceholderHook();
@@ -67,6 +71,16 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
         this.achievementManager.load();
         this.challengeManager.load();
+        dev.erissos.betteradvancements.integration.SuiteHooks.install(this, suiteIntegrations);
+        suiteIntegrations.onLanguage((id, code) -> {
+            if (!setPersonalLanguage(id, code)) return false;
+            var player = getServer().getPlayer(id);
+            if (player != null) {
+                var holder = player.getOpenInventory().getTopInventory().getHolder();
+                if (holder != null && holder.getClass().getClassLoader() == getClass().getClassLoader()) guiManager.refreshLanguage(player);
+            }
+            return true;
+        });
         this.challengeManager.start();
         this.leaderboardManager.start();
 
@@ -104,6 +118,7 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
         if (placeholderExpansion != null) {
             placeholderExpansion.unregister();
         }
+        if (suiteIntegrations != null) suiteIntegrations.close();
         if (playerDataManager != null) {
             playerDataManager.shutdown();
         }
@@ -112,15 +127,33 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
     public void reloadPlugin() {
         configManager.reloadAll();
         integrations.reload();
+        suiteIntegrations.reload();
         Tier.loadFromConfig(configManager.getGuiConfig());
         languageManager.load();
         achievementManager.load();
         challengeManager.load();
         guiManager.reload();
+        leaderboardManager.refresh();
     }
 
     public IntegrationService getIntegrations() { return integrations; }
+    public SuiteIntegrationService getSuiteIntegrations() { return suiteIntegrations; }
+    public AchievementManager getAchievementManager() { return achievementManager; }
+    public ChallengeManager getChallengeManager() { return challengeManager; }
+    public GUIManager getGuiManager() { return guiManager; }
 
+    /** Persist this player's explicit choice before notifying optional sibling products. */
+    public boolean setPersonalLanguage(java.util.UUID id, String code) {
+        String resolved = languageManager.resolveLanguage(code);
+        if (resolved == null) return false;
+        var profile = playerDataManager.getOrCreate(id);
+        String previous = profile.getLanguage();
+        profile.setLanguage(resolved);
+        try { playerDataManager.saveProfile(id).join(); }
+        catch (RuntimeException failure) { profile.setLanguage(previous); throw failure; }
+        if (suiteIntegrations != null) suiteIntegrations.publishLanguage(id, resolved);
+        return true;
+    }
 
     public NotificationManager getNotificationManager() {
         return notificationManager;

@@ -140,6 +140,12 @@ public final class PlayerDataManager {
         return CompletableFuture.supplyAsync(() -> storageAdapter.loadTopProfiles(limit, season ? currentSeason : null), executor);
     }
 
+    public CompletableFuture<List<PlayerProfile>> loadTopProfiles(int limit, boolean season, java.util.Set<String> activeIds) {
+        String currentSeason = seasonManager.currentSeasonId();
+        var snapshot = java.util.Set.copyOf(activeIds);
+        return CompletableFuture.supplyAsync(() -> storageAdapter.loadTopProfiles(limit, season ? currentSeason : null, snapshot), executor);
+    }
+
     public CompletableFuture<List<PlayerProfile>> loadAllProfiles() {
         return CompletableFuture.supplyAsync(storageAdapter::loadAllProfiles, executor);
     }

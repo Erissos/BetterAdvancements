@@ -21,6 +21,7 @@ public final class LeaderboardManager {
     private volatile List<LeaderboardEntry> globalLeaderboard = List.of();
     private volatile List<LeaderboardEntry> sessionLeaderboard = List.of();
     private volatile List<LeaderboardEntry> seasonLeaderboard = List.of();
+    private java.util.Set<String> rankingCatalog = java.util.Set.of();
     private int taskId = -1;
 
     public LeaderboardManager(BetterAdvancementsPlugin plugin, PlayerDataManager playerDataManager, AchievementManager achievementManager) {
@@ -42,15 +43,21 @@ public final class LeaderboardManager {
 
     public void refresh() {
         int limit = Math.max(10, Math.min(1000, plugin.getConfig().getInt("general.leaderboard-limit", 100)));
+        var activeIds = achievementManager.getAdvancements().stream().map(BetterAdvancement::id).collect(java.util.stream.Collectors.toUnmodifiableSet());
+        if (!rankingCatalog.equals(activeIds)) {
+            rankingCatalog = activeIds;
+            globalLeaderboard = List.of(); seasonLeaderboard = List.of();
+        }
         this.sessionLeaderboard = playerDataManager.getSessionProfiles().stream().map(profile -> new LeaderboardEntry(
             profile.getUniqueId(), resolveName(profile.getUniqueId()), profile.getSessionCompletions(),
             achievementManager.getProgressPercent(profile), profile.getPoints(), 0))
             .sorted(Comparator.comparingInt(LeaderboardEntry::completed).reversed()
                 .thenComparing(Comparator.comparingInt(LeaderboardEntry::points).reversed())
                 .thenComparing(entry -> entry.uniqueId().toString())).toList();
-        playerDataManager.loadTopProfiles(limit, false).thenCombine(playerDataManager.loadTopProfiles(limit, true),
+        playerDataManager.loadTopProfiles(limit, false, activeIds).thenCombine(playerDataManager.loadTopProfiles(limit, true, activeIds),
             (global, season) -> Map.of("global", global, "season", season)).thenAccept(result -> {
             if (plugin.isEnabled()) Bukkit.getScheduler().runTask(plugin, () -> {
+                if (!activeIds.equals(rankingCatalog)) return;
                 this.globalLeaderboard = buildEntries(result.get("global"));
                 this.seasonLeaderboard = buildSeasonEntries(result.get("season"));
             });
@@ -76,7 +83,7 @@ public final class LeaderboardManager {
                 .map(profile -> new LeaderboardEntry(
                         profile.getUniqueId(),
                         resolveName(profile.getUniqueId()),
-                        profile.getCompletedAdvancements(),
+                        achievementManager.getCompletedCount(profile),
                         achievementManager.getProgressPercent(profile),
                         profile.getPoints(),
                 profile.getHighestTierCompleted(registry)
@@ -95,7 +102,7 @@ public final class LeaderboardManager {
                 .map(profile -> new LeaderboardEntry(
                     profile.getUniqueId(),
                     resolveName(profile.getUniqueId()),
-                    profile.getCompletedAdvancements(),
+                    achievementManager.getCompletedCount(profile),
                     achievementManager.getProgressPercent(profile),
                     profile.getSeasonPoints(),
                     profile.getHighestTierCompleted(registry)

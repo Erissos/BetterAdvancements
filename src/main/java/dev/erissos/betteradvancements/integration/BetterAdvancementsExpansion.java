@@ -49,7 +49,7 @@ public final class BetterAdvancementsExpansion extends PlaceholderExpansion {
             case "points" -> String.valueOf(profile.getPoints());
             case "season_points" -> String.valueOf(profile.getSeasonPoints());
             case "prestige" -> String.valueOf(profile.getPrestigeLevel());
-            case "completed" -> String.valueOf(profile.getCompletedAdvancements());
+            case "completed" -> String.valueOf(plugin.getAchievementManager().getCompletedCount(profile));
             case "challenges_completed" -> String.valueOf(profile.getCompletedChallenges());
             default -> null;
         };

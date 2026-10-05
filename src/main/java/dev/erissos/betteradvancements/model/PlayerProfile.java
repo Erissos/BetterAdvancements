@@ -168,6 +168,12 @@ public final class PlayerProfile {
         return (int) advancementProgress.values().stream().filter(PlayerAchievementProgress::isCompleted).count();
     }
 
+    /** Stored progress remains intact when an optional catalog is disabled; only active goals count in its UI. */
+    public int getCompletedAdvancements(Set<String> activeIds) {
+        return (int) advancementProgress.entrySet().stream().filter(entry -> activeIds.contains(entry.getKey())
+                && entry.getValue().isCompleted()).count();
+    }
+
     public int getCompletedChallenges() {
         return (int) challengeProgress.values().stream().filter(PlayerChallengeProgress::isCompleted).count();
     }

@@ -142,13 +142,25 @@ public final class ChallengeManager {
     }
 
     public void handleTrigger(Player player, TriggerType triggerType, Map<String, String> context) {
-        if (!plugin.getIntegrations().allows(player, player.getLocation(), dev.desperis.integration.IntegrationService.Action.PROGRESS)) return;
+        handleTrigger(player, triggerType, context, false);
+    }
+
+    public void handleSuiteMilestone(Player player, Map<String, String> context) {
+        var safe = dev.erissos.betteradvancements.integration.SuiteMilestoneContext.validated(context);
+        if (!safe.isEmpty()) handleTrigger(player, TriggerType.CUSTOM, safe, true);
+    }
+
+    private void handleTrigger(Player player, TriggerType triggerType, Map<String, String> context, boolean suiteMilestone) {
+        if (!plugin.getIntegrations().allows(player, player.getLocation(), dev.desperis.integration.IntegrationService.Action.PROGRESS)) return ;
+        long amount = dev.erissos.betteradvancements.integration.SuiteMilestoneContext.positiveAmount(context.getOrDefault("amount", "1"));
+        if (amount == 0) return;
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
         boolean changed = false;
         for (ChallengeDefinition challenge : getActiveChallenges()) {
             if (challenge.trigger().type() != triggerType) {
                 continue;
             }
+            if (suiteMilestone && (!challenge.trigger().conditions().containsKey("source") || !challenge.trigger().conditions().containsKey("event"))) continue;
             if (!matches(challenge.trigger(), context)) {
                 continue;
             }
@@ -161,9 +173,7 @@ public final class ChallengeManager {
             if (progress.isCompleted()) {
                 continue;
             }
-            int amount = Integer.parseInt(context.getOrDefault("amount", "1"));
-            if (amount<=0) continue;
-            progress.setProgress((int)Math.min(challenge.trigger().target(), (long)progress.getProgress() + amount));
+            progress.setProgress((int)Math.min(challenge.trigger().target(), (long)progress.getProgress() + Math.min(Integer.MAX_VALUE, amount)));
             changed = true;
             if (progress.getProgress() >= challenge.trigger().target()) {
                 progress.complete(cycleKey);

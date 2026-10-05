@@ -37,6 +37,7 @@ public final class AdvancementListener implements Listener {
     private final Map<UUID, org.bukkit.Location> lastLocations = new ConcurrentHashMap<>();
     private final Map<UUID, Double> distances = new HashMap<>();
     private final Map<UUID, Map<org.bukkit.Material, Integer>> crafts = new HashMap<>();
+    private final Map<UUID, EntityDeathEvent> pendingDeaths = new HashMap<>();
 
     public AdvancementListener(BetterAdvancementsPlugin plugin, AchievementManager achievementManager, ChallengeManager challengeManager, PlayerDataManager playerDataManager) {
         this.plugin = plugin;
@@ -79,6 +80,9 @@ public final class AdvancementListener implements Listener {
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (plugin.getSuiteIntegrations() != null
+                && dev.erissos.betteradvancements.integration.SuiteHooks.enabled(plugin.getConfig(), "betteradvancements-ignore-synthetic-progress", true)
+                && plugin.getSuiteIntegrations().isSynthetic(event)) return;
         if (!plugin.getIntegrations().allows(event.getPlayer(), event.getBlock().getLocation(), event.getBlock().getType(), dev.desperis.integration.IntegrationService.Action.BREAK)
                 || !allowedProgress(event.getPlayer(), event.getBlock().getLocation())) return;
         trigger(event.getPlayer(), TriggerType.BLOCK_BREAK, Map.of("material", event.getBlock().getType().name(), "amount", "1"));
@@ -104,17 +108,32 @@ public final class AdvancementListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent event) {
+        if (event.getEntity().getLastDamageCause() != null && event.getEntity().getLastDamageCause().isCancelled()) return;
         Player killer = event.getEntity().getKiller();
-        if (killer == null) {
-            return;
-        }
-        if (event.getEntity() instanceof Player) {
-            trigger(killer, TriggerType.PLAYER_KILL, Map.of("entity", "PLAYER", "amount", "1"));
-            return;
-        }
-        trigger(killer, TriggerType.MOB_KILL, Map.of("entity", event.getEntity().getType().name(), "amount", "1"));
+        if (!livePlayer(killer) || dev.erissos.betteradvancements.integration.SuiteHooks.isNpc(event.getEntity())) return;
+        if (!(event.getEntity() instanceof Player) && plugin.getSuiteIntegrations() != null
+                && plugin.getSuiteIntegrations().isManaged(event.getEntity())
+                && !dev.erissos.betteradvancements.integration.SuiteHooks.enabled(plugin.getConfig(), "betteradvancements-count-managed-mob-kills", false)) return;
+        if (!allowedProgress(killer, event.getEntity().getLocation())) return;
+        if (event.getEntity() instanceof Player target && (!livePlayer(target) || !plugin.getIntegrations().allowsPvP(killer, target))) return;
+        UUID entityId = event.getEntity().getUniqueId();
+        // A later listener can cancel Paper's death event for a resurrection. Count only its final result.
+        if (pendingDeaths.putIfAbsent(entityId, event) != null) return;
+        var deathLocation = event.getEntity().getLocation().clone();
+        var damage = event.getEntity().getLastDamageCause();
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            if (!pendingDeaths.remove(entityId, event) || event.isCancelled() || (damage != null && damage.isCancelled())
+                    || !livePlayer(killer) || !allowedProgress(killer, deathLocation)) return;
+            if (!(event.getEntity() instanceof Player) && event.getEntity().isValid() && !event.getEntity().isDead()) return;
+            if (event.getEntity() instanceof Player target) {
+                if (!plugin.getIntegrations().allowsPvP(killer, target)) return;
+                trigger(killer, TriggerType.PLAYER_KILL, Map.of("entity", "PLAYER", "amount", "1"));
+            } else {
+                trigger(killer, TriggerType.MOB_KILL, Map.of("entity", event.getEntity().getType().name(), "amount", "1"));
+            }
+        });
     }
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
@@ -196,6 +215,10 @@ public final class AdvancementListener implements Listener {
         return plugin.getIntegrations().allows(player, location, dev.desperis.integration.IntegrationService.Action.PROGRESS);
     }
 
+    private boolean livePlayer(Player player) {
+        return player != null && player.isOnline() && Bukkit.getPlayer(player.getUniqueId()) == player
+                && !dev.erissos.betteradvancements.integration.SuiteHooks.isNpc(player);
+    }
 
     private void trigger(Player player, TriggerType type, Map<String, String> context) {
         Map<String, String> mutableContext = new HashMap<>(context);

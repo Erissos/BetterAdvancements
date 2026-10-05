@@ -137,3 +137,49 @@ integrations:
   # Sınırlı sağlayıcı durum / hata tanılaması. Normal işletimde false yeterlidir;
   # veri tabanına veya claim dosyasına müdahale etmez.
   debug: false
+# Desperis ürünlerinin isteğe bağlı ortak özellikleri.
+# Her ürün tek başına çalışır; yabancı veritabanı, şirket kasası veya ödeme kaydı yazılmaz.
+suite-integrations:
+  # false yeni ortak bağlantıları kapatır. Mevcut bağlı savaşın güvenli bitişi/temizliği sürer.
+  enabled: true
+  language-sync:
+    # true: oyuncunun açıkça seçtiği dili, bu ayarı açmış diğer ürünlere UUID ile iletir.
+    # Desteklenmeyen dil o üründe değiştirilmez. 'auto' ve girişteki istemci dili yayınlanmaz.
+    # Her ürünün kendi dil dosyaları ve kişisel tercih kaydı korunur; varsayılan kapalıdır.
+    enabled: false
+  milestones:
+    # Yalnızca başarıyla tamamlanan canlı işlemler BetterAdvancements'a ilerleme bildirir.
+    # BA'da kaynak+olay koşullu CUSTOM hedef gerekir; örnek katalog ayrı ve varsayılan kapalıdır.
+    # Geçmiş oynatılmaz. Canlı gözlem ödeme işlemi değildir; sunucu çöküşünde teslim garantisi yoktur.
+    enabled: true
+  providers:
+    # Bağlantı iki üründe de açık olmalıdır. Eksik/eski/kapalı ürün temel işleyişi durdurmaz.
+    # Kimlikler küçük harfle yazılır. Kendi ürün satırı başka bir kopyaya bağlantı kurmaz.
+    stableman:
+      enabled: true
+    betteradvancements:
+      enabled: true
+    auctionhousepro:
+      enabled: true
+    playerbusiness:
+      enabled: true
+    dynamicbounty:
+      enabled: true
+    smartnpcworkers:
+      enabled: true
+    servereventsengine:
+      enabled: true
+    dynamicdungeongenerator:
+      enabled: true
+    adaptivebosses:
+      enabled: true
+  features:
+    # Kaynak ve olay koşulu açıkça yazılmış CUSTOM başarımları ve aktif görevleri ilerletir.
+    # Yönetici grant komutunu çağırmaz; bağımlılık/hedef/ödül kuralları geçerlidir.
+    betteradvancements-milestones: true
+    # NPC koruma sondaları normal BLOCK_BREAK ilerlemesine dahil edilmez.
+    betteradvancements-ignore-synthetic-progress: true
+    # true: gerçek suite boss/zindan/hayvan ölümü normal MOB_KILL hedefine de sayılır.
+    # false: suite hedefleri için kaynak+olay koşullu CUSTOM hedefleri kullanılır.
+    # NPC işçiler, NPC metadata'sı taşıyan varlıklar ve sahte oyuncular her durumda hariçtir.
+    betteradvancements-count-managed-mob-kills: false

@@ -145,13 +145,26 @@ public final class AchievementManager {
     }
 
     public boolean handleTrigger(Player player, TriggerType triggerType, Map<String, String> context) {
+        return handleTrigger(player, triggerType, context, false);
+    }
+
+    /** Only explicitly configured source/event objectives consume trusted live peer milestones. */
+    public boolean handleSuiteMilestone(Player player, Map<String, String> context) {
+        var safe = dev.erissos.betteradvancements.integration.SuiteMilestoneContext.validated(context);
+        return !safe.isEmpty() && handleTrigger(player, TriggerType.CUSTOM, safe, true);
+    }
+
+    private boolean handleTrigger(Player player, TriggerType triggerType, Map<String, String> context, boolean suiteMilestone) {
         if (!plugin.getIntegrations().allows(player, player.getLocation(), dev.desperis.integration.IntegrationService.Action.PROGRESS)) return false;
+        long amount = dev.erissos.betteradvancements.integration.SuiteMilestoneContext.positiveAmount(context.getOrDefault("amount", "1"));
+        if (amount == 0) return false;
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
         boolean changed = false;
         for (BetterAdvancement advancement : advancements.values()) {
             if (advancement.trigger().type() != triggerType) {
                 continue;
             }
+            if (suiteMilestone && (!advancement.trigger().conditions().containsKey("source") || !advancement.trigger().conditions().containsKey("event"))) continue;
             if (!hasDependencies(profile, advancement)) {
                 continue;
             }
@@ -163,9 +176,7 @@ public final class AchievementManager {
                 continue;
             }
 
-            int amount = Integer.parseInt(context.getOrDefault("amount", "1"));
-            if (amount<=0) continue;
-            progress.setProgress((int)Math.min(advancement.trigger().target(), (long)progress.getProgress() + amount));
+            progress.setProgress((int)Math.min(advancement.trigger().target(), (long)progress.getProgress() + Math.min(Integer.MAX_VALUE, amount)));
             if (progress.getProgress() >= advancement.trigger().target()) {
                 complete(player, profile, advancement, progress);
             }
@@ -218,7 +229,11 @@ public final class AchievementManager {
         if (advancements.isEmpty()) {
             return 0.0D;
         }
-        return (profile.getCompletedAdvancements() * 100.0D) / advancements.size();
+        return (getCompletedCount(profile) * 100.0D) / advancements.size();
+    }
+
+    public int getCompletedCount(PlayerProfile profile) {
+        return profile.getCompletedAdvancements(advancements.keySet());
     }
 
     public int getTierCompletion(PlayerProfile profile, Tier tier) {

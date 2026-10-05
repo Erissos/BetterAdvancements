@@ -34,6 +34,7 @@ public final class ConfigManager {
         ensureResource("database.yml");
         ensureResource("gui.yml");
         ensureResource("achievements.yml");
+        ensureResource("suite-achievements.yml");
         ensureResource("challenges.yml");
         ensureResource("season.yml");
 
@@ -52,22 +53,16 @@ public final class ConfigManager {
         // Validate every input before replacing the active configuration on reload.
         var nextConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"config.yml"));
         dev.desperis.integration.IntegrationService.validateConfig(nextConfig);
-        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"database.yml"));
-        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"gui.yml"));
-        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"achievements.yml"));
-        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"challenges.yml"));
-        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"season.yml"));
-        File[] languageFiles=new File(plugin.getDataFolder(),"lang").listFiles((directory,name) -> name.endsWith(".yml"));
-        if (languageFiles!=null) for (File languageFile:languageFiles) dev.erissos.betteradvancements.util.StrictYaml.load(languageFile);
-
-        plugin.reloadConfig();
-        this.mainConfig = plugin.getConfig();
-        this.databaseConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "database.yml"));
-        this.guiConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "gui.yml"));
-        this.achievementsConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "achievements.yml"));
-        this.challengesConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "challenges.yml"));
-        this.seasonConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "season.yml"));
-        this.languageConfigs.clear();
+        dev.desperis.suite.SuiteIntegrationService.validateConfig(nextConfig);
+        dev.erissos.betteradvancements.integration.SuiteHooks.validateConfig(nextConfig);
+        var nextDatabase = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "database.yml"));
+        var nextGui = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "gui.yml"));
+        var nextAchievements = dev.erissos.betteradvancements.integration.SuiteAchievementCatalog.merge(
+                dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "achievements.yml")),
+                dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "suite-achievements.yml")), nextGui);
+        var nextChallenges = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "challenges.yml"));
+        var nextSeason = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "season.yml"));
+        Map<String, FileConfiguration> nextLanguages = new LinkedHashMap<>();
         File langFolder = new File(plugin.getDataFolder(), "lang");
         File[] files = langFolder.listFiles((dir, name) -> name.endsWith(".yml"));
         if (files != null) {
@@ -83,9 +78,19 @@ public final class ConfigManager {
                     }
                 }
                 if (key.equals("tr")) upgradeLegacyTurkish(language);
-                languageConfigs.put(key, language);
+                nextLanguages.put(key, language);
             }
         }
+        // Publish only after every catalog, language and optional merge has been validated.
+        plugin.reloadConfig();
+        this.mainConfig = nextConfig;
+        this.databaseConfig = nextDatabase;
+        this.guiConfig = nextGui;
+        this.achievementsConfig = nextAchievements;
+        this.challengesConfig = nextChallenges;
+        this.seasonConfig = nextSeason;
+        this.languageConfigs.clear();
+        this.languageConfigs.putAll(nextLanguages);
     }
 
     private void upgradeLegacyTurkish(YamlConfiguration language) {
