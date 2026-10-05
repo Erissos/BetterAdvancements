@@ -1,5 +1,6 @@
 package dev.erissos.betteradvancements;
 
+import dev.desperis.integration.IntegrationService;
 import dev.erissos.betteradvancements.api.BetterAdvancementsAPI;
 import dev.erissos.betteradvancements.command.BetterAdvancementsCommand;
 import dev.erissos.betteradvancements.config.ConfigManager;
@@ -24,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class BetterAdvancementsPlugin extends JavaPlugin {
 
     private ConfigManager configManager;
+    private IntegrationService integrations;
     private LanguageManager languageManager;
     private PlayerDataManager playerDataManager;
     private PlaceholderHook placeholderHook;
@@ -43,6 +45,8 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
         this.configManager.bootstrap();
+        this.integrations = new IntegrationService(this, configManager::getMainConfig);
+        this.integrations.reload();
         Tier.loadFromConfig(configManager.getGuiConfig());
 
         this.placeholderHook = new PlaceholderHook();
@@ -90,6 +94,7 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (integrations != null) integrations.close();
         if (leaderboardManager != null) {
             leaderboardManager.stop();
         }
@@ -106,12 +111,16 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
     public void reloadPlugin() {
         configManager.reloadAll();
+        integrations.reload();
         Tier.loadFromConfig(configManager.getGuiConfig());
         languageManager.load();
         achievementManager.load();
         challengeManager.load();
         guiManager.reload();
     }
+
+    public IntegrationService getIntegrations() { return integrations; }
+
 
     public NotificationManager getNotificationManager() {
         return notificationManager;

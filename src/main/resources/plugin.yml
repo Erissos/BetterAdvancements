@@ -4,7 +4,7 @@ main: dev.erissos.betteradvancements.BetterAdvancementsPlugin
 api-version: '1.20.6'
 authors: [Erissos]
 description: Premium configurable advancement framework with GUI, rewards, challenges and leaderboards.
-softdepend: [Vault, PlaceholderAPI]
+softdepend: [Vault, PlaceholderAPI, Towny, GriefPrevention, WorldGuard, Lands, BentoBox, SuperiorSkyblock2]
 libraries:
   - com.zaxxer:HikariCP:5.1.0
   - org.xerial:sqlite-jdbc:3.45.3.0

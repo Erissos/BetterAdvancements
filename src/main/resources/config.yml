@@ -1,22 +1,139 @@
+# ============================================================================
+# BetterAdvancements | Desperis ürünü
+# Geliştirici: erisos
+# Resmî site: https://desperis.com
+# Bu yapılandırmanın ürün sürümü: 1.1.1-SNAPSHOT
+# Desteklenen Paper sürümleri: 1.20.6 - 26.2 | Java 21 bytecode
+# ============================================================================
+# Dosyayı UTF-8 kaydedin; girintide TAB yerine boşluk kullanın.
+# Yorumlar çalışma mantığını açıklar; anahtar adlarını / Material kodlarını çevirmeyin.
+# Süre birimleri her seçenek yanında yazılıdır: 20 tick yaklaşık 1 saniye,
+# 1000 milisaniye = 1 saniye. Tick süreleri sunucu gecikmesinde uzayabilir.
+# Düzenlemeden önce yedek alın. Kaydedilen oyuncu verileri config değişikliğiyle
+# silinmez. Dil / menü metinleri ilgili lang, messages, gui veya menü dosyalarındadır.
+# ============================================================================
+
+# ==========================================================================
+# GENEL | Dil, kalıcı kayıt ve gizli başarı görünümü.
 general:
+  # Kişisel dil tercihi olmayan oyuncu / konsol için paketlenmiş lang dosyalarındaki dil kodu; örnek tr veya en.
   default-language: en
+  # Eski uyumluluk anahtarı; bu sürümde ayrı bir periyodik kayıt zamanlayıcısı bu değeri okumaz. Değeri değiştirmek kayıt aralığını değiştirmez.
   cache-save-interval-seconds: 60
+  # Eski uyumluluk anahtarı; bu sürümde gizli başarı görünümü ilgili lang / gui metinlerinden gelir, bu alan okunmaz.
   hidden-achievement-placeholder: "<dark_gray>???</dark_gray>"
 
+# ==========================================================================
+# PRESTİJ | Prestij işlemindeki puan ve meydan okuma sıfırlama davranışı.
 prestige:
+  # Prestij sonucunda verilen bonus puan.
   bonus-points: 250
+  # true: prestij işleminde meydan okuma ilerlemesi de sıfırlanır.
   reset-challenges: true
 
+# ==========================================================================
+# MEYDAN OKUMALAR | Görev içerikleri challenges.yml içinde tanımlanır.
 challenges:
+  # Günlük / haftalık meydan okumaların yenilenmesini sohbette duyurur.
   broadcast-rotation: true
 
+# ==========================================================================
+# DUYURULAR | MiniMessage biçimi ve {threshold} gibi yer tutucular korunmalıdır; normal dil metinleri lang klasöründedir.
 messages:
+  # Meydan okumalar yenilendiğinde kullanılan duyuru metni.
   challenge-rotation-broadcast: "<gradient:#34d399:#60a5fa>[BA]</gradient> <white>Daily/Weekly challenges have rotated.</white>"
+  # Sezon ödülü açıldığında kullanılan duyuru; {threshold} gerekli puanı gösterir.
   season-reward-unlocked: "<gradient:#f59e0b:#f97316>[Season]</gradient> <white>Reward unlocked at <#facc15>{threshold}</#facc15> points.</white>"
 
+# ==========================================================================
+# BİLDİRİMLER | Aşağıdaki kanalların her biri oyuncu bildirimini ayrı ayrı kontrol eder.
 notifications:
+  # Başarı / ödül bildirimini sohbette gösterir.
   chat: true
+  # Başarı / ödül bildirimini Minecraft başlık alanında gösterir.
   title: true
+  # Başarı / ödül bildirimini aksiyon çubuğunda gösterir.
   action-bar: true
+  # Başarı / ödül bildiriminde boss bar kanalını kullanır.
   boss-bar: true
+  # Bukkit Sound kodu; varsayılan başarı tostu sesi.
   sound: UI_TOAST_CHALLENGE_COMPLETE
+
+# ============================================================================
+# ENTEGRASYONLAR | Koruma eklentileri isteğe bağlıdır; kurulu ve etkin olanlar algılanır.
+# Birden fazla koruma aynı yeri kapsıyorsa etkin sağlayıcılardan birinin reddi yeterlidir.
+# Eksik sağlayıcı normalde atlanır; required-providers ile zorunlu hale getirilebilir.
+# Bu bölüm her eklentide ortak olsa da yalnızca ilgili ürünün yaptığı işlem denetlenir.
+# Sağlayıcının kendi üyelik / trust / flag kuralları kullanılır; veri dosyası okunmaz.
+# API uyumsuzluğu için fail-closed davranışı geçerlidir. Tüm ticari sağlayıcı
+# sürümleri test edilmiş sayılmaz; doğrulama kapsamı docs/INTEGRATIONS.md içindedir.
+# ============================================================================
+integrations:
+  # Ana entegrasyon anahtarı. false koruma bağlantılarını kapatır; yerel dünya
+  # kısıtlamaları ve eklentinin kendi sahiplik / izin denetimleri ayrıca geçerlidir.
+  enabled: true
+  # true: etkin bir sağlayıcı hata verirse ilgili işlem reddedilir.
+  # false: API hatasında diğer etkin denetimler sürer, hatalı sağlayıcı izin engeli olmaz.
+  fail-closed: true
+  # Yokluğu kabul edilmeyen sağlayıcı ID listesi: towny, griefprevention,
+  # worldguard, lands, bentobox, superiorskyblock. [] = hiçbiri zorunlu değil.
+  # İlgili işlem denetimi (checks) kapalıysa veya bypass varsa bu zorunluluk atlanır.
+  required-providers: []
+  # Boş metin hiçbir izinle entegrasyonu atlamaz. İsterseniz yalnızca güvendiğiniz
+  # yöneticilere vereceğiniz özel bir permission yazın; bu bypass ortak dünya /
+  # zorunlu sağlayıcı denetimini de atlar. Eklentinin oyuncu sahipliği şartı atlanmaz.
+  bypass-permission: ''
+  # Yalnızca tanınan koruma / ada dünyasında herhangi bir alanın DIŞINDA kalınca
+  # uygulanır: allow veya deny. Normal, ada olmayan dünyaları ada eklentisi engellemez.
+  wilderness: allow
+  worlds:
+    # İzin verilen kesin dünya adları; [] = ortak entegrasyon katmanında tüm dünyalar.
+    # Ürünün kendi allowed-worlds / disabled-worlds listeleri ayrıca uygulanır.
+    allowed: []
+    # Engelli kesin dünya adları; bu liste allowed listesinden önceliklidir.
+    blocked: []
+  providers:
+    # Her anahtar sadece kurulu ve etkin olan ilgili eklentiyle bağlantıyı açar.
+    # false o sağlayıcının koruma denetimini bu üründe kapatır.
+    towny:
+      # Towny Advanced kasaba / arsa ve yerel eylem izinleri.
+      enabled: true
+    griefprevention:
+      # GriefPrevention claim / alt claim ve sahibin verdiği erişim izinleri.
+      enabled: true
+    worldguard:
+      # WorldGuard bölge / global bölge eylem flagleri; WorldEdit altyapısı gerekir.
+      enabled: true
+    lands:
+      # Lands arazi / area üyelik ve eylem flagleri.
+      enabled: true
+    bentobox:
+      # BentoBox ve onun yönettiği BSkyBlock / AcidIsland gibi oyun dünyaları.
+      enabled: true
+    superiorskyblock:
+      # SuperiorSkyblock2 adaları ve ada oyuncu izinleri.
+      enabled: true
+  checks:
+    # Ürünün alan / blok etkileşimlerini sağlayıcının ilgili yerel izniyle denetler.
+    interact: true
+    # Blok oluşturma / ekim eylemleri; işçi, zindan üretimi gibi ilgili özellikler.
+    build: true
+    # Blok kırma / hasat eylemleri; kabul edilemeyen bloklar işlenmez.
+    break: true
+    # Işınlama varış noktaları ve giriş izinleri.
+    teleport: true
+    # Hayvan, işçi, boss veya zindan mobu üretme eylemleri.
+    spawn: true
+    # Yerel korumanın ticaret / etkileşim izni üzerinden parasal oyuncu işlemleri.
+    trade: true
+    # Yasak bölgede yapılan eylemlerin ilerleme / ödül kazandırmasını denetler.
+    progress: true
+    # Hedef takibi ve konum bilgisinin koruma iznine uygun olmasını denetler.
+    track: true
+    # Ödül avcılığı / savaş eylemleri için yerel PvP izni; korumanın reddi korunur.
+    pvp: true
+    # Otomatik çevresel etkinlik etkileri; oyuncusuz etkilerde yerel çevre flagleri kullanılır.
+    event: true
+  # Sınırlı sağlayıcı durum / hata tanılaması. Normal işletimde false yeterlidir;
+  # veri tabanına veya claim dosyasına müdahale etmez.
+  debug: false

@@ -79,12 +79,16 @@ public final class AdvancementListener implements Listener {
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (!plugin.getIntegrations().allows(event.getPlayer(), event.getBlock().getLocation(), event.getBlock().getType(), dev.desperis.integration.IntegrationService.Action.BREAK)
+                || !allowedProgress(event.getPlayer(), event.getBlock().getLocation())) return;
         trigger(event.getPlayer(), TriggerType.BLOCK_BREAK, Map.of("material", event.getBlock().getType().name(), "amount", "1"));
     }
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraft(CraftItemEvent event) {
         if (event.getWhoClicked() instanceof Player player && event.getCurrentItem() != null) {
+            org.bukkit.Location location = event.getInventory().getLocation();
+            if (!allowedProgress(player, location == null ? player.getLocation() : location)) return;
             org.bukkit.Material material = event.getCurrentItem().getType();
             UUID id = player.getUniqueId();
             boolean scheduled = crafts.containsKey(id);
@@ -124,6 +128,7 @@ public final class AdvancementListener implements Listener {
             return;
         }
         org.bukkit.Location previous = lastLocations.put(id, event.getTo().clone());
+        if (!allowedProgress(event.getPlayer(), event.getFrom()) || !allowedProgress(event.getPlayer(), event.getTo())) { distances.remove(id); return; }
         if (previous == null) previous = event.getFrom();
         if (previous.getWorld() != event.getTo().getWorld()) { distances.remove(id); return; }
         if (previous != null) {
@@ -145,31 +150,33 @@ public final class AdvancementListener implements Listener {
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onFish(PlayerFishEvent event) {
-        if (event.getCaught() != null) {
+        if (event.getCaught() != null && allowedProgress(event.getPlayer(), event.getCaught().getLocation())) {
             trigger(event.getPlayer(), TriggerType.FISH, Map.of("amount", "1"));
         }
     }
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onEnchant(EnchantItemEvent event) {
+        if (!allowedProgress(event.getEnchanter(), event.getEnchantBlock().getLocation())) return;
         trigger(event.getEnchanter(), TriggerType.ENCHANT, Map.of("amount", "1"));
     }
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onExtract(FurnaceExtractEvent event) {
+        if (!allowedProgress(event.getPlayer(), event.getBlock().getLocation())) return;
         trigger(event.getPlayer(), TriggerType.SMELT, Map.of("item", event.getItemType().name(), "amount", String.valueOf(event.getItemAmount())));
     }
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onBreed(EntityBreedEvent event) {
-        if (event.getBreeder() instanceof Player player) {
+        if (event.getBreeder() instanceof Player player && allowedProgress(player, event.getEntity().getLocation())) {
             trigger(player, TriggerType.BREED, Map.of("entity", event.getEntityType().name(), "amount", "1"));
         }
     }
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onTame(EntityTameEvent event) {
-        if (event.getOwner() instanceof Player player) {
+        if (event.getOwner() instanceof Player player && allowedProgress(player, event.getEntity().getLocation())) {
             trigger(player, TriggerType.TAME, Map.of("entity", event.getEntityType().name(), "amount", "1"));
         }
     }
@@ -181,9 +188,14 @@ public final class AdvancementListener implements Listener {
 
     @EventHandler(priority = org.bukkit.event.EventPriority.MONITOR, ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent event) {
-        String command = event.getMessage().split(" ")[0].replace("/", "").toUpperCase();
+        String command = event.getMessage().split(" ")[0].replace("/", "").toUpperCase(java.util.Locale.ROOT);
         trigger(event.getPlayer(), TriggerType.COMMAND, Map.of("command", command, "amount", "1"));
     }
+
+    private boolean allowedProgress(Player player, org.bukkit.Location location) {
+        return plugin.getIntegrations().allows(player, location, dev.desperis.integration.IntegrationService.Action.PROGRESS);
+    }
+
 
     private void trigger(Player player, TriggerType type, Map<String, String> context) {
         Map<String, String> mutableContext = new HashMap<>(context);

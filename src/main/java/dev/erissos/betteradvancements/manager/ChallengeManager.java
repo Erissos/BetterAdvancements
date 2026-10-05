@@ -142,6 +142,7 @@ public final class ChallengeManager {
     }
 
     public void handleTrigger(Player player, TriggerType triggerType, Map<String, String> context) {
+        if (!plugin.getIntegrations().allows(player, player.getLocation(), dev.desperis.integration.IntegrationService.Action.PROGRESS)) return;
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
         boolean changed = false;
         for (ChallengeDefinition challenge : getActiveChallenges()) {

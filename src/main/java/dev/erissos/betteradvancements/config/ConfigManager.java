@@ -50,7 +50,8 @@ public final class ConfigManager {
 
     public void reloadAll() {
         // Validate every input before replacing the active configuration on reload.
-        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"config.yml"));
+        var nextConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"config.yml"));
+        dev.desperis.integration.IntegrationService.validateConfig(nextConfig);
         dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"database.yml"));
         dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"gui.yml"));
         dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"achievements.yml"));

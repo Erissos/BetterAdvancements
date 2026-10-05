@@ -145,6 +145,7 @@ public final class AchievementManager {
     }
 
     public boolean handleTrigger(Player player, TriggerType triggerType, Map<String, String> context) {
+        if (!plugin.getIntegrations().allows(player, player.getLocation(), dev.desperis.integration.IntegrationService.Action.PROGRESS)) return false;
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
         boolean changed = false;
         for (BetterAdvancement advancement : advancements.values()) {
