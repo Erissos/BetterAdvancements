@@ -41,11 +41,19 @@ public final class PlayerChallengeProgress {
         return completedAt;
     }
 
+    public void setCompletedAt(Instant value) { completedAt=value; }
+
     public String getCompletedCycleKey() {
         return completedCycleKey;
     }
 
     public void setCompletedCycleKey(String completedCycleKey) {
         this.completedCycleKey = completedCycleKey;
+    }
+
+    public PlayerChallengeProgress copy() {
+        PlayerChallengeProgress copy = new PlayerChallengeProgress();
+        copy.progress = progress; copy.completed = completed; copy.completedAt = completedAt; copy.completedCycleKey = completedCycleKey;
+        return copy;
     }
 }

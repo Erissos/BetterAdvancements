@@ -29,9 +29,9 @@ public final class NotificationManager {
     public void notifyCompletion(Player player, BetterAdvancement advancement, String locale) {
         PlayerProfile profile = plugin.getPlayerDataManager().getOrCreate(player.getUniqueId());
         Map<String, String> placeholders = Map.of(
-                "title", advancement.title(),
-                "description", advancement.description(),
-            "tier", advancement.tier().getDisplayKey(),
+                "title", languageManager.content(player,"advancements",advancement.id(),"title",advancement.title()),
+                "description", languageManager.content(player,"advancements",advancement.id(),"description",advancement.description()),
+            "tier", languageManager.text(player,"gui.main.tiers."+advancement.tier().name()+".display-name",advancement.tier().getDisplayKey()),
                 "points", String.valueOf(advancement.points())
         );
 

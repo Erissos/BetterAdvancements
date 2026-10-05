@@ -17,6 +17,8 @@ import java.util.List;
 public final class SeasonManager {
 
     private final ConfigManager configManager;
+    private dev.erissos.betteradvancements.lang.LanguageManager languageManager;
+    public void setLanguageManager(dev.erissos.betteradvancements.lang.LanguageManager value) { languageManager=value; }
     private final DateTimeFormatter monthlyFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
 
     public SeasonManager(ConfigManager configManager) {
@@ -28,7 +30,8 @@ public final class SeasonManager {
         String mode = config.getString("season.mode", "monthly");
         if (mode == null || mode.equalsIgnoreCase("monthly")) {
             String zone = config.getString("season.timezone", ZoneId.systemDefault().getId());
-            return LocalDate.now(ZoneId.of(zone)).format(monthlyFormatter);
+            try { return LocalDate.now(ZoneId.of(zone)).format(monthlyFormatter); }
+            catch (java.time.DateTimeException invalid) { return LocalDate.now(ZoneId.of("UTC")).format(monthlyFormatter); }
         }
 
         String fixedSeason = config.getString("season.fixed-id", "default");
@@ -54,7 +57,7 @@ public final class SeasonManager {
                 String rewardMessage = configManager.getMainConfig().getString("messages.season-reward-unlocked", "");
                 if (rewardMessage != null && !rewardMessage.isBlank()) {
                     player.sendMessage(dev.erissos.betteradvancements.util.ItemUtils.component(
-                            rewardMessage.replace("{threshold}", String.valueOf(threshold))
+                            (languageManager == null ? rewardMessage : languageManager.text(player,"notifications.season-reward-unlocked",rewardMessage)).replace("<threshold>", String.valueOf(threshold)).replace("{threshold}", String.valueOf(threshold))
                     ));
                 }
             }

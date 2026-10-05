@@ -48,6 +48,25 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        try { return execute(sender,command,label,args); }
+        catch (RuntimeException failure) {
+            plugin.getLogger().warning("Command failed: "+failure.getMessage());
+            sender.sendMessage(languageManager.getComponent(sender,languageManager.getLocale(sender),"command.storage-error",Map.of()));
+            return true;
+        }
+    }
+
+    private boolean execute(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length>0 && args[0].equalsIgnoreCase("rewards")) {
+            if (!sender.hasPermission("ba.admin")) return true;
+            if (args.length==2) sender.sendMessage(plugin.getRewardDelivery().review(java.util.UUID.fromString(args[1])).toString());
+            else if (args.length==4 && (args[3].equalsIgnoreCase("applied") || args[3].equalsIgnoreCase("retry"))) {
+                plugin.getRewardDelivery().reconcile(java.util.UUID.fromString(args[1]),args[2],args[3].equalsIgnoreCase("applied")); sender.sendMessage("Reward resolved.");
+            } else sender.sendMessage("/ba rewards <player UUID> [reward id applied|retry]");
+            return true;
+        }
+
+        if (sender instanceof Player player) playerDataManager.getOrCreate(player.getUniqueId());
         String locale = languageManager.getLocale(sender);
 
         if (sender instanceof Player && !sender.hasPermission("ba.use")) {
@@ -65,6 +84,14 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
         }
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
+            case "claim" -> {
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-only", Map.of())); return true;
+                }
+                int count = plugin.getRewardDelivery().claim(player);
+                sender.sendMessage(languageManager.getComponent(sender, locale, "command.reward-claim", Map.of("count", String.valueOf(count))));
+                return true;
+            }
             case "help" -> {
                 sender.sendMessage(languageManager.getComponent(sender, locale, "command.general-help", Map.of("command", label)));
                 sender.sendMessage(languageManager.getComponent(sender, locale, "command.usage", Map.of()));
@@ -112,12 +139,18 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.invalid-language", Map.of("language", args[1])));
                     return true;
                 }
-                playerDataManager.getOrCreate(player.getUniqueId()).setLanguage(requested);
+                var profile = playerDataManager.getOrCreate(player.getUniqueId());
+                String previousLanguage = profile.getLanguage();
+                profile.setLanguage(requested);
                 playerDataManager.setLastKnownName(player.getUniqueId(), player.getName());
-                playerDataManager.saveProfile(player.getUniqueId());
-                sender.sendMessage(languageManager.getComponent(sender, requested, "command.language-set", Map.of(
-                    "language", languageManager.getDisplayName(requested)
-                )));
+                try {
+                    playerDataManager.saveProfile(player.getUniqueId()).join();
+                } catch (RuntimeException failure) {
+                    profile.setLanguage(previousLanguage);
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.storage-error", Map.of())); return true;
+                }
+                sender.sendMessage(languageManager.getComponent(sender, requested, "command.language-set", Map.of("language", languageManager.getDisplayName(requested))));
+                guiManager.refreshLanguage(player);
                 return true;
             }
             case "reload" -> {
@@ -205,8 +238,8 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                 }
                 for (ChallengeDefinition challenge : challengeManager.getActiveChallenges()) {
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.challenge-line", Map.of(
-                            "title", challenge.title(),
-                            "type", challenge.type().toUpperCase(Locale.ROOT),
+                            "title", languageManager.content(sender,"challenges",challenge.id(),"title",challenge.title()),
+                            "type", languageManager.text(sender,"gui.texts.challenges.type-labels."+challenge.type(),challenge.type().toUpperCase(Locale.ROOT)),
                             "target", String.valueOf(challenge.trigger().target())
                     )));
                 }
@@ -244,8 +277,12 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
                     sender.sendMessage(languageManager.getComponent(sender, locale, "command.player-not-found", Map.of("player", args[1])));
                     return true;
                 }
-                playerDataManager.resetProfile(target.getUniqueId());
-                playerDataManager.loadProfile(target);
+                try {
+                    playerDataManager.resetProfile(target.getUniqueId()).join();
+                    playerDataManager.loadProfile(target).join();
+                } catch (RuntimeException failure) {
+                    sender.sendMessage(languageManager.getComponent(sender, locale, "command.storage-error", Map.of())); return true;
+                }
                 sender.sendMessage(languageManager.getComponent(sender, locale, "command.reset", Map.of("player", target.getName())));
                 return true;
             }
@@ -266,7 +303,7 @@ public final class BetterAdvancementsCommand implements CommandExecutor, TabComp
 
     private List<String> suggestions(CommandSender sender, String[] args) {
         if (args.length == 1) {
-            List<String> result = new ArrayList<>(List.of("menu", "help", "stats", "leaderboard", "challenges", "season", "prestige", "language"));
+            List<String> result = new ArrayList<>(List.of("menu", "help", "stats", "leaderboard", "challenges", "season", "prestige", "language", "claim"));
             if (sender.hasPermission("ba.admin") || sender.hasPermission("ba.reload")) result.add("reload");
             if (sender.hasPermission("ba.admin")) result.addAll(List.of("give", "reset"));
             return result;

@@ -2,6 +2,21 @@
 
 Better Advancements, Paper 1.20.6–26.2 sunucularını destekleyen; görev zincirleri, puan sistemi, GUI tabanlı ilerleme ekranları, günlük/haftalık challenge yapısı, liderlik tabloları ve çoklu dil desteği sunan veri odaklı bir progression eklentisidir.
 
+## Geliştirme sürümü: 1.1.1-SNAPSHOT
+
+3 Ekim 2026 incelemesindeki dil, kayıt ve işlem güvenliği sorunlarının düzeltmeleri bu kaynakta bulunur. GitHub'daki 1.1.0 yayımlanmış sürümünden sonra gelen, henüz yayımlanmamış geliştirme buildidir; test sunucusunda doğrulanır. Paper 1.20.6 API ve Java 21 derleme hedefi korunur.
+
+Menü yerleşimi/malzemeleri `gui.yml` içinde; oyuncuya özel metinler `lang/<dil>.yml` içindeki `gui`, `values`, `content` alanlarındadır. İngilizce ortak `gui.yml` metinlerini kullanır. Paketle gelen 65 ilerleme ve 6 görev için dil karşılıkları vardır; Türkçe özgün başlıklar, diğer paketlerde yerelleştirilmiş amaç başlıkları bulunur. Minecraft eşya/yaratık/biyom terimleri doğrulanmış 26.2 dil varlıklarından alınmıştır.
+
+Özel görev başlığı/açıklaması özgün paket metninden farklıysa otomatik çeviri onun üzerine yazılmaz. Özel içerik çevirisinde `content.advancements.<id>.title/description` veya `content.challenges.<id>...` ve eşleşen `source-title/source-description` değerlerini düzenleyin. Bu kaynak alanları sunucunun içerik metniyle eşleşmelidir. `/ba language tr` ve menüdeki dil seçimi açık ekranı yeniler. Sezon ve görev rotasyonu bildirimi de oyuncunun dilindedir.
+
+
+MySQL 8.4.7 şema/işlem regresyonları ve bağlı ağ istemcisiyle oyuncuya özel dil/menü kontrolleri eklenmiştir. Doğrulama kapsamı [uyumluluk belgesindedir](docs/COMPATIBILITY.md).
+
+[Düzeltme notları](CHANGELOG.md) · [Kurtarma ve teslimat kuralları](docs/RECOVERY.md).
+
+Para ve eşya ödülleri kalıcı teslim kutusuyla korunur. `/ba claim` bekleyen ödülleri alır; tamamlanmış ödül makbuzları tekrar teslimatı önler. MySQL bağlantı seçenekleri `database.yml` içindeki `storage.mysql.parameters` alanından ayarlanır; sunucunuzun JDBC/TLS seçenekleri burada kullanılabilir. Eski paket Türkçesinin birebir varsayılan mesajları bellekte Türkçe harflerle güncellenir; özel mesajlar ve kurulu dosyalar korunur.
+
 ## Sürüm 1.1.0
 
 - Yapımcı: **Erissos**.

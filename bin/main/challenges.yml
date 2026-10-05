@@ -1,0 +1,93 @@
+challenges:
+  daily_lumberjack:
+    type: daily
+    repeatable: true
+    repeat-window: daily
+    title: "Timber Hour"
+    description: "Break 64 oak logs today."
+    trigger:
+      type: BLOCK_BREAK
+      target: 64
+      conditions:
+        material: OAK_LOG
+    points-reward: 20
+    rewards:
+      reward-1:
+        type: XP
+        amount: 150
+  daily_hunter:
+    type: daily
+    title: "Night Patrol"
+    description: "Defeat 20 zombies."
+    trigger:
+      type: MOB_KILL
+      target: 20
+      conditions:
+        entity: ZOMBIE
+    points-reward: 25
+    rewards:
+      reward-1:
+        type: ITEM
+        value: GOLDEN_APPLE
+        amount: 2
+  daily_roamer:
+    type: daily
+    title: "Step Counter"
+    description: "Walk 2500 blocks."
+    trigger:
+      type: DISTANCE_WALK
+      target: 2500
+    points-reward: 20
+    rewards:
+      reward-1:
+        type: POINTS
+        amount: 10
+  weekly_archmage:
+    type: weekly
+    repeatable: true
+    repeat-window: weekly
+    title: "Arcane Marathon"
+    description: "Enchant 20 items this week."
+    trigger:
+      type: ENCHANT
+      target: 20
+    points-reward: 60
+    rewards:
+      reward-1:
+        type: XP
+        amount: 500
+      reward-2:
+        type: SOUND
+        value: ENTITY_PLAYER_LEVELUP
+  weekly_pioneer:
+    type: weekly
+    title: "World Pioneer"
+    description: "Discover the End Highlands this week."
+    trigger:
+      type: EXPLORE_BIOME
+      target: 1
+      conditions:
+        biome: END_HIGHLANDS
+    points-reward: 70
+    rewards:
+      reward-1:
+        type: ITEM
+        value: ENDER_EYE
+        amount: 8
+  weekly_warlord:
+    type: weekly
+    repeatable: true
+    repeat-window: weekly
+    title: "Arena Week"
+    description: "Win 10 PvP fights."
+    trigger:
+      type: PLAYER_KILL
+      target: 10
+    points-reward: 75
+    rewards:
+      reward-1:
+        type: COMMAND
+        value: "say {player} dominated the arena this week!"
+      reward-2:
+        type: BROADCAST
+        value: "<gold>{player}</gold> finished Arena Week!"

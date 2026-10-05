@@ -49,20 +49,30 @@ public final class ConfigManager {
     }
 
     public void reloadAll() {
+        // Validate every input before replacing the active configuration on reload.
+        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"config.yml"));
+        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"database.yml"));
+        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"gui.yml"));
+        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"achievements.yml"));
+        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"challenges.yml"));
+        dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(),"season.yml"));
+        File[] languageFiles=new File(plugin.getDataFolder(),"lang").listFiles((directory,name) -> name.endsWith(".yml"));
+        if (languageFiles!=null) for (File languageFile:languageFiles) dev.erissos.betteradvancements.util.StrictYaml.load(languageFile);
+
         plugin.reloadConfig();
         this.mainConfig = plugin.getConfig();
-        this.databaseConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "database.yml"));
-        this.guiConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "gui.yml"));
-        this.achievementsConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "achievements.yml"));
-        this.challengesConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "challenges.yml"));
-        this.seasonConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "season.yml"));
+        this.databaseConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "database.yml"));
+        this.guiConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "gui.yml"));
+        this.achievementsConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "achievements.yml"));
+        this.challengesConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "challenges.yml"));
+        this.seasonConfig = dev.erissos.betteradvancements.util.StrictYaml.load(new File(plugin.getDataFolder(), "season.yml"));
         this.languageConfigs.clear();
         File langFolder = new File(plugin.getDataFolder(), "lang");
         File[] files = langFolder.listFiles((dir, name) -> name.endsWith(".yml"));
         if (files != null) {
             for (File file : files) {
                 String key = file.getName().replace(".yml", "").toLowerCase(java.util.Locale.ROOT);
-                YamlConfiguration language = YamlConfiguration.loadConfiguration(file);
+                YamlConfiguration language = dev.erissos.betteradvancements.util.StrictYaml.load(file);
                 InputStream resource = plugin.getResource("lang/" + file.getName());
                 if (resource != null) {
                     try (var reader = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
@@ -71,9 +81,23 @@ public final class ConfigManager {
                         throw new IllegalStateException("Cannot load language defaults", exception);
                     }
                 }
+                if (key.equals("tr")) upgradeLegacyTurkish(language);
                 languageConfigs.put(key, language);
             }
         }
+    }
+
+    private void upgradeLegacyTurkish(YamlConfiguration language) {
+        InputStream resource=plugin.getResource("lang-legacy/tr.yml");
+        if (resource==null) return;
+        try (var reader=new InputStreamReader(resource,StandardCharsets.UTF_8)) {
+            var legacy=YamlConfiguration.loadConfiguration(reader);
+            for (String path:legacy.getKeys(true)) if (legacy.isString(path)
+                    && legacy.getString(path).equals(language.getString(path))
+                    && language.getDefaults()!=null && language.getDefaults().isString(path)) {
+                language.set(path,language.getDefaults().getString(path));
+            }
+        } catch (IOException failure) { throw new IllegalStateException("Cannot load legacy Turkish defaults",failure); }
     }
 
     private void ensureResource(String resourcePath) {

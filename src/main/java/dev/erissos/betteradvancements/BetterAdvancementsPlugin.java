@@ -39,6 +39,7 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        rewardDelivery.initialize();
         saveDefaultConfig();
         this.configManager = new ConfigManager(this);
         this.configManager.bootstrap();
@@ -51,6 +52,7 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
         this.playerDataManager.start();
         this.languageManager = new LanguageManager(this, configManager, placeholderHook);
         this.languageManager.load();
+        this.seasonManager.setLanguageManager(languageManager);
 
         this.achievementManager = new AchievementManager(this, configManager, playerDataManager, languageManager, vaultHook, seasonManager);
         this.challengeManager = new ChallengeManager(this, configManager, playerDataManager, vaultHook, seasonManager);
@@ -81,6 +83,10 @@ public final class BetterAdvancementsPlugin extends JavaPlugin {
 
         getServer().getServicesManager().register(BetterAdvancementsAPI.class, apiService, this, org.bukkit.plugin.ServicePriority.Normal);
     }
+
+    private final dev.erissos.betteradvancements.service.RewardDeliveryService rewardDelivery = new dev.erissos.betteradvancements.service.RewardDeliveryService(this);
+    public dev.erissos.betteradvancements.service.RewardDeliveryService getRewardDelivery() { return rewardDelivery; }
+    public VaultHook getVaultHook() { return vaultHook; }
 
     @Override
     public void onDisable() {

@@ -63,6 +63,8 @@ public final class AchievementManager {
                 continue;
             }
 
+            try {
+            if (achievementSection.getInt("trigger.target",1)<1) throw new IllegalArgumentException("trigger.target must be positive");
             List<RewardDefinition> rewards = new ArrayList<>();
             ConfigurationSection rewardsSection = achievementSection.getConfigurationSection("rewards");
             if (rewardsSection != null) {
@@ -110,8 +112,21 @@ public final class AchievementManager {
                     rewards,
                     guiPosition
             );
+            if (advancement.points()<0) throw new IllegalArgumentException("points must not be negative");
+            for (RewardDefinition reward:rewards) if (reward.amount()<0 || (reward.type()==RewardType.ITEM && (org.bukkit.Material.matchMaterial(reward.value())==null || org.bukkit.Material.matchMaterial(reward.value()).isAir() || reward.amount()==0))) throw new IllegalArgumentException("Invalid reward");
             advancements.put(id, advancement);
+            } catch (RuntimeException invalid) { plugin.getLogger().warning("Skipping invalid AchievementManager definition "+id+": "+invalid.getMessage()); }
         }
+        java.util.Set<String> invalidIds=new java.util.HashSet<>();
+        for (String id:advancements.keySet()) if (!validDependencies(id,new java.util.HashSet<>())) invalidIds.add(id);
+        for (String id:invalidIds) { advancements.remove(id); plugin.getLogger().warning("Quest has a missing or cyclic dependency: "+id); }
+    }
+
+    private boolean validDependencies(String id, java.util.Set<String> route) {
+        BetterAdvancement definition=advancements.get(id);
+        if (definition==null || !route.add(id)) return false;
+        for (String dependency:definition.dependencies()) if (!validDependencies(dependency,route)) return false;
+        route.remove(id); return true;
     }
 
     public Collection<BetterAdvancement> getAdvancements() {
@@ -148,7 +163,8 @@ public final class AchievementManager {
             }
 
             int amount = Integer.parseInt(context.getOrDefault("amount", "1"));
-            progress.setProgress(Math.min(advancement.trigger().target(), progress.getProgress() + amount));
+            if (amount<=0) continue;
+            progress.setProgress((int)Math.min(advancement.trigger().target(), (long)progress.getProgress() + amount));
             if (progress.getProgress() >= advancement.trigger().target()) {
                 complete(player, profile, advancement, progress);
             }
@@ -263,16 +279,18 @@ public final class AchievementManager {
     }
 
     private void applyRewards(Player player, PlayerProfile profile, BetterAdvancement advancement) {
+        int rewardIndex=0;
         for (RewardDefinition reward : advancement.rewards()) {
+            String receipt="advancement:"+advancement.id()+":prestige:"+profile.getPrestigeLevel()+":reward:"+rewardIndex++;
             switch (reward.type()) {
                 case COMMAND -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), reward.value().replace("{player}", player.getName()));
-                case MONEY -> vaultHook.deposit(player, reward.amount());
+                case MONEY -> plugin.getRewardDelivery().giveMoney(player, reward.amount(),receipt);
                 case XP -> player.giveExp(reward.amount());
                 case POINTS -> profile.addPoints(reward.amount());
                 case ITEM -> {
                     Material material = Material.matchMaterial(reward.value());
                     if (material != null) {
-                        player.getInventory().addItem(new ItemStack(material, Math.max(1, reward.amount())));
+                        plugin.getRewardDelivery().give(player, new ItemStack(material, Math.max(1, reward.amount())),receipt);
                     }
                 }
                 case BROADCAST -> Bukkit.broadcast(dev.erissos.betteradvancements.util.ItemUtils.component(

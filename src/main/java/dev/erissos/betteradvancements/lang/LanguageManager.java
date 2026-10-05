@@ -120,4 +120,22 @@ public final class LanguageManager {
     public Map<String, FileConfiguration> getLanguages() {
         return languages;
     }
+
+    public String text(CommandSender viewer, String path, String fallback) {
+        if (getLocale(viewer).equals("en") && path.startsWith("gui.")) return fallback;
+        FileConfiguration selected = languages.get(getLocale(viewer));
+        return selected != null && selected.isString(path) ? selected.getString(path) : fallback;
+    }
+
+    public java.util.List<String> lines(CommandSender viewer, String path, java.util.List<String> fallback) {
+        if (getLocale(viewer).equals("en") && path.startsWith("gui.")) return fallback;
+        FileConfiguration selected = languages.get(getLocale(viewer));
+        return selected != null && selected.isList(path) ? selected.getStringList(path) : fallback;
+    }
+
+    public String content(CommandSender viewer, String type, String id, String field, String fallback) {
+        String path="content."+type+"."+id+".";
+        String source=text(viewer,path+"source-"+field,fallback);
+        return source.equals(fallback) ? text(viewer,path+field,fallback) : fallback;
+    }
 }

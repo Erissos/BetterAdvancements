@@ -59,6 +59,8 @@ public final class ChallengeManager {
             if (challengeSection == null) {
                 continue;
             }
+            try {
+            if (challengeSection.getInt("trigger.target",1)<1) throw new IllegalArgumentException("trigger.target must be positive");
             Map<String, String> conditions = new HashMap<>();
             ConfigurationSection conditionSection = challengeSection.getConfigurationSection("trigger.conditions");
             if (conditionSection != null) {
@@ -80,6 +82,8 @@ public final class ChallengeManager {
                     }
                 }
             }
+            for (RewardDefinition reward:rewards) if (reward.amount()<0 || (reward.type()==RewardType.ITEM && (Material.matchMaterial(reward.value())==null || Material.matchMaterial(reward.value()).isAir() || reward.amount()==0))) throw new IllegalArgumentException("Invalid reward");
+            if (challengeSection.getInt("points-reward",10)<0) throw new IllegalArgumentException("points-reward must not be negative");
             challenges.put(id, new ChallengeDefinition(
                     id,
                     challengeSection.getString("type", "daily"),
@@ -95,6 +99,7 @@ public final class ChallengeManager {
                     challengeSection.getBoolean("repeatable", true),
                     challengeSection.getString("repeat-window", challengeSection.getString("type", "daily"))
             ));
+            } catch (RuntimeException invalid) { plugin.getLogger().warning("Skipping invalid ChallengeManager definition "+id+": "+invalid.getMessage()); }
         }
         rotate(false);
     }
@@ -131,7 +136,7 @@ public final class ChallengeManager {
             && (!equalsNullable(previousDaily, activeDailyChallenge) || !equalsNullable(previousWeekly, activeWeeklyChallenge))) {
             String rotationMessage = configManager.getMainConfig().getString("messages.challenge-rotation-broadcast", "");
             if (rotationMessage != null && !rotationMessage.isBlank()) {
-                Bukkit.broadcast(dev.erissos.betteradvancements.util.ItemUtils.component(rotationMessage));
+                for (Player viewer : Bukkit.getOnlinePlayers()) viewer.sendMessage(plugin.getLanguageManager().getComponent(viewer,plugin.getLanguageManager().getLocale(viewer),"notifications.challenge-rotation",Map.of()));
             }
         }
     }
@@ -148,29 +153,33 @@ public final class ChallengeManager {
             }
             PlayerChallengeProgress progress = profile.getChallengeProgress().computeIfAbsent(challenge.id(), ignored -> new PlayerChallengeProgress());
             String cycleKey = currentCycleKey(challenge);
-            if (challenge.repeatable() && progress.isCompleted() && !cycleKey.equals(progress.getCompletedCycleKey())) {
+            if (challenge.repeatable() && !cycleKey.equals(progress.getCompletedCycleKey())) {
                 progress.reset();
-                progress.setCompletedCycleKey(null);
+                progress.setCompletedCycleKey(cycleKey);
             }
             if (progress.isCompleted()) {
                 continue;
             }
             int amount = Integer.parseInt(context.getOrDefault("amount", "1"));
-            progress.setProgress(Math.min(challenge.trigger().target(), progress.getProgress() + amount));
+            if (amount<=0) continue;
+            progress.setProgress((int)Math.min(challenge.trigger().target(), (long)progress.getProgress() + amount));
+            changed = true;
             if (progress.getProgress() >= challenge.trigger().target()) {
                 progress.complete(cycleKey);
                 profile.addPoints(challenge.pointsReward());
                 seasonManager.addSeasonPoints(player, profile, challenge.pointsReward());
+                int rewardIndex=0;
                 for (RewardDefinition reward : challenge.rewards()) {
+                    String receipt="challenge:"+challenge.id()+":prestige:"+profile.getPrestigeLevel()+":cycle:"+(challenge.repeatable()?cycleKey:"once")+":reward:"+rewardIndex++;
                     switch (reward.type()) {
                         case COMMAND -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), reward.value().replace("{player}", player.getName()));
-                        case MONEY -> vaultHook.deposit(player, reward.amount());
+                        case MONEY -> plugin.getRewardDelivery().giveMoney(player, reward.amount(),receipt);
                         case XP -> player.giveExp(reward.amount());
                         case POINTS -> profile.addPoints(reward.amount());
                         case ITEM -> {
                             Material material = Material.matchMaterial(reward.value());
                             if (material != null) {
-                                player.getInventory().addItem(new ItemStack(material, Math.max(1, reward.amount())));
+                                plugin.getRewardDelivery().give(player, new ItemStack(material, Math.max(1, reward.amount())),receipt);
                             }
                         }
                         case BROADCAST -> Bukkit.broadcast(dev.erissos.betteradvancements.util.ItemUtils.component(
@@ -224,11 +233,14 @@ public final class ChallengeManager {
 
     private String currentCycleKey(ChallengeDefinition challenge) {
         String zoneId = configManager.getSeasonConfig().getString("season.timezone", ZoneId.systemDefault().getId());
-        LocalDate now = LocalDate.now(ZoneId.of(zoneId));
+        ZoneId zone;
+        try { zone=ZoneId.of(zoneId); }
+        catch (java.time.DateTimeException invalid) { zone=ZoneId.of("UTC"); }
+        LocalDate now = LocalDate.now(zone);
         String window = challenge.repeatWindow() == null ? "none" : challenge.repeatWindow().toLowerCase(Locale.ROOT);
         return switch (window) {
             case "daily" -> now.toString();
-            case "weekly" -> now.getYear() + "-W" + now.get(WeekFields.ISO.weekOfWeekBasedYear());
+            case "weekly" -> now.get(WeekFields.ISO.weekBasedYear()) + "-W" + now.get(WeekFields.ISO.weekOfWeekBasedYear());
             case "monthly" -> now.getYear() + "-M" + now.getMonthValue();
             default -> seasonManager.currentSeasonId();
         };

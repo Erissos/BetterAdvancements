@@ -55,14 +55,18 @@ public final class GUIManager implements Listener {
             .withZone(ZoneId.systemDefault());
 
     private final ConfigManager configManager;
+    private final BetterAdvancementsPlugin plugin;
     private final AchievementManager achievementManager;
     private final ChallengeManager challengeManager;
     private final LeaderboardManager leaderboardManager;
     private final PlayerDataManager playerDataManager;
     private final SeasonManager seasonManager;
     private final LanguageManager languageManager;
+    // All menu construction runs synchronously on the server thread. Nested renders restore their caller's viewer.
+    private Player renderingPlayer;
 
     public GUIManager(BetterAdvancementsPlugin plugin, ConfigManager configManager, AchievementManager achievementManager, ChallengeManager challengeManager, LeaderboardManager leaderboardManager, PlayerDataManager playerDataManager, SeasonManager seasonManager, LanguageManager languageManager) {
+        this.plugin=plugin;
         this.configManager = configManager;
         this.achievementManager = achievementManager;
         this.challengeManager = challengeManager;
@@ -76,6 +80,12 @@ public final class GUIManager implements Listener {
     }
 
     public void openMainMenu(Player player) {
+        Player previous = renderingPlayer;
+        renderingPlayer = player;
+        try { renderMainMenu(player); } finally { renderingPlayer = previous; }
+    }
+
+    private void renderMainMenu(Player player) {
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
         Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.MAIN, null, false), MENU_SIZE, ItemUtils.component(text("main.title")));
 
@@ -107,7 +117,7 @@ public final class GUIManager implements Listener {
                 text(nextPath + ".title"),
                 hasTarget
                         ? lines(nextPath + ".lore", placeholders(
-                        "target", nextTarget.title(),
+                        "target", advancementTitle(nextTarget),
                         "tier", formatTierName(nextTarget.tier()),
                         "category", capitalize(nextTarget.category()),
                         "goal", nextTarget.trigger().target()
@@ -202,6 +212,12 @@ public final class GUIManager implements Listener {
     }
 
             public void openCategoryMenu(Player player) {
+        Player previous = renderingPlayer;
+        renderingPlayer = player;
+        try { renderCategoryMenu(player); } finally { renderingPlayer = previous; }
+    }
+
+    private void renderCategoryMenu(Player player) {
             PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
             Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.CATEGORY, null, false), MENU_SIZE, ItemUtils.component(text("category-menu.title")));
 
@@ -250,6 +266,12 @@ public final class GUIManager implements Listener {
             }
 
     public void openTierMenu(Player player, Tier tier) {
+        Player previous = renderingPlayer;
+        renderingPlayer = player;
+        try { renderTierMenu(player, tier); } finally { renderingPlayer = previous; }
+    }
+
+    private void renderTierMenu(Player player, Tier tier) {
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
         Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.TIER, tier, false), MENU_SIZE, ItemUtils.component(text("tier.title", placeholders("tier_name", formatTierName(tier)))));
 
@@ -278,8 +300,8 @@ public final class GUIManager implements Listener {
             boolean completed = progress != null && progress.isCompleted();
             boolean unlocked = achievementManager.isUnlocked(profile, advancement);
             boolean hidden = advancement.hidden() && !completed;
-            String title = advancement.hidden() && !completed ? text("tier.node.hidden-title") : advancement.title();
-            String description = advancement.hidden() && !completed ? text("tier.node.hidden-description") : advancement.description();
+            String title = advancement.hidden() && !completed ? text("tier.node.hidden-title") : advancementTitle(advancement);
+            String description = advancement.hidden() && !completed ? text("tier.node.hidden-description") : advancementDescription(advancement);
 
             List<String> lore = new ArrayList<>(lines("tier.node.lore", placeholders(
                     "description", description,
@@ -296,7 +318,7 @@ public final class GUIManager implements Listener {
             }
             List<String> unlocks = tierAdvancements.stream()
                     .filter(candidate -> candidate.dependencies().contains(advancement.id()))
-                    .map(BetterAdvancement::title)
+                    .map(this::advancementTitle)
                     .toList();
             if (!unlocks.isEmpty()) {
                 lore.add(text("tier.node.unlocks-format", placeholders("unlocks", String.join(", ", unlocks))));
@@ -313,6 +335,12 @@ public final class GUIManager implements Listener {
     }
 
     public void openStats(Player player) {
+        Player previous = renderingPlayer;
+        renderingPlayer = player;
+        try { renderStats(player); } finally { renderingPlayer = previous; }
+    }
+
+    private void renderStats(Player player) {
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
         Map<String, Long> insights = achievementManager.getPlaystyleInsights(profile);
         Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.STATS, null, false), MENU_SIZE, ItemUtils.component(text("stats.title")));
@@ -394,6 +422,12 @@ public final class GUIManager implements Listener {
     }
 
         public void openSettings(Player player) {
+        Player previous = renderingPlayer;
+        renderingPlayer = player;
+        try { renderSettings(player); } finally { renderingPlayer = previous; }
+    }
+
+    private void renderSettings(Player player) {
         PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
         Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.SETTINGS, null, false), MENU_SIZE, ItemUtils.component(text("settings-menu.title")));
 
@@ -446,6 +480,12 @@ public final class GUIManager implements Listener {
         }
 
     public void openLeaderboard(Player player, boolean session) {
+        Player previous = renderingPlayer;
+        renderingPlayer = player;
+        try { renderLeaderboard(player, session); } finally { renderingPlayer = previous; }
+    }
+
+    private void renderLeaderboard(Player player, boolean session) {
         List<LeaderboardEntry> entries = session ? leaderboardManager.getSessionLeaderboard(10) : leaderboardManager.getGlobalLeaderboard(10);
         Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.LEADERBOARD, null, session), MENU_SIZE, ItemUtils.component(text(session ? "leaderboard.title.session" : "leaderboard.title.global")));
 
@@ -509,6 +549,12 @@ public final class GUIManager implements Listener {
     }
 
     public void openChallenges(Player player) {
+        Player previous = renderingPlayer;
+        renderingPlayer = player;
+        try { renderChallenges(player); } finally { renderingPlayer = previous; }
+    }
+
+    private void renderChallenges(Player player) {
     PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
     Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.CHALLENGES, null, false), MENU_SIZE, ItemUtils.component(text("challenges.title")));
 
@@ -565,6 +611,12 @@ public final class GUIManager implements Listener {
     }
 
     public void openSeason(Player player) {
+        Player previous = renderingPlayer;
+        renderingPlayer = player;
+        try { renderSeason(player); } finally { renderingPlayer = previous; }
+    }
+
+    private void renderSeason(Player player) {
     PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
     Inventory inventory = Bukkit.createInventory(new MenuHolder(MenuType.SEASON, null, false), MENU_SIZE, ItemUtils.component(text("season-menu.title")));
 
@@ -640,6 +692,12 @@ public final class GUIManager implements Listener {
     }
 
     public void openPrestige(Player player) {
+        Player previous = renderingPlayer;
+        renderingPlayer = player;
+        try { renderPrestige(player); } finally { renderingPlayer = previous; }
+    }
+
+    private void renderPrestige(Player player) {
     PlayerProfile profile = playerDataManager.getOrCreate(player.getUniqueId());
     int total = achievementManager.getAdvancements().size();
     int completed = profile.getCompletedAdvancements();
@@ -729,6 +787,14 @@ public final class GUIManager implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        Player previous = renderingPlayer; renderingPlayer = player;
+        try { handleInventoryClick(event); }
+        catch (RuntimeException failure) { plugin.getLogger().warning("Menu action failed: "+failure.getMessage()); player.sendMessage(languageManager.getComponent(player,languageManager.getLocale(player),"command.storage-error",Map.of())); }
+        finally { renderingPlayer = previous; }
+    }
+
+    private void handleInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
@@ -736,24 +802,25 @@ public final class GUIManager implements Listener {
             return;
         }
         event.setCancelled(true);
+        if (event.getRawSlot() < 0 || event.getRawSlot() >= event.getView().getTopInventory().getSize()) return;
         if (event.getCurrentItem() == null) {
             return;
         }
 
         switch (holder.type()) {
-            case MAIN -> handleMainClick(player, event.getSlot());
-            case TIER -> handleTierClick(player, holder.tier(), event.getSlot());
-            case CATEGORY -> handleCategoryClick(player, event.getSlot());
+            case MAIN -> handleMainClick(player, event.getRawSlot());
+            case TIER -> handleTierClick(player, holder.tier(), event.getRawSlot());
+            case CATEGORY -> handleCategoryClick(player, event.getRawSlot());
             case STATS -> {
-                if (event.getSlot() == intValue("stats.back.slot")) {
+                if (event.getRawSlot() == intValue("stats.back.slot")) {
                     openMainMenu(player);
                 }
             }
-            case LEADERBOARD -> handleLeaderboardClick(player, event.getSlot());
-            case CHALLENGES -> handleChallengesClick(player, event.getSlot());
-            case SEASON -> handleSeasonClick(player, event.getSlot());
-            case PRESTIGE -> handlePrestigeClick(player, event.getSlot());
-            case SETTINGS -> handleSettingsClick(player, event.getSlot());
+            case LEADERBOARD -> handleLeaderboardClick(player, event.getRawSlot());
+            case CHALLENGES -> handleChallengesClick(player, event.getRawSlot());
+            case SEASON -> handleSeasonClick(player, event.getRawSlot());
+            case PRESTIGE -> handlePrestigeClick(player, event.getRawSlot());
+            case SETTINGS -> handleSettingsClick(player, event.getRawSlot());
         }
     }
 
@@ -1157,9 +1224,9 @@ public final class GUIManager implements Listener {
         for (ChallengeDefinition challenge : challenges) {
             lore.add(text("main.challenge.entry-title", placeholders(
                     "type", capitalize(challenge.type()),
-                    "title", challenge.title()
+                    "title", challengeTitle(challenge)
             )));
-            lore.add(text("main.challenge.entry-description", placeholders("description", challenge.description())));
+            lore.add(text("main.challenge.entry-description", placeholders("description", challengeDescription(challenge))));
             lore.add(text("main.challenge.entry-reward", placeholders("reward", challenge.pointsReward())));
         }
         lore.addAll(lines("main.challenge.footer-lore"));
@@ -1181,10 +1248,10 @@ public final class GUIManager implements Listener {
         int current = progress == null ? 0 : progress.getProgress();
         return ItemUtils.create(
                 text(path + ".active.material"),
-                text(path + ".active.title", placeholders("title", challenge.title())),
+                text(path + ".active.title", placeholders("title", challengeTitle(challenge))),
                 lines(path + ".active.lore", placeholders(
-                        "title", challenge.title(),
-                        "description", challenge.description(),
+                        "title", challengeTitle(challenge),
+                        "description", challengeDescription(challenge),
                         "type", capitalize(challenge.type()),
                         "progress", current,
                         "target", challenge.trigger().target(),
@@ -1248,7 +1315,7 @@ public final class GUIManager implements Listener {
                     "total", total,
                     "unlocked", unlocked,
                     "rare", rare,
-                    "focus", focus == null ? text("category-menu.values.none") : focus.title(),
+                    "focus", focus == null ? text("category-menu.values.none") : advancementTitle(focus),
                     "tier", focus == null ? text("category-menu.values.none") : formatTierName(focus.tier())
                 )),
                 completed > 0 || boolValue(categoryPath + ".glow")
@@ -1313,7 +1380,8 @@ public final class GUIManager implements Listener {
         String next = languages.get((currentIndex + 1 + languages.size()) % languages.size());
         profile.setLanguage(next);
         playerDataManager.setLastKnownName(player.getUniqueId(), player.getName());
-        playerDataManager.saveProfile(player.getUniqueId());
+        try { playerDataManager.saveProfile(player.getUniqueId()).join(); }
+        catch (RuntimeException failure) { profile.setLanguage(current); throw failure; }
         return next;
     }
 
@@ -1412,7 +1480,7 @@ public final class GUIManager implements Listener {
             return lines("tier.navigation.focus.empty-lore", placeholders("tier_name", formatTierName(tier)));
         }
         return lines("tier.navigation.focus.active-lore", placeholders(
-                "target", nextTarget.title(),
+                "target", advancementTitle(nextTarget),
                 "goal", nextTarget.trigger().target(),
                 "category", capitalize(nextTarget.category()),
                 "tier_name", formatTierName(tier)
@@ -1425,7 +1493,7 @@ public final class GUIManager implements Listener {
             return lines("stats.objective.empty-lore");
         }
         return lines("stats.objective.active-lore", placeholders(
-                "target", nextTarget.title(),
+                "target", advancementTitle(nextTarget),
                 "tier", formatTierName(nextTarget.tier()),
                 "goal", nextTarget.trigger().target()
         ));
@@ -1505,7 +1573,7 @@ public final class GUIManager implements Listener {
     private String joinTitles(List<String> dependencyIds) {
         return dependencyIds.stream()
                 .map(id -> achievementManager.getAdvancement(id)
-                        .map(BetterAdvancement::title)
+                        .map(this::advancementTitle)
                         .orElse(capitalize(id)))
             .reduce((left, right) -> left + text("texts.general.list-separator") + right)
             .orElse(text("texts.general.none"));
@@ -1602,7 +1670,7 @@ public final class GUIManager implements Listener {
     }
 
     private String formatTierName(Tier tier) {
-        return tier == null ? text("texts.general.unknown") : tier.getDisplayKey();
+        return tier == null ? text("texts.general.unknown") : languageManager.text(renderingPlayer, "gui.main.tiers." + tier.name() + ".display-name", tier.getDisplayKey());
     }
 
     private int mainTierSlot(Tier tier) {
@@ -1691,7 +1759,7 @@ public final class GUIManager implements Listener {
             }
             builder.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
         }
-        return builder.isEmpty() ? text("texts.general.unknown") : builder.toString();
+        return builder.isEmpty() ? text("texts.general.unknown") : languageManager.text(renderingPlayer,"values."+value.toLowerCase(Locale.ROOT),builder.toString());
     }
 
     private String text(String path) {
@@ -1699,7 +1767,7 @@ public final class GUIManager implements Listener {
     }
 
     private String text(String path, Map<String, ?> placeholders) {
-        return applyPlaceholders(config().getString(path, ""), placeholders);
+        return applyPlaceholders(languageManager.text(renderingPlayer, "gui." + path, config().getString(path, "")), placeholders);
     }
 
     private List<String> lines(String path) {
@@ -1707,7 +1775,7 @@ public final class GUIManager implements Listener {
     }
 
     private List<String> lines(String path, Map<String, ?> placeholders) {
-        List<String> configured = config().getStringList(path);
+        List<String> configured = languageManager.lines(renderingPlayer, "gui." + path, config().getStringList(path));
         List<String> resolved = new ArrayList<>();
         for (String line : configured) {
             resolved.add(applyPlaceholders(line, placeholders));
@@ -1716,7 +1784,8 @@ public final class GUIManager implements Listener {
     }
 
     private int intValue(String path) {
-        return config().getInt(path);
+        int value=config().getInt(path);
+        return path.endsWith(".slot") ? Math.max(0,Math.min(MENU_SIZE-1,value)) : value;
     }
 
     private boolean boolValue(String path) {
@@ -1724,7 +1793,7 @@ public final class GUIManager implements Listener {
     }
 
     private List<Integer> intList(String path) {
-        return config().getIntegerList(path);
+        return config().getIntegerList(path).stream().filter(value -> value>=0 && value<MENU_SIZE).toList();
     }
 
     private ConfigurationSection section(String path) {
@@ -1734,6 +1803,33 @@ public final class GUIManager implements Listener {
     private FileConfiguration config() {
         return configManager.getGuiConfig();
     }
+
+    public void refreshLanguage(Player player) {
+        var view = player.getOpenInventory();
+        if (view == null || !(view.getTopInventory().getHolder() instanceof MenuHolder holder)) return;
+        switch (holder.type()) {
+            case MAIN -> openMainMenu(player);
+            case CATEGORY -> openCategoryMenu(player);
+            case TIER -> openTierMenu(player, holder.tier());
+            case STATS -> openStats(player);
+            case LEADERBOARD -> openLeaderboard(player, holder.session());
+            case CHALLENGES -> openChallenges(player);
+            case SEASON -> openSeason(player);
+            case PRESTIGE -> openPrestige(player);
+            case SETTINGS -> openSettings(player);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(org.bukkit.event.inventory.InventoryDragEvent event) {
+        if (event.getView().getTopInventory().getHolder() instanceof MenuHolder
+            && event.getRawSlots().stream().anyMatch(slot -> slot < event.getView().getTopInventory().getSize())) event.setCancelled(true);
+    }
+
+    private String advancementTitle(BetterAdvancement value) { return languageManager.content(renderingPlayer, "advancements", value.id(), "title", value.title()); }
+    private String advancementDescription(BetterAdvancement value) { return languageManager.content(renderingPlayer, "advancements", value.id(), "description", value.description()); }
+    private String challengeTitle(ChallengeDefinition value) { return languageManager.content(renderingPlayer, "challenges", value.id(), "title", value.title()); }
+    private String challengeDescription(ChallengeDefinition value) { return languageManager.content(renderingPlayer, "challenges", value.id(), "description", value.description()); }
 
     private String applyPlaceholders(String value, Map<String, ?> placeholders) {
         String resolved = value == null ? "" : value;

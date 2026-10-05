@@ -182,4 +182,19 @@ public final class PlayerProfile {
                 .map(Tier::getWeight)
                 .orElse(0);
     }
+
+    /** Capture on the server thread before handing data to the storage executor. */
+    public PlayerProfile copy() {
+        PlayerProfile copy = new PlayerProfile(uniqueId);
+        copy.language = language; copy.points = points; copy.seasonPoints = seasonPoints; copy.seasonId = seasonId;
+        copy.prestigeLevel = prestigeLevel; copy.sessionCompletions = sessionCompletions; copy.sessionJoinMillis = sessionJoinMillis;
+        copy.chatNotificationsEnabled = chatNotificationsEnabled; copy.titleNotificationsEnabled = titleNotificationsEnabled;
+        copy.actionBarNotificationsEnabled = actionBarNotificationsEnabled; copy.bossBarNotificationsEnabled = bossBarNotificationsEnabled;
+        copy.soundNotificationsEnabled = soundNotificationsEnabled; copy.lastSeen = lastSeen;
+        copy.claimedSeasonRewards.addAll(claimedSeasonRewards);
+        advancementProgress.forEach((key, value) -> copy.advancementProgress.put(key,
+            new PlayerAchievementProgress(value.getProgress(), value.isCompleted(), value.getCompletedAt())));
+        challengeProgress.forEach((key, value) -> copy.challengeProgress.put(key, value.copy()));
+        return copy;
+    }
 }

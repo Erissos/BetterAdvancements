@@ -37,9 +37,13 @@ public final class JdbcStorageAdapter implements StorageAdapter {
         FileConfiguration config = configManager.getDatabaseConfig();
         HikariConfig hikariConfig = new HikariConfig();
         String type = config.getString("storage.type", "sqlite");
+        if (!"sqlite".equalsIgnoreCase(type) && !"mysql".equalsIgnoreCase(type)) throw new IllegalArgumentException("storage.type must be sqlite or mysql");
         if ("mysql".equalsIgnoreCase(type)) {
             loadDriver("com.mysql.cj.jdbc.Driver");
-            hikariConfig.setJdbcUrl("jdbc:mysql://" + config.getString("storage.mysql.host") + ":" + config.getInt("storage.mysql.port") + "/" + config.getString("storage.mysql.database") + "?useSSL=false&characterEncoding=utf8");
+            String parameters=config.getString("storage.mysql.parameters","?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=utf8");
+            if (parameters==null || parameters.isBlank()) parameters="?characterEncoding=utf8";
+            if (!parameters.startsWith("?")) parameters="?"+parameters;
+            hikariConfig.setJdbcUrl("jdbc:mysql://" + config.getString("storage.mysql.host") + ":" + config.getInt("storage.mysql.port") + "/" + config.getString("storage.mysql.database") + parameters);
             hikariConfig.setUsername(config.getString("storage.mysql.username"));
             hikariConfig.setPassword(config.getString("storage.mysql.password"));
         } else {
@@ -49,8 +53,8 @@ public final class JdbcStorageAdapter implements StorageAdapter {
         }
         // SQLite has a single writer. One pooled connection also prevents read/write lock upgrades.
         boolean mysql = "mysql".equalsIgnoreCase(type);
-        hikariConfig.setMaximumPoolSize(mysql ? config.getInt("pool.maximum-size", 8) : 1);
-        hikariConfig.setMinimumIdle(mysql ? config.getInt("pool.minimum-idle", 2) : 1);
+        hikariConfig.setMaximumPoolSize(mysql ? Math.max(1,Math.min(32,config.getInt("pool.maximum-size",8))) : 1);
+        hikariConfig.setMinimumIdle(mysql ? Math.max(0,Math.min(hikariConfig.getMaximumPoolSize(),config.getInt("pool.minimum-idle",2))) : 1);
         hikariConfig.setPoolName("BetterAdvancementsPool");
         this.dataSource = new HikariDataSource(hikariConfig);
 
@@ -122,6 +126,8 @@ public final class JdbcStorageAdapter implements StorageAdapter {
                         progress.setCompletedCycleKey(resultSet.getString("completed_cycle_key"));
                         if (resultSet.getBoolean("completed")) {
                             progress.complete(progress.getCompletedCycleKey());
+                            long time=resultSet.getLong("completed_at");
+                            progress.setCompletedAt(time==0 ? null : Instant.ofEpochMilli(time));
                         }
                         profile.getChallengeProgress().put(resultSet.getString("challenge_id"), progress);
                     }
@@ -156,38 +162,7 @@ public final class JdbcStorageAdapter implements StorageAdapter {
                 statement.executeUpdate();
             }
 
-            try (PreparedStatement delete = connection.prepareStatement("DELETE FROM ba_advancement_progress WHERE uuid = ?")) {
-                delete.setString(1, profile.getUniqueId().toString());
-                delete.executeUpdate();
-            }
-            try (PreparedStatement insert = connection.prepareStatement("REPLACE INTO ba_advancement_progress (uuid, advancement_id, progress, completed, completed_at) VALUES (?, ?, ?, ?, ?)")) {
-                for (var entry : profile.getAdvancementProgress().entrySet()) {
-                    insert.setString(1, profile.getUniqueId().toString());
-                    insert.setString(2, entry.getKey());
-                    insert.setInt(3, entry.getValue().getProgress());
-                    insert.setBoolean(4, entry.getValue().isCompleted());
-                    insert.setLong(5, entry.getValue().getCompletedAt() == null ? 0L : entry.getValue().getCompletedAt().toEpochMilli());
-                    insert.addBatch();
-                }
-                insert.executeBatch();
-            }
-
-            try (PreparedStatement delete = connection.prepareStatement("DELETE FROM ba_challenge_progress WHERE uuid = ?")) {
-                delete.setString(1, profile.getUniqueId().toString());
-                delete.executeUpdate();
-            }
-            try (PreparedStatement insert = connection.prepareStatement("REPLACE INTO ba_challenge_progress (uuid, challenge_id, progress, completed, completed_at, completed_cycle_key) VALUES (?, ?, ?, ?, ?, ?)")) {
-                for (var entry : profile.getChallengeProgress().entrySet()) {
-                    insert.setString(1, profile.getUniqueId().toString());
-                    insert.setString(2, entry.getKey());
-                    insert.setInt(3, entry.getValue().getProgress());
-                    insert.setBoolean(4, entry.getValue().isCompleted());
-                    insert.setLong(5, entry.getValue().getCompletedAt() == null ? 0L : entry.getValue().getCompletedAt().toEpochMilli());
-                    insert.setString(6, entry.getValue().getCompletedCycleKey());
-                    insert.addBatch();
-                }
-                insert.executeBatch();
-            }
+            writeChangedProgress(connection,profile);
 
             connection.commit();
             connection.setAutoCommit(true);
@@ -196,9 +171,48 @@ public final class JdbcStorageAdapter implements StorageAdapter {
         }
     }
 
+    private void writeChangedProgress(Connection connection, PlayerProfile profile) throws SQLException {
+        java.util.Map<String,java.util.List<Object>> advancements=new java.util.HashMap<>(), challenges=new java.util.HashMap<>();
+        String uuid=profile.getUniqueId().toString();
+        try (PreparedStatement query=connection.prepareStatement("SELECT advancement_id,progress,completed,completed_at FROM ba_advancement_progress WHERE uuid=?")) {
+            query.setString(1,uuid);
+            try (ResultSet rows=query.executeQuery()) { while (rows.next()) advancements.put(rows.getString(1),java.util.Arrays.asList(rows.getInt(2),rows.getBoolean(3),rows.getLong(4))); }
+        }
+        try (PreparedStatement query=connection.prepareStatement("SELECT challenge_id,progress,completed,completed_at,completed_cycle_key FROM ba_challenge_progress WHERE uuid=?")) {
+            query.setString(1,uuid);
+            try (ResultSet rows=query.executeQuery()) { while (rows.next()) challenges.put(rows.getString(1),java.util.Arrays.asList(rows.getInt(2),rows.getBoolean(3),rows.getLong(4),rows.getString(5))); }
+        }
+        try (PreparedStatement insert=connection.prepareStatement("REPLACE INTO ba_advancement_progress (uuid,advancement_id,progress,completed,completed_at) VALUES (?,?,?,?,?)")) {
+            for (var entry:profile.getAdvancementProgress().entrySet()) {
+                var value=entry.getValue(); long time=value.getCompletedAt()==null ? 0 : value.getCompletedAt().toEpochMilli();
+                if (java.util.Arrays.asList(value.getProgress(),value.isCompleted(),time).equals(advancements.remove(entry.getKey()))) continue;
+                insert.setString(1,uuid); insert.setString(2,entry.getKey()); insert.setInt(3,value.getProgress()); insert.setBoolean(4,value.isCompleted()); insert.setLong(5,time); insert.addBatch();
+            }
+            insert.executeBatch();
+        }
+        try (PreparedStatement insert=connection.prepareStatement("REPLACE INTO ba_challenge_progress (uuid,challenge_id,progress,completed,completed_at,completed_cycle_key) VALUES (?,?,?,?,?,?)")) {
+            for (var entry:profile.getChallengeProgress().entrySet()) {
+                var value=entry.getValue(); long time=value.getCompletedAt()==null ? 0 : value.getCompletedAt().toEpochMilli();
+                if (java.util.Arrays.asList(value.getProgress(),value.isCompleted(),time,value.getCompletedCycleKey()).equals(challenges.remove(entry.getKey()))) continue;
+                insert.setString(1,uuid); insert.setString(2,entry.getKey()); insert.setInt(3,value.getProgress()); insert.setBoolean(4,value.isCompleted()); insert.setLong(5,time); insert.setString(6,value.getCompletedCycleKey()); insert.addBatch();
+            }
+            insert.executeBatch();
+        }
+        deleteMissing(connection,"ba_advancement_progress","advancement_id",uuid,advancements.keySet());
+        deleteMissing(connection,"ba_challenge_progress","challenge_id",uuid,challenges.keySet());
+    }
+
+    private void deleteMissing(Connection connection,String table,String column,String uuid,java.util.Set<String> removed) throws SQLException {
+        try (PreparedStatement statement=connection.prepareStatement("DELETE FROM "+table+" WHERE uuid=? AND "+column+"=?")) {
+            for (String id:removed) { statement.setString(1,uuid); statement.setString(2,id); statement.addBatch(); }
+            statement.executeBatch();
+        }
+    }
+
     @Override
     public void deleteProfile(UUID uniqueId) {
         try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement playerDelete = connection.prepareStatement("DELETE FROM ba_players WHERE uuid = ?")) {
                 playerDelete.setString(1, uniqueId.toString());
                 playerDelete.executeUpdate();
@@ -211,6 +225,7 @@ public final class JdbcStorageAdapter implements StorageAdapter {
                 challengeDelete.setString(1, uniqueId.toString());
                 challengeDelete.executeUpdate();
             }
+            connection.commit();
         } catch (SQLException exception) {
             throw new IllegalStateException("Could not delete profile " + uniqueId, exception);
         }
@@ -241,6 +256,25 @@ public final class JdbcStorageAdapter implements StorageAdapter {
         }
     }
 
+    @Override
+    public List<PlayerProfile> loadTopProfiles(int limit, String season) {
+        List<UUID> ids = new ArrayList<>();
+        String sql = "SELECT p.uuid FROM ba_players p LEFT JOIN ba_advancement_progress a ON a.uuid = p.uuid "
+            + (season == null ? "" : "WHERE p.season_id = ? ")
+            + "GROUP BY p.uuid, p.points, p.season_points ORDER BY "
+            + (season == null ? "SUM(CASE WHEN a.completed = 1 THEN 1 ELSE 0 END) DESC, p.points DESC" : "p.season_points DESC, SUM(CASE WHEN a.completed = 1 THEN 1 ELSE 0 END) DESC")
+            + ", p.uuid ASC LIMIT ?";
+        try (Connection connection = dataSource.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            int index = 1;
+            if (season != null) statement.setString(index++, season);
+            statement.setInt(index, Math.max(1, Math.min(1000, limit)));
+            try (ResultSet result = statement.executeQuery()) { while (result.next()) ids.add(UUID.fromString(result.getString(1))); }
+        } catch (SQLException failure) { throw new IllegalStateException("Could not read leaderboard", failure); }
+        List<PlayerProfile> profiles = new ArrayList<>();
+        for (UUID id : ids) loadProfile(id).ifPresent(profiles::add);
+        return profiles;
+    }
+
     private void loadDriver(String driverClassName) {
         try {
             Class.forName(driverClassName);
@@ -260,8 +294,9 @@ public final class JdbcStorageAdapter implements StorageAdapter {
 
     private boolean hasColumn(Connection connection, String table, String column) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
-        try (ResultSet resultSet = metaData.getColumns(null, null, table, column)) {
-            return resultSet.next();
+        try (ResultSet resultSet = metaData.getColumns(connection.getCatalog(), null, table, column)) {
+            while (resultSet.next()) if (table.equalsIgnoreCase(resultSet.getString("TABLE_NAME")) && column.equalsIgnoreCase(resultSet.getString("COLUMN_NAME"))) return true;
+            return false;
         }
     }
 

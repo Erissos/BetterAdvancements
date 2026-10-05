@@ -1,0 +1,1050 @@
+achievements:
+  t1_welcome_home:
+    title: "Welcome Home"
+    description: "Join the server for the first time."
+    tier: TIER_1
+    category: general
+    icon: OAK_DOOR
+    hidden: false
+    points: 5
+    rarity: common
+    dependencies: []
+    gui: { slot: 10, page: 0 }
+    trigger: { type: JOIN, target: 1 }
+    rewards:
+      reward-1: { type: POINTS, amount: 5, value: "" }
+  t1_first_log:
+    title: "First Log"
+    description: "Break 16 oak logs."
+    tier: TIER_1
+    category: builder
+    icon: OAK_LOG
+    hidden: false
+    points: 8
+    rarity: common
+    dependencies: [t1_welcome_home]
+    gui: { slot: 12, page: 0 }
+    trigger:
+      type: BLOCK_BREAK
+      target: 16
+      conditions: { material: OAK_LOG }
+    rewards:
+      reward-1: { type: XP, amount: 50, value: "" }
+  t1_stone_age:
+    title: "Stone Age+"
+    description: "Break 32 stone blocks."
+    tier: TIER_1
+    category: builder
+    icon: STONE
+    hidden: false
+    points: 8
+    rarity: common
+    dependencies: [t1_first_log]
+    gui: { slot: 14, page: 0 }
+    trigger:
+      type: BLOCK_BREAK
+      target: 32
+      conditions: { material: STONE }
+    rewards:
+      reward-1: { type: ITEM, amount: 16, value: TORCH }
+  t1_toolbelt:
+    title: "Toolbelt"
+    description: "Craft your first wooden pickaxe."
+    tier: TIER_1
+    category: builder
+    icon: WOODEN_PICKAXE
+    hidden: false
+    points: 6
+    rarity: common
+    dependencies: [t1_welcome_home]
+    gui: { slot: 16, page: 0 }
+    trigger:
+      type: ITEM_CRAFT
+      target: 1
+      conditions: { item: WOODEN_PICKAXE }
+    rewards:
+      reward-1: { type: XP, amount: 30, value: "" }
+  t1_breadwinner:
+    title: "Breadwinner"
+    description: "Craft 16 bread."
+    tier: TIER_1
+    category: farming
+    icon: BREAD
+    hidden: false
+    points: 8
+    rarity: common
+    dependencies: [t1_first_log]
+    gui: { slot: 20, page: 0 }
+    trigger:
+      type: ITEM_CRAFT
+      target: 16
+      conditions: { item: BREAD }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: GOLDEN_CARROT }
+  t1_hunter:
+    title: "Night Hunter"
+    description: "Defeat 10 zombies."
+    tier: TIER_1
+    category: combat
+    icon: IRON_SWORD
+    hidden: false
+    points: 10
+    rarity: uncommon
+    dependencies: [t1_stone_age]
+    gui: { slot: 22, page: 0 }
+    trigger:
+      type: MOB_KILL
+      target: 10
+      conditions: { entity: ZOMBIE }
+    rewards:
+      reward-1: { type: XP, amount: 90, value: "" }
+  t1_cartographer:
+    title: "Cartographer"
+    description: "Walk 500 blocks."
+    tier: TIER_1
+    category: exploration
+    icon: MAP
+    hidden: false
+    points: 7
+    rarity: common
+    dependencies: [t1_welcome_home]
+    gui: { slot: 24, page: 0 }
+    trigger: { type: DISTANCE_WALK, target: 500 }
+    rewards:
+      reward-1: { type: POINTS, amount: 4, value: "" }
+  t1_meadow_roamer:
+    title: "Meadow Roamer"
+    description: "Discover a plains biome."
+    tier: TIER_1
+    category: exploration
+    icon: COMPASS
+    hidden: false
+    points: 7
+    rarity: common
+    dependencies: [t1_cartographer]
+    gui: { slot: 30, page: 0 }
+    trigger:
+      type: EXPLORE_BIOME
+      target: 1
+      conditions: { biome: PLAINS }
+    rewards:
+      reward-1: { type: ITEM, amount: 4, value: BREAD }
+  t1_fisher_friend:
+    title: "Fisher Friend"
+    description: "Catch 5 fish."
+    tier: TIER_1
+    category: exploration
+    icon: FISHING_ROD
+    hidden: false
+    points: 8
+    rarity: common
+    dependencies: [t1_welcome_home]
+    gui: { slot: 32, page: 0 }
+    trigger: { type: FISH, target: 5 }
+    rewards:
+      reward-1: { type: XP, amount: 60, value: "" }
+  t1_breeder_begin:
+    title: "Breeder Begin"
+    description: "Breed 2 cows."
+    tier: TIER_1
+    category: farming
+    icon: WHEAT
+    hidden: false
+    points: 9
+    rarity: uncommon
+    dependencies: [t1_breadwinner]
+    gui: { slot: 34, page: 0 }
+    trigger:
+      type: BREED
+      target: 2
+      conditions: { entity: COW }
+    rewards:
+      reward-1: { type: ITEM, amount: 8, value: HAY_BLOCK }
+  t1_ignite_future:
+    title: "Ignite the Future"
+    description: "Smelt 16 iron ingots."
+    tier: TIER_1
+    category: builder
+    icon: FURNACE
+    hidden: false
+    points: 10
+    rarity: uncommon
+    dependencies: [t1_stone_age]
+    gui: { slot: 38, page: 0 }
+    trigger:
+      type: SMELT
+      target: 16
+      conditions: { item: IRON_INGOT }
+    rewards:
+      reward-1: { type: ITEM, amount: 16, value: COAL }
+  t1_arcane_spark:
+    title: "Arcane Spark"
+    description: "Enchant your first item."
+    tier: TIER_1
+    category: magic
+    icon: ENCHANTING_TABLE
+    hidden: false
+    points: 10
+    rarity: uncommon
+    dependencies: [t1_ignite_future]
+    gui: { slot: 40, page: 0 }
+    trigger: { type: ENCHANT, target: 1 }
+    rewards:
+      reward-1: { type: XP, amount: 100, value: "" }
+  t1_trusty_companion:
+    title: "Trusty Companion"
+    description: "Tame a wolf."
+    tier: TIER_1
+    category: exploration
+    icon: BONE
+    hidden: false
+    points: 10
+    rarity: uncommon
+    dependencies: [t1_hunter]
+    gui: { slot: 42, page: 0 }
+    trigger:
+      type: TAME
+      target: 1
+      conditions: { entity: WOLF }
+    rewards:
+      reward-1: { type: ITEM, amount: 8, value: BONE }
+
+  t2_iron_miner:
+    title: "Iron Miner"
+    description: "Break 32 iron ore blocks."
+    tier: TIER_2
+    category: builder
+    icon: IRON_ORE
+    hidden: false
+    points: 12
+    rarity: uncommon
+    dependencies: [t1_ignite_future]
+    gui: { slot: 10, page: 0 }
+    trigger:
+      type: BLOCK_BREAK
+      target: 32
+      conditions: { material: IRON_ORE }
+    rewards:
+      reward-1: { type: XP, amount: 120, value: "" }
+  t2_full_iron:
+    title: "Full Iron"
+    description: "Craft an iron chestplate."
+    tier: TIER_2
+    category: builder
+    icon: IRON_CHESTPLATE
+    hidden: false
+    points: 14
+    rarity: uncommon
+    dependencies: [t2_iron_miner]
+    gui: { slot: 12, page: 0 }
+    trigger:
+      type: ITEM_CRAFT
+      target: 1
+      conditions: { item: IRON_CHESTPLATE }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: SHIELD }
+  t2_chef_deluxe:
+    title: "Chef Deluxe"
+    description: "Eat 20 cooked beef."
+    tier: TIER_2
+    category: farming
+    icon: COOKED_BEEF
+    hidden: false
+    points: 12
+    rarity: uncommon
+    dependencies: [t1_ignite_future]
+    gui: { slot: 14, page: 0 }
+    trigger:
+      type: ITEM_CONSUME
+      target: 20
+      conditions: { item: COOKED_BEEF }
+    rewards:
+      reward-1: { type: POINTS, amount: 10, value: "" }
+  t2_monster_slayer:
+    title: "Monster Slayer"
+    description: "Defeat 25 skeletons."
+    tier: TIER_2
+    category: combat
+    icon: BOW
+    hidden: false
+    points: 14
+    rarity: uncommon
+    dependencies: [t1_hunter]
+    gui: { slot: 16, page: 0 }
+    trigger:
+      type: MOB_KILL
+      target: 25
+      conditions: { entity: SKELETON }
+    rewards:
+      reward-1: { type: XP, amount: 180, value: "" }
+  t2_cave_runner:
+    title: "Cave Runner"
+    description: "Walk 2500 blocks."
+    tier: TIER_2
+    category: exploration
+    icon: TORCH
+    hidden: false
+    points: 12
+    rarity: uncommon
+    dependencies: [t1_cartographer]
+    gui: { slot: 20, page: 0 }
+    trigger: { type: DISTANCE_WALK, target: 2500 }
+    rewards:
+      reward-1: { type: ITEM, amount: 32, value: TORCH }
+  t2_biome_hopper:
+    title: "Biome Hopper"
+    description: "Discover a desert biome."
+    tier: TIER_2
+    category: exploration
+    icon: SAND
+    hidden: false
+    points: 12
+    rarity: uncommon
+    dependencies: [t1_meadow_roamer]
+    gui: { slot: 22, page: 0 }
+    trigger:
+      type: EXPLORE_BIOME
+      target: 1
+      conditions: { biome: DESERT }
+    rewards:
+      reward-1: { type: POINTS, amount: 10, value: "" }
+  t2_river_guardian:
+    title: "River Guardian"
+    description: "Catch 20 fish."
+    tier: TIER_2
+    category: exploration
+    icon: SALMON_BUCKET
+    hidden: false
+    points: 12
+    rarity: uncommon
+    dependencies: [t1_fisher_friend]
+    gui: { slot: 24, page: 0 }
+    trigger: { type: FISH, target: 20 }
+    rewards:
+      reward-1: { type: XP, amount: 180, value: "" }
+  t2_enchanter_apprentice:
+    title: "Enchanter Apprentice"
+    description: "Enchant 10 items."
+    tier: TIER_2
+    category: magic
+    icon: LAPIS_LAZULI
+    hidden: false
+    points: 14
+    rarity: rare
+    dependencies: [t1_arcane_spark]
+    gui: { slot: 30, page: 0 }
+    trigger: { type: ENCHANT, target: 10 }
+    rewards:
+      reward-1: { type: ITEM, amount: 16, value: LAPIS_LAZULI }
+  t2_ranch_manager:
+    title: "Ranch Manager"
+    description: "Breed 10 cows."
+    tier: TIER_2
+    category: farming
+    icon: LEAD
+    hidden: false
+    points: 14
+    rarity: uncommon
+    dependencies: [t1_breeder_begin]
+    gui: { slot: 32, page: 0 }
+    trigger:
+      type: BREED
+      target: 10
+      conditions: { entity: COW }
+    rewards:
+      reward-1: { type: ITEM, amount: 2, value: LEAD }
+  t2_stable_master:
+    title: "Stable Master"
+    description: "Tame 2 horses."
+    tier: TIER_2
+    category: exploration
+    icon: SADDLE
+    hidden: false
+    points: 14
+    rarity: uncommon
+    dependencies: [t1_trusty_companion]
+    gui: { slot: 34, page: 0 }
+    trigger:
+      type: TAME
+      target: 2
+      conditions: { entity: HORSE }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: SADDLE }
+  t2_furnace_expert:
+    title: "Furnace Expert"
+    description: "Smelt 64 glass blocks."
+    tier: TIER_2
+    category: builder
+    icon: GLASS
+    hidden: false
+    points: 12
+    rarity: uncommon
+    dependencies: [t1_ignite_future]
+    gui: { slot: 38, page: 0 }
+    trigger:
+      type: SMELT
+      target: 64
+      conditions: { item: GLASS }
+    rewards:
+      reward-1: { type: ITEM, amount: 16, value: GLASS }
+  t2_duelist:
+    title: "Duelist"
+    description: "Win 3 PvP fights."
+    tier: TIER_2
+    category: combat
+    icon: SHIELD
+    hidden: false
+    points: 16
+    rarity: rare
+    dependencies: [t2_monster_slayer]
+    gui: { slot: 40, page: 0 }
+    trigger: { type: PLAYER_KILL, target: 3 }
+    rewards:
+      reward-1: { type: COMMAND, amount: 0, value: "say {player} has become a Duelist!" }
+  t2_diamond_path:
+    title: "Diamond Path"
+    description: "Break 8 diamond ore blocks."
+    tier: TIER_2
+    category: builder
+    icon: DIAMOND_ORE
+    hidden: false
+    points: 18
+    rarity: rare
+    dependencies: [t2_full_iron]
+    gui: { slot: 42, page: 0 }
+    trigger:
+      type: BLOCK_BREAK
+      target: 8
+      conditions: { material: DIAMOND_ORE }
+    rewards:
+      reward-1: { type: ITEM, amount: 2, value: DIAMOND }
+
+  t3_diamond_core:
+    title: "Diamond Core"
+    description: "Craft a diamond pickaxe."
+    tier: TIER_3
+    category: builder
+    icon: DIAMOND_PICKAXE
+    hidden: false
+    points: 20
+    rarity: rare
+    dependencies: [t2_diamond_path]
+    gui: { slot: 10, page: 0 }
+    trigger:
+      type: ITEM_CRAFT
+      target: 1
+      conditions: { item: DIAMOND_PICKAXE }
+    rewards:
+      reward-1: { type: POINTS, amount: 15, value: "" }
+  t3_blaze_hunter:
+    title: "Blaze Hunter"
+    description: "Defeat 20 blazes."
+    tier: TIER_3
+    category: combat
+    icon: BLAZE_ROD
+    hidden: false
+    points: 20
+    rarity: rare
+    dependencies: [t2_enchanter_apprentice]
+    gui: { slot: 12, page: 0 }
+    trigger:
+      type: MOB_KILL
+      target: 20
+      conditions: { entity: BLAZE }
+    rewards:
+      reward-1: { type: ITEM, amount: 4, value: BLAZE_ROD }
+  t3_nether_scout:
+    title: "Nether Scout"
+    description: "Discover the Nether Wastes."
+    tier: TIER_3
+    category: exploration
+    icon: NETHERRACK
+    hidden: false
+    points: 20
+    rarity: rare
+    dependencies: [t2_biome_hopper]
+    gui: { slot: 14, page: 0 }
+    trigger:
+      type: EXPLORE_BIOME
+      target: 1
+      conditions: { biome: NETHER_WASTES }
+    rewards:
+      reward-1: { type: XP, amount: 250, value: "" }
+  t3_long_haul:
+    title: "Long Haul"
+    description: "Walk 8000 blocks."
+    tier: TIER_3
+    category: exploration
+    icon: LEATHER_BOOTS
+    hidden: false
+    points: 18
+    rarity: rare
+    dependencies: [t2_cave_runner]
+    gui: { slot: 16, page: 0 }
+    trigger: { type: DISTANCE_WALK, target: 8000 }
+    rewards:
+      reward-1: { type: POINTS, amount: 15, value: "" }
+  t3_wealth_of_seas:
+    title: "Wealth of the Seas"
+    description: "Catch 50 fish."
+    tier: TIER_3
+    category: exploration
+    icon: HEART_OF_THE_SEA
+    hidden: false
+    points: 20
+    rarity: rare
+    dependencies: [t2_river_guardian]
+    gui: { slot: 20, page: 0 }
+    trigger: { type: FISH, target: 50 }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: NAUTILUS_SHELL }
+  t3_master_smith:
+    title: "Master Smith"
+    description: "Smelt 128 iron ingots."
+    tier: TIER_3
+    category: builder
+    icon: ANVIL
+    hidden: false
+    points: 18
+    rarity: rare
+    dependencies: [t2_furnace_expert]
+    gui: { slot: 22, page: 0 }
+    trigger:
+      type: SMELT
+      target: 128
+      conditions: { item: IRON_INGOT }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: ANVIL }
+  t3_arcane_flow:
+    title: "Arcane Flow"
+    description: "Enchant 25 items."
+    tier: TIER_3
+    category: magic
+    icon: ENCHANTED_BOOK
+    hidden: false
+    points: 22
+    rarity: epic
+    dependencies: [t2_enchanter_apprentice]
+    gui: { slot: 24, page: 0 }
+    trigger: { type: ENCHANT, target: 25 }
+    rewards:
+      reward-1: { type: XP, amount: 300, value: "" }
+  t3_beast_whisperer:
+    title: "Beast Whisperer"
+    description: "Tame 5 cats."
+    tier: TIER_3
+    category: exploration
+    icon: COD
+    hidden: false
+    points: 18
+    rarity: rare
+    dependencies: [t2_stable_master]
+    gui: { slot: 30, page: 0 }
+    trigger:
+      type: TAME
+      target: 5
+      conditions: { entity: CAT }
+    rewards:
+      reward-1: { type: ITEM, amount: 16, value: COD }
+  t3_breeding_empire:
+    title: "Breeding Empire"
+    description: "Breed 20 sheep."
+    tier: TIER_3
+    category: farming
+    icon: SHEARS
+    hidden: false
+    points: 18
+    rarity: rare
+    dependencies: [t2_ranch_manager]
+    gui: { slot: 32, page: 0 }
+    trigger:
+      type: BREED
+      target: 20
+      conditions: { entity: SHEEP }
+    rewards:
+      reward-1: { type: ITEM, amount: 32, value: WHITE_WOOL }
+  t3_boss_prep:
+    title: "Boss Prep"
+    description: "Defeat 30 endermen."
+    tier: TIER_3
+    category: combat
+    icon: ENDER_PEARL
+    hidden: false
+    points: 20
+    rarity: rare
+    dependencies: [t3_diamond_core]
+    gui: { slot: 34, page: 0 }
+    trigger:
+      type: MOB_KILL
+      target: 30
+      conditions: { entity: ENDERMAN }
+    rewards:
+      reward-1: { type: ITEM, amount: 8, value: ENDER_PEARL }
+  t3_golden_feast:
+    title: "Golden Feast"
+    description: "Eat 32 golden carrots."
+    tier: TIER_3
+    category: farming
+    icon: GOLDEN_CARROT
+    hidden: false
+    points: 18
+    rarity: rare
+    dependencies: [t2_chef_deluxe]
+    gui: { slot: 38, page: 0 }
+    trigger:
+      type: ITEM_CONSUME
+      target: 32
+      conditions: { item: GOLDEN_CARROT }
+    rewards:
+      reward-1: { type: POINTS, amount: 15, value: "" }
+  t3_pvp_contender:
+    title: "PvP Contender"
+    description: "Win 10 PvP fights."
+    tier: TIER_3
+    category: combat
+    icon: DIAMOND_SWORD
+    hidden: false
+    points: 22
+    rarity: epic
+    dependencies: [t2_duelist]
+    gui: { slot: 40, page: 0 }
+    trigger: { type: PLAYER_KILL, target: 10 }
+    rewards:
+      reward-1: { type: COMMAND, amount: 0, value: "say {player} reached PvP Contender!" }
+  t3_hidden_mycelium:
+    title: "Mycelium Secret"
+    description: "Discover the Mushroom Fields."
+    tier: TIER_3
+    category: exploration
+    icon: MYCELIUM
+    hidden: true
+    points: 25
+    rarity: epic
+    dependencies: [t2_biome_hopper]
+    gui: { slot: 42, page: 0 }
+    trigger:
+      type: EXPLORE_BIOME
+      target: 1
+      conditions: { biome: MUSHROOM_FIELDS }
+    rewards:
+      reward-1: { type: ITEM, amount: 2, value: MUSHROOM_STEW }
+
+  t4_ancient_debris:
+    title: "Ancient Debris"
+    description: "Break 8 ancient debris."
+    tier: TIER_4
+    category: builder
+    icon: ANCIENT_DEBRIS
+    hidden: false
+    points: 28
+    rarity: epic
+    dependencies: [t3_nether_scout]
+    gui: { slot: 10, page: 0 }
+    trigger:
+      type: BLOCK_BREAK
+      target: 8
+      conditions: { material: ANCIENT_DEBRIS }
+    rewards:
+      reward-1: { type: POINTS, amount: 20, value: "" }
+  t4_netherite_ready:
+    title: "Netherite Ready"
+    description: "Craft a netherite pickaxe."
+    tier: TIER_4
+    category: builder
+    icon: NETHERITE_PICKAXE
+    hidden: false
+    points: 30
+    rarity: epic
+    dependencies: [t4_ancient_debris]
+    gui: { slot: 12, page: 0 }
+    trigger:
+      type: ITEM_CRAFT
+      target: 1
+      conditions: { item: NETHERITE_PICKAXE }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: NETHERITE_INGOT }
+  t4_withered_soul:
+    title: "Withered Soul"
+    description: "Defeat 40 wither skeletons."
+    tier: TIER_4
+    category: combat
+    icon: WITHER_SKELETON_SKULL
+    hidden: false
+    points: 28
+    rarity: epic
+    dependencies: [t3_blaze_hunter]
+    gui: { slot: 14, page: 0 }
+    trigger:
+      type: MOB_KILL
+      target: 40
+      conditions: { entity: WITHER_SKELETON }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: WITHER_SKELETON_SKULL }
+  t4_endbound:
+    title: "Endbound"
+    description: "Discover the End Highlands."
+    tier: TIER_4
+    category: exploration
+    icon: END_STONE
+    hidden: false
+    points: 28
+    rarity: epic
+    dependencies: [t3_boss_prep]
+    gui: { slot: 16, page: 0 }
+    trigger:
+      type: EXPLORE_BIOME
+      target: 1
+      conditions: { biome: END_HIGHLANDS }
+    rewards:
+      reward-1: { type: XP, amount: 400, value: "" }
+  t4_worldwalker:
+    title: "Worldwalker"
+    description: "Walk 16000 blocks."
+    tier: TIER_4
+    category: exploration
+    icon: NETHERITE_BOOTS
+    hidden: false
+    points: 26
+    rarity: epic
+    dependencies: [t3_long_haul]
+    gui: { slot: 20, page: 0 }
+    trigger: { type: DISTANCE_WALK, target: 16000 }
+    rewards:
+      reward-1: { type: POINTS, amount: 20, value: "" }
+  t4_angler_legend:
+    title: "Angler Legend"
+    description: "Catch 100 fish."
+    tier: TIER_4
+    category: exploration
+    icon: TRIDENT
+    hidden: false
+    points: 26
+    rarity: epic
+    dependencies: [t3_wealth_of_seas]
+    gui: { slot: 22, page: 0 }
+    trigger: { type: FISH, target: 100 }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: TRIDENT }
+  t4_master_enchanter:
+    title: "Master Enchanter"
+    description: "Enchant 50 items."
+    tier: TIER_4
+    category: magic
+    icon: EXPERIENCE_BOTTLE
+    hidden: false
+    points: 30
+    rarity: epic
+    dependencies: [t3_arcane_flow]
+    gui: { slot: 24, page: 0 }
+    trigger: { type: ENCHANT, target: 50 }
+    rewards:
+      reward-1: { type: XP, amount: 600, value: "" }
+  t4_emerald_baron:
+    title: "Emerald Baron"
+    description: "Craft 8 emerald blocks."
+    tier: TIER_4
+    category: farming
+    icon: EMERALD_BLOCK
+    hidden: false
+    points: 26
+    rarity: epic
+    dependencies: [t3_golden_feast]
+    gui: { slot: 30, page: 0 }
+    trigger:
+      type: ITEM_CRAFT
+      target: 8
+      conditions: { item: EMERALD_BLOCK }
+    rewards:
+      reward-1: { type: COMMAND, amount: 0, value: "say {player} became an Emerald Baron!" }
+  t4_beacon_engineer:
+    title: "Beacon Engineer"
+    description: "Craft a beacon."
+    tier: TIER_4
+    category: builder
+    icon: BEACON
+    hidden: false
+    points: 30
+    rarity: legendary
+    dependencies: [t3_master_smith]
+    gui: { slot: 32, page: 0 }
+    trigger:
+      type: ITEM_CRAFT
+      target: 1
+      conditions: { item: BEACON }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: BEACON }
+  t4_stable_dynasty:
+    title: "Stable Dynasty"
+    description: "Tame 4 llamas."
+    tier: TIER_4
+    category: exploration
+    icon: CHEST
+    hidden: false
+    points: 26
+    rarity: epic
+    dependencies: [t3_beast_whisperer]
+    gui: { slot: 34, page: 0 }
+    trigger:
+      type: TAME
+      target: 4
+      conditions: { entity: LLAMA }
+    rewards:
+      reward-1: { type: ITEM, amount: 2, value: CHEST }
+  t4_livestock_tycoon:
+    title: "Livestock Tycoon"
+    description: "Breed 10 horses."
+    tier: TIER_4
+    category: farming
+    icon: GOLDEN_CARROT
+    hidden: false
+    points: 26
+    rarity: epic
+    dependencies: [t3_breeding_empire]
+    gui: { slot: 38, page: 0 }
+    trigger:
+      type: BREED
+      target: 10
+      conditions: { entity: HORSE }
+    rewards:
+      reward-1: { type: ITEM, amount: 32, value: GOLDEN_CARROT }
+  t4_shadow_duelist:
+    title: "Shadow Duelist"
+    description: "Win 25 PvP fights."
+    tier: TIER_4
+    category: combat
+    icon: NETHERITE_SWORD
+    hidden: false
+    points: 32
+    rarity: legendary
+    dependencies: [t3_pvp_contender]
+    gui: { slot: 40, page: 0 }
+    trigger: { type: PLAYER_KILL, target: 25 }
+    rewards:
+      reward-1: { type: COMMAND, amount: 0, value: "say {player} entered the Shadow Duelist league!" }
+  t4_secret_warden:
+    title: "Silent Deep"
+    description: "Defeat the Warden."
+    tier: TIER_4
+    category: combat
+    icon: SCULK_CATALYST
+    hidden: true
+    points: 35
+    rarity: legendary
+    dependencies: [t3_hidden_mycelium]
+    gui: { slot: 42, page: 0 }
+    trigger:
+      type: MOB_KILL
+      target: 1
+      conditions: { entity: WARDEN }
+    rewards:
+      reward-1: { type: POINTS, amount: 25, value: "" }
+
+  t5_dragonfall:
+    title: "Dragonfall"
+    description: "Defeat the Ender Dragon."
+    tier: TIER_5
+    category: combat
+    icon: DRAGON_HEAD
+    hidden: false
+    points: 40
+    rarity: legendary
+    dependencies: [t4_endbound]
+    gui: { slot: 10, page: 0 }
+    trigger:
+      type: MOB_KILL
+      target: 1
+      conditions: { entity: ENDER_DRAGON }
+    rewards:
+      reward-1: { type: COMMAND, amount: 0, value: "say {player} defeated the Ender Dragon!" }
+  t5_nether_king:
+    title: "Nether King"
+    description: "Craft a netherite chestplate."
+    tier: TIER_5
+    category: builder
+    icon: NETHERITE_CHESTPLATE
+    hidden: false
+    points: 38
+    rarity: legendary
+    dependencies: [t4_netherite_ready]
+    gui: { slot: 12, page: 0 }
+    trigger:
+      type: ITEM_CRAFT
+      target: 1
+      conditions: { item: NETHERITE_CHESTPLATE }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: NETHERITE_UPGRADE_SMITHING_TEMPLATE }
+  t5_voidstrider:
+    title: "Voidstrider"
+    description: "Walk 32000 blocks."
+    tier: TIER_5
+    category: exploration
+    icon: ENDER_EYE
+    hidden: false
+    points: 36
+    rarity: legendary
+    dependencies: [t4_worldwalker]
+    gui: { slot: 14, page: 0 }
+    trigger: { type: DISTANCE_WALK, target: 32000 }
+    rewards:
+      reward-1: { type: POINTS, amount: 25, value: "" }
+  t5_dimension_master:
+    title: "Dimension Master"
+    description: "Discover the Soul Sand Valley."
+    tier: TIER_5
+    category: exploration
+    icon: SOUL_SAND
+    hidden: false
+    points: 36
+    rarity: legendary
+    dependencies: [t4_ancient_debris]
+    gui: { slot: 16, page: 0 }
+    trigger:
+      type: EXPLORE_BIOME
+      target: 1
+      conditions: { biome: SOUL_SAND_VALLEY }
+    rewards:
+      reward-1: { type: XP, amount: 700, value: "" }
+  t5_apex_angler:
+    title: "Apex Angler"
+    description: "Catch 250 fish."
+    tier: TIER_5
+    category: exploration
+    icon: ENCHANTED_FISHING_ROD
+    hidden: false
+    points: 36
+    rarity: legendary
+    dependencies: [t4_angler_legend]
+    gui: { slot: 20, page: 0 }
+    trigger: { type: FISH, target: 250 }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: TOTEM_OF_UNDYING }
+  t5_arcmage:
+    title: "Archmage"
+    description: "Enchant 100 items."
+    tier: TIER_5
+    category: magic
+    icon: BEACON
+    hidden: false
+    points: 40
+    rarity: legendary
+    dependencies: [t4_master_enchanter]
+    gui: { slot: 22, page: 0 }
+    trigger: { type: ENCHANT, target: 100 }
+    rewards:
+      reward-1: { type: XP, amount: 1000, value: "" }
+  t5_imperial_merchant:
+    title: "Imperial Merchant"
+    description: "Craft 64 golden apples."
+    tier: TIER_5
+    category: farming
+    icon: GOLDEN_APPLE
+    hidden: false
+    points: 36
+    rarity: legendary
+    dependencies: [t4_emerald_baron]
+    gui: { slot: 24, page: 0 }
+    trigger:
+      type: ITEM_CRAFT
+      target: 64
+      conditions: { item: GOLDEN_APPLE }
+    rewards:
+      reward-1: { type: MONEY, amount: 5000, value: "vault" }
+  t5_beast_emperor:
+    title: "Beast Emperor"
+    description: "Tame 2 camels."
+    tier: TIER_5
+    category: exploration
+    icon: LEAD
+    hidden: false
+    points: 34
+    rarity: legendary
+    dependencies: [t4_stable_dynasty]
+    gui: { slot: 30, page: 0 }
+    trigger:
+      type: TAME
+      target: 2
+      conditions: { entity: CAMEL }
+    rewards:
+      reward-1: { type: ITEM, amount: 2, value: LEAD }
+  t5_gene_architect:
+    title: "Gene Architect"
+    description: "Breed 6 camels."
+    tier: TIER_5
+    category: farming
+    icon: HAY_BLOCK
+    hidden: false
+    points: 34
+    rarity: legendary
+    dependencies: [t4_livestock_tycoon]
+    gui: { slot: 32, page: 0 }
+    trigger:
+      type: BREED
+      target: 6
+      conditions: { entity: CAMEL }
+    rewards:
+      reward-1: { type: POINTS, amount: 20, value: "" }
+  t5_arena_god:
+    title: "Arena God"
+    description: "Win 50 PvP fights."
+    tier: TIER_5
+    category: combat
+    icon: NETHER_STAR
+    hidden: false
+    points: 42
+    rarity: mythic
+    dependencies: [t4_shadow_duelist]
+    gui: { slot: 34, page: 0 }
+    trigger: { type: PLAYER_KILL, target: 50 }
+    rewards:
+      reward-1: { type: COMMAND, amount: 0, value: "say {player} is now the Arena God!" }
+  t5_wither_ender:
+    title: "Wither Ender"
+    description: "Defeat the Wither."
+    tier: TIER_5
+    category: combat
+    icon: NETHER_STAR
+    hidden: false
+    points: 38
+    rarity: mythic
+    dependencies: [t4_withered_soul]
+    gui: { slot: 38, page: 0 }
+    trigger:
+      type: MOB_KILL
+      target: 1
+      conditions: { entity: WITHER }
+    rewards:
+      reward-1: { type: ITEM, amount: 1, value: NETHER_STAR }
+  t5_secret_celestial:
+    title: "Celestial Appetite"
+    description: "Eat 3 enchanted golden apples."
+    tier: TIER_5
+    category: farming
+    icon: ENCHANTED_GOLDEN_APPLE
+    hidden: true
+    points: 45
+    rarity: mythic
+    dependencies: [t5_dragonfall]
+    gui: { slot: 40, page: 0 }
+    trigger:
+      type: ITEM_CONSUME
+      target: 3
+      conditions: { item: ENCHANTED_GOLDEN_APPLE }
+    rewards:
+      reward-1: { type: POINTS, amount: 30, value: "" }
+  t5_eldritch_guardian:
+    title: "Eldritch Guardian"
+    description: "Defeat an Elder Guardian."
+    tier: TIER_5
+    category: combat
+    icon: PRISMARINE_CRYSTALS
+    hidden: false
+    points: 38
+    rarity: legendary
+    dependencies: [t4_angler_legend]
+    gui: { slot: 42, page: 0 }
+    trigger:
+      type: MOB_KILL
+      target: 1
+      conditions: { entity: ELDER_GUARDIAN }
+    rewards:
+      reward-1: { type: ITEM, amount: 8, value: PRISMARINE_CRYSTALS }

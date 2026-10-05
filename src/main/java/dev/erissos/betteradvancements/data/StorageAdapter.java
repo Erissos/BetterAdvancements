@@ -18,5 +18,9 @@ public interface StorageAdapter {
 
     List<PlayerProfile> loadAllProfiles();
 
+    default List<PlayerProfile> loadTopProfiles(int limit, String season) {
+        return loadAllProfiles().stream().limit(limit).toList();
+    }
+
     void close();
 }

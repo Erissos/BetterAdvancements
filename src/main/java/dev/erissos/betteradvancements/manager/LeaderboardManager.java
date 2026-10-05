@@ -18,9 +18,9 @@ public final class LeaderboardManager {
     private final BetterAdvancementsPlugin plugin;
     private final PlayerDataManager playerDataManager;
     private final AchievementManager achievementManager;
-    private List<LeaderboardEntry> globalLeaderboard = new ArrayList<>();
-    private List<LeaderboardEntry> sessionLeaderboard = new ArrayList<>();
-    private List<LeaderboardEntry> seasonLeaderboard = new ArrayList<>();
+    private volatile List<LeaderboardEntry> globalLeaderboard = List.of();
+    private volatile List<LeaderboardEntry> sessionLeaderboard = List.of();
+    private volatile List<LeaderboardEntry> seasonLeaderboard = List.of();
     private int taskId = -1;
 
     public LeaderboardManager(BetterAdvancementsPlugin plugin, PlayerDataManager playerDataManager, AchievementManager achievementManager) {
@@ -41,13 +41,20 @@ public final class LeaderboardManager {
     }
 
     public void refresh() {
-        playerDataManager.loadAllProfiles().thenAccept(allProfiles -> {
-            this.globalLeaderboard = buildEntries(allProfiles);
-            this.seasonLeaderboard = buildSeasonEntries(allProfiles);
-            this.sessionLeaderboard = buildEntries(new ArrayList<>(playerDataManager.getCachedProfiles())).stream()
-                    .sorted(Comparator.comparingInt(LeaderboardEntry::completed).reversed().thenComparingInt(LeaderboardEntry::points).reversed())
-                    .toList();
-        });
+        int limit = Math.max(10, Math.min(1000, plugin.getConfig().getInt("general.leaderboard-limit", 100)));
+        this.sessionLeaderboard = playerDataManager.getSessionProfiles().stream().map(profile -> new LeaderboardEntry(
+            profile.getUniqueId(), resolveName(profile.getUniqueId()), profile.getSessionCompletions(),
+            achievementManager.getProgressPercent(profile), profile.getPoints(), 0))
+            .sorted(Comparator.comparingInt(LeaderboardEntry::completed).reversed()
+                .thenComparing(Comparator.comparingInt(LeaderboardEntry::points).reversed())
+                .thenComparing(entry -> entry.uniqueId().toString())).toList();
+        playerDataManager.loadTopProfiles(limit, false).thenCombine(playerDataManager.loadTopProfiles(limit, true),
+            (global, season) -> Map.of("global", global, "season", season)).thenAccept(result -> {
+            if (plugin.isEnabled()) Bukkit.getScheduler().runTask(plugin, () -> {
+                this.globalLeaderboard = buildEntries(result.get("global"));
+                this.seasonLeaderboard = buildSeasonEntries(result.get("season"));
+            });
+        }).exceptionally(failure -> { plugin.getLogger().warning("Leaderboard refresh failed: " + failure.getMessage()); return null; });
     }
 
     public List<LeaderboardEntry> getGlobalLeaderboard(int limit) {
@@ -75,8 +82,9 @@ public final class LeaderboardManager {
                 profile.getHighestTierCompleted(registry)
                 ))
                 .sorted(Comparator.comparingInt(LeaderboardEntry::completed).reversed()
-                        .thenComparingDouble(LeaderboardEntry::progression).reversed()
-                        .thenComparingInt(LeaderboardEntry::points).reversed())
+                        .thenComparing(Comparator.comparingDouble(LeaderboardEntry::progression).reversed())
+                        .thenComparing(Comparator.comparingInt(LeaderboardEntry::points).reversed())
+                        .thenComparing(entry -> entry.uniqueId().toString()))
                 .toList();
     }
 
@@ -93,7 +101,8 @@ public final class LeaderboardManager {
                     profile.getHighestTierCompleted(registry)
                 ))
                 .sorted(Comparator.comparingInt(LeaderboardEntry::points).reversed()
-                    .thenComparingInt(LeaderboardEntry::completed).reversed())
+                    .thenComparing(Comparator.comparingInt(LeaderboardEntry::completed).reversed())
+                    .thenComparing(entry -> entry.uniqueId().toString()))
                 .toList();
             }
 

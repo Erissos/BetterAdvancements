@@ -1,0 +1,1137 @@
+main:
+  title: "<#f8fafc><bold>Better Advancements</bold></#f8fafc> <#00bfff>// Dashboard Core</#00bfff>"
+  frame:
+    material: BLACK_STAINED_GLASS_PANE
+    name: "<#050816> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<#1f1f1f> "
+    glow: false
+  fillers:
+    header-left:
+      material: LIGHT_BLUE_STAINED_GLASS_PANE
+      name: "<#0d2d3a> "
+      slots: [10, 12]
+    header-right:
+      material: CYAN_STAINED_GLASS_PANE
+      name: "<#062f33> "
+      slots: [14, 16]
+    header-center:
+      material: BLUE_STAINED_GLASS_PANE
+      name: "<#10253d> "
+      slots: [11, 15]
+    bridge:
+      material: LIGHT_GRAY_STAINED_GLASS_PANE
+      name: "<#2b3443> "
+      slots: [22]
+    footer-left:
+      material: CYAN_STAINED_GLASS_PANE
+      name: "<#073840> "
+      slots: [37, 38, 39]
+    footer-right:
+      material: PURPLE_STAINED_GLASS_PANE
+      name: "<#2a2149> "
+      slots: [41, 42, 43]
+  profile:
+    slot: 4
+    glow: true
+    title: "<#00ffc6><bold>Profile Pulse</bold></#00ffc6>"
+    lore:
+      - "<#8a9aaf>Player:</#8a9aaf> <#f8fafc>{player}</#f8fafc>"
+      - "<#8a9aaf>Network Clear:</#8a9aaf> <#00ffc6>{completion}%</#00ffc6>"
+      - "<#8a9aaf>Total Score:</#8a9aaf> <#00bfff>{points}</#00bfff>"
+      - "<#8a9aaf>Top Lane:</#8a9aaf> <#7a5fff>{highest_tier}</#7a5fff>"
+      - ""
+      - "<#52606f>Compact identity card for current pace, score and route depth.</#52606f>"
+  next-target:
+    slot: 11
+    active:
+      material: COMPASS
+      glow: true
+      title: "<#00bfff><bold>Focus Route</bold></#00bfff>"
+      lore:
+        - "<#8a9aaf>Objective:</#8a9aaf> <#f8fafc>{target}</#f8fafc>"
+        - "<#8a9aaf>Tier:</#8a9aaf> <#7a5fff>{tier}</#7a5fff>"
+        - "<#8a9aaf>Category:</#8a9aaf> <#00ffc6>{category}</#00ffc6>"
+        - "<#8a9aaf>Goal:</#8a9aaf> <#f8fafc>{goal}</#f8fafc>"
+        - ""
+        - "<#52606f>Click to enter the best unfinished lane immediately.</#52606f>"
+    empty:
+      material: TOTEM_OF_UNDYING
+      glow: true
+      title: "<#00ffc6><bold>Network Cleared</bold></#00ffc6>"
+      lore:
+        - "<#8a9aaf>Every configured advancement is complete.</#8a9aaf>"
+        - "<#8a9aaf>This profile is currently in showcase state.</#8a9aaf>"
+        - ""
+        - "<#52606f>Use the tier lane below to review completed branches.</#52606f>"
+  challenge:
+    slot: 15
+    material: CLOCK
+    glow: true
+    title: "<#7a5fff><bold>Live Challenges</bold></#7a5fff>"
+    empty-lore:
+      - "<#8a9aaf>No daily or weekly rotation is active right now.</#8a9aaf>"
+      - "<#52606f>The board fills automatically on the next rotation window.</#52606f>"
+    entry-title: "<#00ffc6>{type}</#00ffc6> <#64748b>/</#64748b> <#f8fafc>{title}</#f8fafc>"
+    entry-description: "<#8a9aaf>{description}</#8a9aaf>"
+    entry-reward: "<#00bfff>Reward:</#00bfff> <#f8fafc>{reward} points</#f8fafc>"
+    footer-lore:
+      - ""
+      - "<#52606f>Open the full board for rotation details and progress state.</#52606f>"
+  tiers:
+    order: [novice, skilled, expert, master, mythic]
+    auto-slots: [19, 20, 21, 23, 24]
+    state:
+      completed:
+        - ""
+        - "<#00ffc6><bold>Status:</bold> Archived</#00ffc6>"
+        - "<#52606f>This lane is fully cleared and stored in profile history.</#52606f>"
+      locked:
+        - ""
+        - "<#ff6b8a><bold>Status:</bold> Locked</#ff6b8a>"
+        - "<#8a9aaf>Finish <#f8fafc>{previous_tier}</#f8fafc> before this lane opens.</#8a9aaf>"
+      available:
+        - ""
+        - "<#00bfff><bold>Status:</bold> Live</#00bfff>"
+        - "<#52606f>This lane contains objectives you can push right now.</#52606f>"
+    novice:
+      aliases: [TIER_1, novice, starter]
+      weight: 1
+      display-name: "Novice"
+      icon: GRASS_BLOCK
+      name: "<#00ffc6><bold>Novice Lane</bold></#00ffc6>"
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked:</#8a9aaf> <#f8fafc>{unlocked}/{total}</#f8fafc>"
+        - "<#8a9aaf>Rare Clears:</#8a9aaf> <#7a5fff>{rare}</#7a5fff>"
+        - "<#52606f>Entry systems, first rewards and baseline route pressure.</#52606f>"
+    skilled:
+      aliases: [TIER_2, skilled]
+      weight: 2
+      display-name: "Skilled"
+      icon: IRON_PICKAXE
+      name: "<#00bfff><bold>Skilled Lane</bold></#00bfff>"
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked:</#8a9aaf> <#f8fafc>{unlocked}/{total}</#f8fafc>"
+        - "<#8a9aaf>Rare Clears:</#8a9aaf> <#7a5fff>{rare}</#7a5fff>"
+        - "<#52606f>Broader mechanics, stronger rewards and wider dependencies.</#52606f>"
+    expert:
+      aliases: [TIER_3, expert]
+      weight: 3
+      display-name: "Expert"
+      icon: DIAMOND
+      name: "<#7ad7ff><bold>Expert Lane</bold></#7ad7ff>"
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked:</#8a9aaf> <#f8fafc>{unlocked}/{total}</#f8fafc>"
+        - "<#8a9aaf>Rare Clears:</#8a9aaf> <#7a5fff>{rare}</#7a5fff>"
+        - "<#52606f>Dense chains, higher load and more deliberate pathing.</#52606f>"
+    master:
+      aliases: [TIER_4, master]
+      weight: 4
+      display-name: "Master"
+      icon: NETHERITE_INGOT
+      name: "<#7a5fff><bold>Master Lane</bold></#7a5fff>"
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked:</#8a9aaf> <#f8fafc>{unlocked}/{total}</#f8fafc>"
+        - "<#8a9aaf>Rare Clears:</#8a9aaf> <#00ffc6>{rare}</#00ffc6>"
+        - "<#52606f>High-pressure routing, prestige setup and premium rewards.</#52606f>"
+    mythic:
+      aliases: [TIER_5, mythic]
+      weight: 5
+      display-name: "Mythic"
+      icon: DRAGON_HEAD
+      name: "<#c39eff><bold>Mythic Lane</bold></#c39eff>"
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked:</#8a9aaf> <#f8fafc>{unlocked}/{total}</#f8fafc>"
+        - "<#8a9aaf>Rare Clears:</#8a9aaf> <#00ffc6>{rare}</#00ffc6>"
+        - "<#52606f>Late-game showcase routes tuned for full-clear grinders.</#52606f>"
+  stats:
+    slot: 28
+    material: NETHER_STAR
+    glow: false
+    title: "<#00bfff><bold>Analytics</bold></#00bfff>"
+    lore:
+      - "<#8a9aaf>Open the clean deep-view progression panel.</#8a9aaf>"
+      - "<#52606f>Tier spread, category density and current route state.</#52606f>"
+  leaderboard:
+    slot: 29
+    material: PLAYER_HEAD
+    glow: false
+    title: "<#00ffc6><bold>Leaderboard</bold></#00ffc6>"
+    lore:
+      - "<#8a9aaf>Review global and session standings.</#8a9aaf>"
+      - "<#52606f>Top profiles are surfaced as spotlight cards.</#52606f>"
+  categories:
+    slot: 30
+    material: SPYGLASS
+    glow: true
+    title: "<#7a5fff><bold>Category Matrix</bold></#7a5fff>"
+    lore:
+      - "<#8a9aaf>Active Categories:</#8a9aaf> <#f8fafc>{categories}</#f8fafc>"
+      - "<#8a9aaf>Total Clears:</#8a9aaf> <#00ffc6>{completed}</#00ffc6>"
+      - ""
+      - "<#52606f>Open the curated category dashboard for cleaner routing.</#52606f>"
+  season:
+    slot: 32
+    material: RECOVERY_COMPASS
+    glow: true
+    title: "<#00bfff><bold>Season Pulse</bold></#00bfff>"
+    lore:
+      - "<#8a9aaf>Season:</#8a9aaf> <#f8fafc>{season}</#f8fafc>"
+      - "<#8a9aaf>Season Points:</#8a9aaf> <#00ffc6>{season_points}</#00ffc6>"
+      - "<#8a9aaf>Milestones:</#8a9aaf> <#f8fafc>{reward_count}</#f8fafc>"
+      - ""
+      - "<#52606f>Rewards, seasonal podium and forecasted thresholds.</#52606f>"
+  prestige:
+    slot: 33
+    material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
+    glow: true
+    title: "<#ff88c2><bold>Prestige</bold></#ff88c2>"
+    lore:
+      - "<#8a9aaf>Prestige:</#8a9aaf> <#f8fafc>{prestige}</#f8fafc>"
+      - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completed}/{total}</#f8fafc>"
+      - "<#8a9aaf>Bonus:</#8a9aaf> <#00ffc6>{bonus}</#00ffc6>"
+      - ""
+      - "<#52606f>Inspect reset impact and long-term profile gain.</#52606f>"
+  settings:
+    slot: 34
+    material: COMPARATOR
+    glow: true
+    title: "<#7a5fff><bold>Settings</bold></#7a5fff>"
+    lore:
+      - "<#8a9aaf>Language:</#8a9aaf> <#f8fafc>{language}</#f8fafc>"
+      - "<#8a9aaf>Chat:</#8a9aaf> <#00ffc6>{chat}</#00ffc6>"
+      - "<#8a9aaf>Title:</#8a9aaf> <#00bfff>{title_state}</#00bfff>"
+      - ""
+      - "<#52606f>Notification routing and language control in one panel.</#52606f>"
+
+tier:
+  title: "<#f8fafc><bold>{tier_name}</bold></#f8fafc> <#64748b>// Route Map</#64748b>"
+  frame:
+    material: BLACK_STAINED_GLASS_PANE
+    name: "<#020617> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<#111827> "
+    glow: false
+  blocked-slots: [4, 45, 46, 47, 48, 49, 50, 51, 52, 53]
+  overview:
+    slot: 4
+    glow: true
+    title: "<#fde68a><bold>{tier_name} Overview</bold></#fde68a>"
+    lore:
+      - "<#94a3b8>Completion:</#94a3b8> <#facc15>{completion}%</#facc15>"
+      - "<#94a3b8>Total Nodes:</#94a3b8> <#f8fafc>{total}</#f8fafc>"
+      - "<#94a3b8>Unlocked Nodes:</#94a3b8> <#4ade80>{unlocked}</#4ade80>"
+      - "<#94a3b8>Rare Clears:</#94a3b8> <#c084fc>{rare}</#c084fc>"
+      - ""
+      - "<#475569>Use nodes and links below to read the dependency chain cleanly.</#475569>"
+  node:
+    hidden-title: "<#94a3b8><bold>Hidden Node</bold></#94a3b8>"
+    hidden-description: "<#475569>This objective is concealed until its unlock condition is met.</#475569>"
+    materials:
+      hidden: BLACK_STAINED_GLASS_PANE
+      completed: LIME_STAINED_GLASS_PANE
+      locked: GRAY_STAINED_GLASS_PANE
+    lore:
+      - ""
+      - "<#cbd5e1>{description}</#cbd5e1>"
+      - ""
+      - "<#fde68a>Objective:</#fde68a> <#f8fafc>{objective}</#f8fafc>"
+      - "<#86efac>Progress:</#86efac> <#f8fafc>{progress}</#f8fafc><#64748b>/</#64748b><#facc15>{target}</#facc15>"
+      - "<#67e8f9>Category:</#67e8f9> <#f8fafc>{category}</#f8fafc>"
+      - "<#c084fc>Rarity:</#c084fc> <#f8fafc>{rarity}</#f8fafc>"
+      - "<#4ade80>Rewards:</#4ade80> <#f8fafc>{rewards}</#f8fafc>"
+      - "<#fda4af>Points:</#fda4af> <#f8fafc>{points}</#f8fafc>"
+    requires-format: "<#fb7185>Requires:</#fb7185> <#f8fafc>{requirements}</#f8fafc>"
+    unlocks-format: "<#67e8f9>Unlocks:</#67e8f9> <#f8fafc>{unlocks}</#f8fafc>"
+    state:
+      completed: "<#4ade80><bold>State:</bold> Completed</#4ade80>"
+      unlocked: "<#facc15><bold>State:</bold> Unlocked</#facc15>"
+      locked: "<#94a3b8><bold>State:</bold> Waiting on dependencies</#94a3b8>"
+  connectors:
+    title-completed: "<#4ade80><bold>{direction} Completed Link</bold></#4ade80>"
+    title-locked: "<#67e8f9><bold>{direction} Dependency Link</bold></#67e8f9>"
+    detail-completed: "<#94a3b8>This route is already satisfied.</#94a3b8>"
+    detail-locked: "<#94a3b8>This route still controls the next unlock.</#94a3b8>"
+    direction-lore: "<#475569>Direction marker: {direction}</#475569>"
+    materials:
+      completed: LIME_STAINED_GLASS_PANE
+      vertical: CYAN_STAINED_GLASS_PANE
+      horizontal-forward: LIGHT_BLUE_STAINED_GLASS_PANE
+      horizontal-back: BLUE_STAINED_GLASS_PANE
+    symbols:
+      right: ">"
+      left: "<"
+      down: "v"
+      up: "^"
+      point: "*"
+  navigation:
+    previous:
+      slot: 45
+      active:
+        material: ARROW
+        glow: false
+        title: "<#67e8f9><bold>Previous Tier: {tier_name}</bold></#67e8f9>"
+        lore:
+          - "<#94a3b8>Move back one lane and inspect earlier dependencies.</#94a3b8>"
+      empty:
+        material: BARRIER
+        glow: false
+        title: "<#94a3b8><bold>No Previous Tier</bold></#94a3b8>"
+        lore:
+          - "<#475569>You are already viewing the opening lane.</#475569>"
+    legend-completed:
+      slot: 46
+      material: LIME_STAINED_GLASS_PANE
+      glow: false
+      title: "<#4ade80><bold>Completed</bold></#4ade80>"
+      lore:
+        - "<#94a3b8>Nodes that are fully cleared and archived.</#94a3b8>"
+    legend-unlocked:
+      slot: 47
+      material: LIGHT_BLUE_STAINED_GLASS_PANE
+      glow: false
+      title: "<#67e8f9><bold>Unlocked</bold></#67e8f9>"
+      lore:
+        - "<#94a3b8>Nodes that can be progressed immediately.</#94a3b8>"
+    legend-locked:
+      slot: 48
+      material: GRAY_STAINED_GLASS_PANE
+      glow: false
+      title: "<#94a3b8><bold>Locked</bold></#94a3b8>"
+      lore:
+        - "<#94a3b8>Nodes still waiting for earlier requirements.</#94a3b8>"
+    back:
+      slot: 49
+      material: BARRIER
+      glow: false
+      title: "<#fb7185><bold>Back to Command Deck</bold></#fb7185>"
+      lore:
+        - "<#94a3b8>Return to the main control menu.</#94a3b8>"
+    horizontal:
+      slot: 50
+      title: "<#67e8f9><bold>Horizontal Link</bold></#67e8f9>"
+      detail: "<#94a3b8>Shows dependencies inside the same row.</#94a3b8>"
+    vertical:
+      slot: 51
+      title: "<#67e8f9><bold>Vertical Link</bold></#67e8f9>"
+      detail: "<#94a3b8>Shows dependencies that continue into another row.</#94a3b8>"
+    focus:
+      slot: 52
+      material: COMPASS
+      glow: true
+      title: "<#fde68a><bold>Route Focus</bold></#fde68a>"
+      active-lore:
+        - "<#94a3b8>Priority Node:</#94a3b8> <#f8fafc>{target}</#f8fafc>"
+        - "<#94a3b8>Goal:</#94a3b8> <#4ade80>{goal}</#4ade80>"
+        - "<#94a3b8>Category:</#94a3b8> <#fde68a>{category}</#fde68a>"
+        - ""
+        - "<#475569>Best immediate route target in this lane.</#475569>"
+      empty-lore:
+        - "<#94a3b8>No immediate focus node exists in this lane.</#94a3b8>"
+        - "<#475569>The lane is either complete or blocked elsewhere.</#475569>"
+    next:
+      slot: 53
+      active:
+        material: ARROW
+        glow: false
+        title: "<#fde68a><bold>Next Tier: {tier_name}</bold></#fde68a>"
+        lore:
+          - "<#94a3b8>Move forward to the next route layer.</#94a3b8>"
+      empty:
+        material: BARRIER
+        glow: false
+        title: "<#94a3b8><bold>No Next Tier</bold></#94a3b8>"
+        lore:
+          - "<#475569>You are already at the final showcase lane.</#475569>"
+
+stats:
+  title: "<#f8fafc><bold>Progression Analytics</bold></#f8fafc> <#00bfff>// Clean Deep View</#00bfff>"
+  frame:
+    material: BLACK_STAINED_GLASS_PANE
+    name: "<#050816> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<#1f1f1f> "
+    glow: false
+  profile:
+    slot: 4
+    glow: true
+    title: "<#00ffc6><bold>Analytics Snapshot</bold></#00ffc6>"
+    lore:
+      - "<#8a9aaf>Completed:</#8a9aaf> <#f8fafc>{completed}/{total}</#f8fafc>"
+      - "<#8a9aaf>Progression:</#8a9aaf> <#00ffc6>{progression}%</#00ffc6>"
+      - "<#8a9aaf>Score:</#8a9aaf> <#00bfff>{points}</#00bfff>"
+      - "<#8a9aaf>Rare Clears:</#8a9aaf> <#7a5fff>{rare}</#7a5fff>"
+      - ""
+      - "<#52606f>Minimal dashboard view of completion pressure and rarity depth.</#52606f>"
+  tiers:
+    auto-slots: [19, 20, 21, 22, 23]
+    novice:
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked Nodes:</#8a9aaf> <#00ffc6>{unlocked}</#00ffc6>"
+        - "<#52606f>Opening pace and early lane consistency.</#52606f>"
+    skilled:
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked Nodes:</#8a9aaf> <#00bfff>{unlocked}</#00bfff>"
+        - "<#52606f>Mid-ramp efficiency and reward continuity.</#52606f>"
+    expert:
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked Nodes:</#8a9aaf> <#7ad7ff>{unlocked}</#7ad7ff>"
+        - "<#52606f>Route density and deliberate objective pressure.</#52606f>"
+    master:
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked Nodes:</#8a9aaf> <#7a5fff>{unlocked}</#7a5fff>"
+        - "<#52606f>Late-cycle mastery and prestige readiness.</#52606f>"
+    mythic:
+      lore:
+        - "<#8a9aaf>Completion:</#8a9aaf> <#f8fafc>{completion}%</#f8fafc>"
+        - "<#8a9aaf>Unlocked Nodes:</#8a9aaf> <#c39eff>{unlocked}</#c39eff>"
+        - "<#52606f>End-network control and showcase pressure.</#52606f>"
+  categories:
+    combat:
+      slot: 29
+      material: DIAMOND_SWORD
+      glow: false
+      title: "<#ff88c2><bold>Combat</bold></#ff88c2>"
+      lore:
+        - "<#8a9aaf>Clears:</#8a9aaf> <#f8fafc>{value}</#f8fafc>"
+        - "<#52606f>Mob, boss and PvP-oriented objective flow.</#52606f>"
+    exploration:
+      slot: 30
+      material: COMPASS
+      glow: false
+      title: "<#00bfff><bold>Exploration</bold></#00bfff>"
+      lore:
+        - "<#8a9aaf>Clears:</#8a9aaf> <#f8fafc>{value}</#f8fafc>"
+        - "<#52606f>Travel, discovery and biome chain routes.</#52606f>"
+    builder:
+      slot: 31
+      material: BRICKS
+      glow: false
+      title: "<#00ffc6><bold>Builder</bold></#00ffc6>"
+      lore:
+        - "<#8a9aaf>Clears:</#8a9aaf> <#f8fafc>{value}</#f8fafc>"
+        - "<#52606f>Crafting, smelting and block-based production loops.</#52606f>"
+    farming:
+      slot: 32
+      material: WHEAT
+      glow: false
+      title: "<#9effc5><bold>Farming</bold></#9effc5>"
+      lore:
+        - "<#8a9aaf>Clears:</#8a9aaf> <#f8fafc>{value}</#f8fafc>"
+        - "<#52606f>Harvest, breeding and passive economy routes.</#52606f>"
+    magic:
+      slot: 33
+      material: ENCHANTING_TABLE
+      glow: false
+      title: "<#7a5fff><bold>Magic</bold></#7a5fff>"
+      lore:
+        - "<#8a9aaf>Clears:</#8a9aaf> <#f8fafc>{value}</#f8fafc>"
+        - "<#52606f>Enchanting and utility-centric progression chains.</#52606f>"
+  rare:
+    slot: 39
+    material: AMETHYST_SHARD
+    glow: true
+    title: "<#7a5fff><bold>Rare Index</bold></#7a5fff>"
+    lore:
+      - "<#8a9aaf>Legendary/Mythic Clears:</#8a9aaf> <#f8fafc>{rare}</#f8fafc>"
+      - "<#52606f>Surface the highest-value completions on this profile.</#52606f>"
+  session:
+    slot: 40
+    material: CLOCK
+    glow: false
+    title: "<#00bfff><bold>Session Feed</bold></#00bfff>"
+    lore:
+      - "<#8a9aaf>Session Clears:</#8a9aaf> <#f8fafc>{session_completions}</#f8fafc>"
+      - "<#8a9aaf>Join Stamp:</#8a9aaf> <#f8fafc>{session_join}</#f8fafc>"
+      - "<#52606f>Measure current run velocity against the full profile.</#52606f>"
+  objective:
+    slot: 41
+    material: TARGET
+    glow: true
+    title: "<#00ffc6><bold>Current Focus</bold></#00ffc6>"
+    active-lore:
+      - "<#8a9aaf>Quest:</#8a9aaf> <#f8fafc>{target}</#f8fafc>"
+      - "<#8a9aaf>Tier:</#8a9aaf> <#7a5fff>{tier}</#7a5fff>"
+      - "<#8a9aaf>Goal:</#8a9aaf> <#00bfff>{goal}</#00bfff>"
+      - "<#52606f>Use this as the handoff point back into the route map.</#52606f>"
+    empty-lore:
+      - "<#8a9aaf>No unfinished objective remains.</#8a9aaf>"
+      - "<#52606f>The network is fully cleared for this profile.</#52606f>"
+  back:
+    slot: 49
+    material: BARRIER
+    glow: false
+    title: "<#ff6b8a><bold>Back to Dashboard</bold></#ff6b8a>"
+    lore:
+      - "<#8a9aaf>Return to the main control panel.</#8a9aaf>"
+
+category-menu:
+  title: "<#f8fafc><bold>Category Matrix</bold></#f8fafc> <#7a5fff>// Curated Routes</#7a5fff>"
+  order: [combat, exploration, builder, farming, magic]
+  frame:
+    material: BLACK_STAINED_GLASS_PANE
+    name: "<#050816> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<#1f1f1f> "
+    glow: false
+  fillers:
+    header:
+      material: PURPLE_STAINED_GLASS_PANE
+      name: "<#24173f> "
+      slots: [10, 11, 12, 14, 15, 16]
+    footer:
+      material: CYAN_STAINED_GLASS_PANE
+      name: "<#073840> "
+      slots: [37, 38, 39, 41, 42, 43]
+  profile:
+    slot: 4
+    glow: true
+    title: "<#7a5fff><bold>Category Overview</bold></#7a5fff>"
+    lore:
+      - "<#8a9aaf>Tracked Categories:</#8a9aaf> <#f8fafc>{categories}</#f8fafc>"
+      - "<#8a9aaf>Completed Nodes:</#8a9aaf> <#00ffc6>{completed}/{total}</#00ffc6>"
+      - "<#8a9aaf>Rare Clears:</#8a9aaf> <#00bfff>{rare}</#00bfff>"
+      - ""
+      - "<#52606f>Each card routes you to the best unfinished objective in that category.</#52606f>"
+  auto-slots: [19, 20, 21, 23, 24, 25, 29, 30, 31, 32, 33]
+  categories:
+    default:
+      material: AMETHYST_SHARD
+      glow: false
+      title: "<#7a5fff><bold>{category}</bold></#7a5fff>"
+      lore:
+        - "<#8a9aaf>Completed:</#8a9aaf> <#f8fafc>{completed}/{total}</#f8fafc>"
+        - "<#8a9aaf>Unlocked Now:</#8a9aaf> <#00ffc6>{unlocked}</#00ffc6>"
+        - "<#8a9aaf>Rare Clears:</#8a9aaf> <#00bfff>{rare}</#00bfff>"
+        - "<#8a9aaf>Next Focus:</#8a9aaf> <#f8fafc>{focus}</#f8fafc>"
+        - "<#8a9aaf>Target Tier:</#8a9aaf> <#7a5fff>{tier}</#7a5fff>"
+        - ""
+        - "<#52606f>Click to jump into the recommended route for this category.</#52606f>"
+    combat:
+      material: DIAMOND_SWORD
+      title: "<#ff88c2><bold>Combat Grid</bold></#ff88c2>"
+      glow: true
+    exploration:
+      material: COMPASS
+      title: "<#00bfff><bold>Exploration Grid</bold></#00bfff>"
+      glow: true
+    builder:
+      material: BRICKS
+      title: "<#00ffc6><bold>Builder Grid</bold></#00ffc6>"
+    farming:
+      material: WHEAT
+      title: "<#a7ffcb><bold>Farming Grid</bold></#a7ffcb>"
+    magic:
+      material: ENCHANTING_TABLE
+      title: "<#7a5fff><bold>Magic Grid</bold></#7a5fff>"
+      glow: true
+  stats:
+    slot: 48
+    material: NETHER_STAR
+    glow: false
+    title: "<#00bfff><bold>Open Analytics</bold></#00bfff>"
+    lore:
+      - "<#8a9aaf>Move to the deep-view stats dashboard.</#8a9aaf>"
+  settings:
+    slot: 50
+    material: COMPARATOR
+    glow: false
+    title: "<#7a5fff><bold>Open Settings</bold></#7a5fff>"
+    lore:
+      - "<#8a9aaf>Adjust notification routing and language preferences.</#8a9aaf>"
+  back:
+    slot: 49
+    material: BARRIER
+    glow: false
+    title: "<#ff6b8a><bold>Back to Dashboard</bold></#ff6b8a>"
+    lore:
+      - "<#8a9aaf>Return to the main panel.</#8a9aaf>"
+  values:
+    none: "None"
+
+settings-menu:
+  title: "<#f8fafc><bold>Settings</bold></#f8fafc> <#7a5fff>// Signal Routing</#7a5fff>"
+  frame:
+    material: BLACK_STAINED_GLASS_PANE
+    name: "<#050816> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<#1f1f1f> "
+    glow: false
+  fillers:
+    header:
+      material: LIGHT_BLUE_STAINED_GLASS_PANE
+      name: "<#10253d> "
+      slots: [10, 11, 12, 14, 15, 16]
+    footer:
+      material: PURPLE_STAINED_GLASS_PANE
+      name: "<#24173f> "
+      slots: [37, 38, 39, 41, 42, 43]
+  profile:
+    slot: 4
+    glow: true
+    title: "<#7a5fff><bold>Signal Profile</bold></#7a5fff>"
+    lore:
+      - "<#8a9aaf>Language:</#8a9aaf> <#f8fafc>{language}</#f8fafc>"
+      - "<#8a9aaf>Chat:</#8a9aaf> <#00ffc6>{chat}</#00ffc6>"
+      - "<#8a9aaf>Title:</#8a9aaf> <#00bfff>{title_state}</#00bfff>"
+      - "<#8a9aaf>Action Bar:</#8a9aaf> <#00ffc6>{action_bar}</#00ffc6>"
+      - "<#8a9aaf>Boss Bar:</#8a9aaf> <#00bfff>{boss_bar}</#00bfff>"
+      - "<#8a9aaf>Sound:</#8a9aaf> <#00ffc6>{sound}</#00ffc6>"
+  language:
+    slot: 20
+    material: BOOK
+    glow: true
+    title: "<#00bfff><bold>Cycle Language</bold></#00bfff>"
+    lore:
+      - "<#8a9aaf>Current:</#8a9aaf> <#f8fafc>{language}</#f8fafc>"
+      - "<#8a9aaf>Installed Locales:</#8a9aaf> <#00ffc6>{count}</#00ffc6>"
+      - ""
+      - "<#52606f>Click to rotate through loaded language packs.</#52606f>"
+  toggles:
+    chat:
+      slot: 22
+      material: PAPER
+      enabled:
+        title: "<#00ffc6><bold>Chat Alerts</bold></#00ffc6>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#00ffc6>{state}</#00ffc6>"
+          - "<#52606f>Advancement notices are sent to normal chat.</#52606f>"
+      disabled:
+        title: "<#7c8a9d><bold>Chat Alerts</bold></#7c8a9d>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#7c8a9d>{state}</#7c8a9d>"
+          - "<#52606f>Chat delivery is muted for advancement notices.</#52606f>"
+    title:
+      slot: 23
+      material: NAME_TAG
+      enabled:
+        title: "<#00bfff><bold>Title Alerts</bold></#00bfff>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#00bfff>{state}</#00bfff>"
+          - "<#52606f>Large-screen title notifications stay enabled.</#52606f>"
+      disabled:
+        title: "<#7c8a9d><bold>Title Alerts</bold></#7c8a9d>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#7c8a9d>{state}</#7c8a9d>"
+          - "<#52606f>Title delivery is muted for advancement notices.</#52606f>"
+    action-bar:
+      slot: 24
+      material: LIGHTNING_ROD
+      enabled:
+        title: "<#00ffc6><bold>Action Bar Alerts</bold></#00ffc6>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#00ffc6>{state}</#00ffc6>"
+          - "<#52606f>Short-form action bar messages remain active.</#52606f>"
+      disabled:
+        title: "<#7c8a9d><bold>Action Bar Alerts</bold></#7c8a9d>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#7c8a9d>{state}</#7c8a9d>"
+          - "<#52606f>Action bar delivery is muted for advancement notices.</#52606f>"
+    boss-bar:
+      slot: 29
+      material: WITHER_ROSE
+      enabled:
+        title: "<#00bfff><bold>Boss Bar Alerts</bold></#00bfff>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#00bfff>{state}</#00bfff>"
+          - "<#52606f>Boss bar notification ribbon stays visible.</#52606f>"
+      disabled:
+        title: "<#7c8a9d><bold>Boss Bar Alerts</bold></#7c8a9d>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#7c8a9d>{state}</#7c8a9d>"
+          - "<#52606f>Boss bar delivery is muted for advancement notices.</#52606f>"
+    sound:
+      slot: 30
+      material: NOTE_BLOCK
+      enabled:
+        title: "<#00ffc6><bold>Sound Alerts</bold></#00ffc6>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#00ffc6>{state}</#00ffc6>"
+          - "<#52606f>Audio feedback plays when advancements complete.</#52606f>"
+      disabled:
+        title: "<#7c8a9d><bold>Sound Alerts</bold></#7c8a9d>"
+        lore:
+          - "<#8a9aaf>Status:</#8a9aaf> <#7c8a9d>{state}</#7c8a9d>"
+          - "<#52606f>Audio feedback is muted for advancement notices.</#52606f>"
+  categories:
+    slot: 50
+    material: SPYGLASS
+    glow: false
+    title: "<#7a5fff><bold>Open Category Matrix</bold></#7a5fff>"
+    lore:
+      - "<#8a9aaf>Jump into the curated category dashboard.</#8a9aaf>"
+  back:
+    slot: 49
+    material: BARRIER
+    glow: false
+    title: "<#ff6b8a><bold>Back to Dashboard</bold></#ff6b8a>"
+    lore:
+      - "<#8a9aaf>Return to the main panel.</#8a9aaf>"
+  states:
+    enabled: "Enabled"
+    disabled: "Disabled"
+
+leaderboard:
+  title:
+    global: "<#f8fafc><bold>Global Leaderboard</bold></#f8fafc> <#64748b>// All Time</#64748b>"
+    session: "<#f8fafc><bold>Session Leaderboard</bold></#f8fafc> <#64748b>// Active Run</#64748b>"
+  mode:
+    global: "Global"
+    session: "Session"
+  frame:
+    material: GREEN_STAINED_GLASS_PANE
+    name: "<#020617> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<#111827> "
+    glow: false
+  header:
+    slot: 4
+    global:
+      material: NETHER_STAR
+      glow: true
+      title: "<#fde68a><bold>Global Podium</bold></#fde68a>"
+      lore:
+        - "<#94a3b8>Entries:</#94a3b8> <#f8fafc>{entries}</#f8fafc>"
+        - "<#94a3b8>Mode:</#94a3b8> <#67e8f9>{mode}</#67e8f9>"
+        - "<#475569>The top three players are highlighted as premium cards.</#475569>"
+    session:
+      material: CLOCK
+      glow: true
+      title: "<#facc15><bold>Session Podium</bold></#facc15>"
+      lore:
+        - "<#94a3b8>Entries:</#94a3b8> <#f8fafc>{entries}</#f8fafc>"
+        - "<#94a3b8>Mode:</#94a3b8> <#67e8f9>{mode}</#67e8f9>"
+        - "<#475569>Tracks the current run without waiting for full-history updates.</#475569>"
+  empty:
+    slot: 22
+    material: SPYGLASS
+    glow: false
+    title: "<#67e8f9><bold>No Ranking Data</bold></#67e8f9>"
+    lore:
+      - "<#94a3b8>No leaderboard entries have been generated yet.</#94a3b8>"
+      - "<#475569>Once players begin clearing routes, the board will populate.</#475569>"
+  podium-slots: [13, 11, 15]
+  list-slots: [28, 29, 30, 31, 32, 33, 34]
+  cards:
+    title: "{badge} <#f8fafc>{player}</#f8fafc>"
+    badges:
+      1: "<#fde68a><bold>#1 Apex</bold></#fde68a>"
+      2: "<#e2e8f0><bold>#2 Vanguard</bold></#e2e8f0>"
+      3: "<#f59e0b><bold>#3 Trailblazer</bold></#f59e0b>"
+      4: "<#67e8f9><bold>#4 Route Runner</bold></#67e8f9>"
+      5: "<#67e8f9><bold>#5 Route Runner</bold></#67e8f9>"
+      6: "<#67e8f9><bold>#6 Route Runner</bold></#67e8f9>"
+      7: "<#67e8f9><bold>#7 Route Runner</bold></#67e8f9>"
+      8: "<#67e8f9><bold>#8 Route Runner</bold></#67e8f9>"
+      9: "<#67e8f9><bold>#9 Route Runner</bold></#67e8f9>"
+      10: "<#67e8f9><bold>#10 Route Runner</bold></#67e8f9>"
+    lore:
+      - "<#94a3b8>Completed:</#94a3b8> <#f8fafc>{completed}</#f8fafc>"
+      - "<#94a3b8>Progression:</#94a3b8> <#facc15>{progression}%</#facc15>"
+      - "<#94a3b8>Points:</#94a3b8> <#4ade80>{points}</#4ade80>"
+      - "<#94a3b8>Highest Tier:</#94a3b8> <#c4b5fd>{highest_tier}</#c4b5fd>"
+    podium-extra:
+      - "<#475569>This profile is displayed on the featured podium row.</#475569>"
+  footer:
+    global:
+      slot: 48
+      material: PAPER
+      title: "<#86efac><bold>Global Board</bold></#86efac>"
+      lore:
+        - "<#94a3b8>Switch to all-time progression standings.</#94a3b8>"
+    back:
+      slot: 49
+      material: BARRIER
+      glow: false
+      title: "<#fb7185><bold>Back to Command Deck</bold></#fb7185>"
+      lore:
+        - "<#94a3b8>Return to the main menu.</#94a3b8>"
+    session:
+      slot: 50
+      material: CLOCK
+      title: "<#fde68a><bold>Session Board</bold></#fde68a>"
+      lore:
+        - "<#94a3b8>Switch to the active-session standings.</#94a3b8>"
+    notes:
+      slot: 53
+      material: BOOK
+      glow: false
+      title: "<#67e8f9><bold>Board Notes</bold></#67e8f9>"
+      lore:
+        - "<#94a3b8>Ranks 1-3 use the spotlight podium layout.</#94a3b8>"
+        - "<#475569>Remaining entries are stacked in the tactical row below.</#475569>"
+
+challenges:
+  title: "<#f8fafc><bold>Challenge Board</bold></#f8fafc> <#64748b>// Live Rotation</#64748b>"
+  frame:
+    material: RED_STAINED_GLASS_PANE
+    name: "<#020617> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<#111827> "
+    glow: false
+  fillers:
+    header:
+      material: ORANGE_STAINED_GLASS_PANE
+      name: "<#7c2d12> "
+      slots: [10, 11, 12, 14, 15, 16]
+    footer:
+      material: YELLOW_STAINED_GLASS_PANE
+      name: "<#78350f> "
+      slots: [37, 38, 39, 41, 42, 43]
+  profile:
+    slot: 4
+    glow: true
+    title: "<#fde68a><bold>Rotation Snapshot</bold></#fde68a>"
+    lore:
+      - "<#94a3b8>Active Challenges:</#94a3b8> <#f8fafc>{active}</#f8fafc>"
+      - "<#94a3b8>Total Cleared:</#94a3b8> <#4ade80>{completed}</#4ade80>"
+      - "<#94a3b8>Season Points:</#94a3b8> <#67e8f9>{season_points}</#67e8f9>"
+      - ""
+      - "<#475569>Daily and weekly rotations keep the progression loop fresh.</#475569>"
+  cards:
+    daily:
+      slot: 20
+      active:
+        material: SUNFLOWER
+        glow: true
+        title: "<#fde68a><bold>Daily: {title}</bold></#fde68a>"
+        lore:
+          - "<#94a3b8>Type:</#94a3b8> <#f8fafc>{type}</#f8fafc>"
+          - "<#94a3b8>Status:</#94a3b8> <#f8fafc>{status}</#f8fafc>"
+          - "<#94a3b8>Progress:</#94a3b8> <#4ade80>{progress}/{target}</#4ade80>"
+          - "<#94a3b8>Objective:</#94a3b8> <#f8fafc>{objective}</#f8fafc>"
+          - "<#94a3b8>Description:</#94a3b8> <#cbd5e1>{description}</#cbd5e1>"
+          - "<#94a3b8>Rewards:</#94a3b8> <#f8fafc>{rewards}</#f8fafc>"
+      empty:
+        material: BARRIER
+        glow: false
+        title: "<#94a3b8><bold>No Daily Challenge</bold></#94a3b8>"
+        lore:
+          - "<#475569>The daily slot is currently empty.</#475569>"
+    weekly:
+      slot: 24
+      active:
+        material: AMETHYST_CLUSTER
+        glow: true
+        title: "<#c084fc><bold>Weekly: {title}</bold></#c084fc>"
+        lore:
+          - "<#94a3b8>Type:</#94a3b8> <#f8fafc>{type}</#f8fafc>"
+          - "<#94a3b8>Status:</#94a3b8> <#f8fafc>{status}</#f8fafc>"
+          - "<#94a3b8>Progress:</#94a3b8> <#4ade80>{progress}/{target}</#4ade80>"
+          - "<#94a3b8>Objective:</#94a3b8> <#f8fafc>{objective}</#f8fafc>"
+          - "<#94a3b8>Description:</#94a3b8> <#cbd5e1>{description}</#cbd5e1>"
+          - "<#94a3b8>Rewards:</#94a3b8> <#f8fafc>{rewards}</#f8fafc>"
+      empty:
+        material: BARRIER
+        glow: false
+        title: "<#94a3b8><bold>No Weekly Challenge</bold></#94a3b8>"
+        lore:
+          - "<#475569>The weekly slot is currently empty.</#475569>"
+  summary:
+    slot: 22
+    material: WRITABLE_BOOK
+    glow: false
+    title: "<#67e8f9><bold>Rotation Notes</bold></#67e8f9>"
+    lore:
+      - "<#94a3b8>Active:</#94a3b8> <#f8fafc>{active}</#f8fafc>"
+      - "<#94a3b8>Completed History:</#94a3b8> <#4ade80>{completed}</#4ade80>"
+      - "<#94a3b8>Total Points:</#94a3b8> <#fde68a>{points}</#fde68a>"
+      - ""
+      - "<#475569>Challenge completions feed both score and seasonal velocity.</#475569>"
+  season:
+    slot: 48
+    material: RECOVERY_COMPASS
+    glow: false
+    title: "<#fde68a><bold>Open Season Ops</bold></#fde68a>"
+    lore:
+      - "<#94a3b8>Jump to seasonal rewards and ranking pulse.</#94a3b8>"
+  prestige:
+    slot: 50
+    material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
+    glow: false
+    title: "<#fda4af><bold>Open Prestige Control</bold></#fda4af>"
+    lore:
+      - "<#94a3b8>Inspect prestige readiness and reset impact.</#94a3b8>"
+  back:
+    slot: 49
+    material: BARRIER
+    glow: false
+    title: "<#fb7185><bold>Back to Command Deck</bold></#fb7185>"
+    lore:
+      - "<#94a3b8>Return to the main menu.</#94a3b8>"
+  status:
+    active: "<#facc15>In Progress</#facc15>"
+    completed: "<#4ade80>Completed</#4ade80>"
+
+season-menu:
+  title: "<#f8fafc><bold>Season Operations</bold></#f8fafc> <#64748b>// Reward Pulse</#64748b>"
+  frame:
+    material: YELLOW_STAINED_GLASS_PANE
+    name: "<#020617> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<#111827> "
+    glow: false
+  fillers:
+    header:
+      material: ORANGE_STAINED_GLASS_PANE
+      name: "<#7c2d12> "
+      slots: [10, 11, 12, 14, 15, 16]
+    footer:
+      material: LIME_STAINED_GLASS_PANE
+      name: "<#365314> "
+      slots: [37, 38, 39, 41, 42, 43]
+  profile:
+    slot: 4
+    glow: true
+    title: "<#fde68a><bold>Season Snapshot</bold></#fde68a>"
+    lore:
+      - "<#94a3b8>Season:</#94a3b8> <#f8fafc>{season}</#f8fafc>"
+      - "<#94a3b8>Season Points:</#94a3b8> <#4ade80>{season_points}</#4ade80>"
+      - "<#94a3b8>Total Points:</#94a3b8> <#67e8f9>{points}</#67e8f9>"
+      - "<#94a3b8>Claimed Rewards:</#94a3b8> <#f8fafc>{claimed}/{reward_count}</#f8fafc>"
+      - "<#94a3b8>Prestige Level:</#94a3b8> <#fda4af>{prestige}</#fda4af>"
+      - ""
+      - "<#475569>Season pacing measures short-term momentum, not lifetime history.</#475569>"
+  rewards:
+    auto-slots: [20, 22, 24, 29, 31, 33]
+    card:
+      material: EMERALD
+      title: "<#86efac><bold>Reward @ {threshold}</bold></#86efac>"
+      lore:
+        - "<#94a3b8>Status:</#94a3b8> <#f8fafc>{status}</#f8fafc>"
+        - "<#94a3b8>Season Points:</#94a3b8> <#67e8f9>{season_points}</#67e8f9>"
+        - "<#94a3b8>Commands:</#94a3b8> <#f8fafc>{commands}</#f8fafc>"
+        - ""
+        - "<#475569>Rewards are issued automatically once the threshold is reached.</#475569>"
+    empty:
+      slot: 22
+      material: BARRIER
+      glow: false
+      title: "<#94a3b8><bold>No Reward Milestones</bold></#94a3b8>"
+      lore:
+        - "<#475569>No seasonal thresholds are configured in season.yml.</#475569>"
+  status:
+    claimed: "<#4ade80>Claimed</#4ade80>"
+    ready: "<#fde68a>Ready</#fde68a>"
+    locked: "<#94a3b8>Locked</#94a3b8>"
+  leaderboard:
+    slot: 30
+    material: PLAYER_HEAD
+    glow: true
+    title: "<#67e8f9><bold>Season Pulse</bold></#67e8f9>"
+    entry: "<#fde68a>#{rank}</#fde68a> <#f8fafc>{player}</#f8fafc> <#64748b>-</#64748b> <#4ade80>{points}</#4ade80>"
+    empty-lore:
+      - "<#94a3b8>No season leaderboard data exists yet.</#94a3b8>"
+      - "<#475569>Season standings appear as players begin scoring.</#475569>"
+    footer-lore:
+      - ""
+      - "<#475569>This is a quick pulse of the top seasonal profiles.</#475569>"
+  progress:
+    slot: 32
+    material: CLOCK
+    glow: false
+    title: "<#fde68a><bold>Threshold Forecast</bold></#fde68a>"
+    lore:
+      - "<#94a3b8>Next Threshold:</#94a3b8> <#f8fafc>{next_threshold}</#f8fafc>"
+      - "<#94a3b8>Reward Count:</#94a3b8> <#f8fafc>{reward_count}</#f8fafc>"
+      - "<#94a3b8>Claimed:</#94a3b8> <#4ade80>{claimed}</#4ade80>"
+      - ""
+      - "<#475569>Use challenges and rare clears to accelerate seasonal gain.</#475569>"
+  challenges:
+    slot: 48
+    material: CLOCK
+    glow: false
+    title: "<#fda4af><bold>Open Challenge Board</bold></#fda4af>"
+    lore:
+      - "<#94a3b8>Review daily and weekly objectives.</#94a3b8>"
+  prestige:
+    slot: 50
+    material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
+    glow: false
+    title: "<#c084fc><bold>Open Prestige Control</bold></#c084fc>"
+    lore:
+      - "<#94a3b8>Inspect readiness for a full prestige reset.</#94a3b8>"
+  back:
+    slot: 49
+    material: BARRIER
+    glow: false
+    title: "<#fb7185><bold>Back to Command Deck</bold></#fb7185>"
+    lore:
+      - "<#94a3b8>Return to the main menu.</#94a3b8>"
+
+prestige-menu:
+  title: "<#f8fafc><bold>Prestige Control</bold></#f8fafc> <#64748b>// Reset Authority</#64748b>"
+  frame:
+    material: MAGENTA_STAINED_GLASS_PANE
+    name: "<#020617> "
+  background:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "<#111827> "
+    glow: false
+  fillers:
+    header:
+      material: PINK_STAINED_GLASS_PANE
+      name: "<#831843> "
+      slots: [10, 11, 12, 14, 15, 16]
+    footer:
+      material: PURPLE_STAINED_GLASS_PANE
+      name: "<#581c87> "
+      slots: [37, 38, 39, 41, 42, 43]
+  profile:
+    slot: 4
+    glow: true
+    title: "<#fda4af><bold>Prestige Snapshot</bold></#fda4af>"
+    lore:
+      - "<#94a3b8>Current Prestige:</#94a3b8> <#f8fafc>{prestige}</#f8fafc>"
+      - "<#94a3b8>Completion:</#94a3b8> <#fde68a>{completed}/{total}</#fde68a>"
+      - "<#94a3b8>Season Points:</#94a3b8> <#67e8f9>{season_points}</#67e8f9>"
+      - "<#94a3b8>Bonus Award:</#94a3b8> <#4ade80>{bonus}</#4ade80>"
+      - ""
+      - "<#475569>Prestige resets route progress in exchange for a stronger profile arc.</#475569>"
+  readiness:
+    slot: 20
+    material: TOTEM_OF_UNDYING
+    glow: false
+    title: "<#fde68a><bold>Readiness Check</bold></#fde68a>"
+    lore:
+      - "<#94a3b8>Completed:</#94a3b8> <#f8fafc>{completed}/{total}</#f8fafc>"
+      - "<#94a3b8>Progress:</#94a3b8> <#67e8f9>{progress}%</#67e8f9>"
+      - "<#94a3b8>Status:</#94a3b8> <#f8fafc>{status}</#f8fafc>"
+      - ""
+      - "<#475569>Full network completion is required before prestige can fire.</#475569>"
+  impact:
+    slot: 22
+    material: TNT
+    glow: false
+    title: "<#fb7185><bold>Reset Impact</bold></#fb7185>"
+    lore:
+      - "<#94a3b8>Advancement Progress:</#94a3b8> <#f8fafc>Reset</#f8fafc>"
+      - "<#94a3b8>Challenge Reset:</#94a3b8> <#f8fafc>{challenge_reset}</#f8fafc>"
+      - "<#94a3b8>Bonus Granted:</#94a3b8> <#4ade80>{bonus}</#4ade80>"
+      - ""
+      - "<#475569>Review this carefully before confirming the reset.</#475569>"
+  rewards:
+    slot: 24
+    material: NETHER_STAR
+    glow: true
+    title: "<#86efac><bold>Prestige Yield</bold></#86efac>"
+    lore:
+      - "<#94a3b8>Next Prestige:</#94a3b8> <#f8fafc>{next_prestige}</#f8fafc>"
+      - "<#94a3b8>Point Bonus:</#94a3b8> <#4ade80>{bonus}</#4ade80>"
+      - ""
+      - "<#475569>Prestige extends long-term progression after a full clear.</#475569>"
+  action:
+    slot: 31
+    ready:
+      material: EMERALD_BLOCK
+      glow: true
+      title: "<#4ade80><bold>Execute Prestige</bold></#4ade80>"
+      lore:
+        - "<#94a3b8>You have completed the full network.</#94a3b8>"
+        - "<#94a3b8>Next Prestige:</#94a3b8> <#f8fafc>{next_prestige}</#f8fafc>"
+        - "<#94a3b8>Bonus Award:</#94a3b8> <#4ade80>{bonus}</#4ade80>"
+        - ""
+        - "<#475569>Click to apply the reset and issue the prestige reward.</#475569>"
+    locked:
+      material: REDSTONE_BLOCK
+      glow: false
+      title: "<#fb7185><bold>Prestige Locked</bold></#fb7185>"
+      lore:
+        - "<#94a3b8>Completed:</#94a3b8> <#f8fafc>{completed}/{total}</#f8fafc>"
+        - "<#94a3b8>Next Prestige:</#94a3b8> <#f8fafc>{next_prestige}</#f8fafc>"
+        - ""
+        - "<#475569>Finish every configured advancement before this becomes available.</#475569>"
+  season:
+    slot: 48
+    material: RECOVERY_COMPASS
+    glow: false
+    title: "<#fde68a><bold>Open Season Ops</bold></#fde68a>"
+    lore:
+      - "<#94a3b8>Review reward thresholds and seasonal pace.</#94a3b8>"
+  challenges:
+    slot: 50
+    material: CLOCK
+    glow: false
+    title: "<#67e8f9><bold>Open Challenge Board</bold></#67e8f9>"
+    lore:
+      - "<#94a3b8>Review daily and weekly objectives before resetting.</#94a3b8>"
+  back:
+    slot: 49
+    material: BARRIER
+    glow: false
+    title: "<#fb7185><bold>Back to Command Deck</bold></#fb7185>"
+    lore:
+      - "<#94a3b8>Return to the main menu.</#94a3b8>"
+  status:
+    ready: "<#4ade80>Ready</#4ade80>"
+    locked: "<#fb7185>Locked</#fb7185>"
+  values:
+    enabled: "<#4ade80>Enabled</#4ade80>"
+    disabled: "<#94a3b8>Disabled</#94a3b8>"
+
+texts:
+  general:
+    unknown: "Unknown"
+    none: "None"
+    list-separator: ", "
+  objective:
+    subject-default:
+      blocks: "Blocks"
+      items: "Items"
+      targets: "Targets"
+      biomes: "Biomes"
+      command: "command"
+      server-joins: "server joins"
+      blocks-travelled: "blocks travelled"
+      fish-caught: "fish caught"
+      enchants: "enchantments"
+      minutes-played: "minutes played"
+      custom: "custom objective"
+    templates:
+      join: "Join the server"
+      break: "Break {target} {subject}"
+      craft: "Craft {target} {subject}"
+      defeat: "Defeat {target} {subject}"
+      defeat-player-single: "Defeat {target} player"
+      defeat-player-multi: "Defeat {target} players"
+      discover: "Discover {subject}"
+      travel: "Travel {target} blocks"
+      fish: "Catch {target} fish"
+      enchant-single: "Enchant {target} item"
+      enchant-multi: "Enchant {target} items"
+      smelt: "Smelt {target} {subject}"
+      breed: "Breed {target} {subject}"
+      tame: "Tame {target} {subject}"
+      playtime: "Play for {target} minutes"
+      consume: "Consume {target} {subject}"
+      command: "Use {subject}"
+      custom: "Reach target: {target}"
+  rewards:
+    none: "No extra reward"
+    templates:
+      points: "{amount} points"
+      xp: "{amount} XP"
+      money: "${amount}"
+      item: "{amount}x {value}"
+      command-empty: "Command reward"
+      command: "Command: /{value}"
+      broadcast: "Broadcast"
+      title: "Title"
+      sound: "Sound: {value}"
